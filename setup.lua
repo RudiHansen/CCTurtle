@@ -8,7 +8,7 @@
     2023-05-16 : Initial Version.
 ]]
 local lable         = ""
-local homePos       = {x=0,y=0,z=0}
+local homePos       = {x=0,y=0,z=0,f="N"}
 local fuelLevel     = 0
 
 -- Setup Turtle Label
@@ -35,14 +35,17 @@ homePos.y = input
 print("Input Turtles z position")
 input = read()
 homePos.z= input
-print(homePos.x,homePos.y,homePos.z)
+print("Input Turtles facing(N/S/E/W)")
+input = read()
+homePos.f= input
+print(homePos.x,homePos.y,homePos.z,homePos.f)
 
 -- Setup Turtle Fuellevel
 fuelLevel = turtle.getFuelLevel()
 
 -- Write location to file
 local locationFileName = "location.dat"
-local locationData = homePos.x .. "\n" .. homePos.y .. "\n" .. homePos.z .. "\n"
+local locationData = homePos.x .. "\n" .. homePos.y .. "\n" .. homePos.z .. "\n".. homePos.f .. "\n"
 
 local locationFile = fs.open(locationFileName, "w")
 if locationFile then

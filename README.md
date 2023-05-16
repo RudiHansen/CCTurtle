@@ -9,5 +9,5 @@ Its Inventory level
 
 # Plan
 Make setup script for turtle to set Turtle label, and get Turtle position and save position to .dat file
-
+Report status into to Computer
 

@@ -17,4 +17,4 @@ while(true) do
     rednet.broadcast("TurtleStatus;"..lable..";"..homePos.x..";"..homePos.y..";"..homePos.z..";"..homePos.f .. ";"..fuelLevel)
     fuelLevel = fuelLevel - 1
     sleep(2)
-endA
+end

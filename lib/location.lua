@@ -14,9 +14,9 @@ function location.init()
     -- Read location from file
     local locationFileName = "location.dat"
     local locationFile = fs.open(locationFileName, "r")
-    homePos.x = locationFile.readLine()
-    homePos.z = locationFile.readLine()
-    homePos.y = locationFile.readLine()
+    homePos.x = tonumber(locationFile.readLine())
+    homePos.z = tonumber(locationFile.readLine())
+    homePos.y = tonumber(locationFile.readLine())
     homePos.f = locationFile.readLine()
 
     -- Get current fuel level
@@ -39,6 +39,13 @@ function location.writeLocationToFile()
 end
 
 function location.getHomePos()
+    if ( type(homePos.x) ~= "number" and type(homePos.z) ~= "number" and type(homePos.y) ~= "number" ) then
+        print("ERROR")
+        print(type(homePos.x))
+        print(type(homePos.z))
+        print(type(homePos.y))
+        error()
+    end
     return homePos
 end
 

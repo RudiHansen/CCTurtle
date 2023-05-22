@@ -13,19 +13,19 @@ function move.move(direction)
     if(direction=="E")then
         move.turnToFace(direction)
         turtle.forward()
-        location.stepX(-1)
+        location.stepX(1)
     elseif(direction=="W")then
         move.turnToFace(direction)
         turtle.forward()
-        location.stepX(1)
+        location.stepX(-1)
     elseif(direction=="N")then
         move.turnToFace(direction)
         turtle.forward()
-        location.stepZ(1)
+        location.stepZ(-1)
     elseif(direction=="S")then
         move.turnToFace(direction)
         turtle.forward()
-        location.stepZ(-1)
+        location.stepZ(1)
     elseif(direction=="U")then
         turtle.up()
         location.stepY(1)

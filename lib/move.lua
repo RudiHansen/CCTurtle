@@ -34,7 +34,7 @@ function move.move(direction)
         location.stepY(-1)
     end
     location.writeLocationToFile()
-    modem.sendStatus(status)
+    modem.sendStatus("Move")
 end
 
 function move.turnToFace(newFace)

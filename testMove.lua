@@ -17,7 +17,7 @@ function printPos(pos)
 end
 
 -- Calculate movement based on Priority.
-function calcMove(startPos,endPos,axisPriority)
+function calcMove(endPos,axisPriority)
     if(axisPriority == nil or axisPriority == "") then
         axisPriority = "xzy"
     end
@@ -25,13 +25,10 @@ function calcMove(startPos,endPos,axisPriority)
     local axisPriorityIdx       = 1
     local currentAxisPriority   = string.sub(axisPriority,axisPriorityIdx,axisPriorityIdx)
     local moveToDo              = ""
+    local startPos              = location.getHomePos()
 
     while( startPos.x ~= endPos.x or startPos.z ~= endPos.z or startPos.y ~= endPos.y) do
         currentAxisPriority   = string.sub(axisPriority,axisPriorityIdx,axisPriorityIdx)
-        term.clear()
-        print(currentAxisPriority)
-        printPos(startPos)
-        printPos(endPos)
         if( currentAxisPriority == "x" ) then
             if(startPos.x > endPos.x) then
                 moveToDo = "W"
@@ -61,8 +58,6 @@ function calcMove(startPos,endPos,axisPriority)
             end
         end
 
-        print(moveToDo)
-        util.waitForUserKey()
         if( moveToDo ~= nil and moveToDo ~= "") then
             move.move(moveToDo)
         end
@@ -74,30 +69,10 @@ local result     = ""
 local startPos   = {x=23,z=10,y=63,f="E"}
 local endPos     = {x=29,z=12,y=67,f="N"}
 
-result = calcMove(startPos,endPos)
-
-
---[[
 modem.sendStatus("Move")
-
-move.move("U")
-move.move("U")
-
-move.move("E")
-move.move("E")
-move.move("E")
-move.move("E")
-
-move.move("W")
-move.move("W")
-move.move("W")
-move.move("W")
-
-move.move("D")
-move.move("D")
+result = calcMove(endPos)
+result = calcMove(startPos)
 
 move.turnToFace("E")
 modem.sendStatus("Idle")
 location.writeLocationToFile()
-]]
-

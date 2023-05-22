@@ -23,4 +23,18 @@ function util.incNumberMax(number,max)
     return number
 end
 
+function util.any2String(anyType)
+    if type(anyType) == 'table' then
+       local s = '{ '
+       for k,v in pairs(anyType) do
+          if type(k) ~= 'number' then k = '"'..k..'"' end
+          s = s .. '['..k..'] = ' .. dump(v) .. ','
+       end
+       return s .. '} '
+    else
+       return tostring(anyType)
+    end
+ end
+
+
 return util

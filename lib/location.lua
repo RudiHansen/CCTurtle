@@ -6,18 +6,23 @@
     2023-05-19 : Initial Version.
 ]]
 
-local location  = {}
-local homePos   = {x=0,z=0,y=0,f=""}
+local location      = {}
+local homePos       = {x=0,z=0,y=0,f=""}
+local refuelPos     = {x=0,z=0,y=0,f=""}
+local dropOffPos    = {x=0,z=0,y=0,f=""}
+local currentPos    = {x=0,z=0,y=0,f=""}
+
+
 local fuelLevel = 0
 
 function location.init()
     -- Read location from file
     local locationFileName = "location.dat"
     local locationFile = fs.open(locationFileName, "r")
-    homePos.x = tonumber(locationFile.readLine())
-    homePos.z = tonumber(locationFile.readLine())
-    homePos.y = tonumber(locationFile.readLine())
-    homePos.f = locationFile.readLine()
+    currentPos.x = tonumber(locationFile.readLine())
+    currentPos.z = tonumber(locationFile.readLine())
+    currentPos.y = tonumber(locationFile.readLine())
+    currentPos.f = locationFile.readLine()
 
     -- Get current fuel level
     fuelLevel = turtle.getFuelLevel()
@@ -26,7 +31,7 @@ end
 function location.writeLocationToFile()
     -- Write location to file
     local locationFileName = "location.dat"
-    local locationData = homePos.x .. "\n" .. homePos.z .. "\n" .. homePos.y .. "\n".. homePos.f .. "\n"
+    local locationData = currentPos.x .. "\n" .. currentPos.z .. "\n" .. currentPos.y .. "\n".. currentPos.f .. "\n"
 
     local locationFile = fs.open(locationFileName, "w")
     if locationFile then
@@ -38,19 +43,19 @@ function location.writeLocationToFile()
     end
 end
 
-function location.getHomePos()
-    if ( type(homePos.x) ~= "number" and type(homePos.z) ~= "number" and type(homePos.y) ~= "number" ) then
+function location.getCurrentPos()
+    if ( type(currentPos.x) ~= "number" and type(currentPos.z) ~= "number" and type(currentPos.y) ~= "number" ) then
         print("ERROR")
-        print(type(homePos.x))
-        print(type(homePos.z))
-        print(type(homePos.y))
+        print(type(currentPos.x))
+        print(type(currentPos.z))
+        print(type(currentPos.y))
         error()
     end
-    return homePos
+    return currentPos
 end
 
-function location.setHomePosFace(face)
-    homePos.f = face
+function location.setCurrentPosFace(face)
+    currentPos.f = face
 end
 
 function location.getFuelLevel()
@@ -58,18 +63,18 @@ function location.getFuelLevel()
 end
 
 function location.stepX(step)
-    homePos.x = homePos.x + step
-    fuelLevel = fuelLevel - 1
+    currentPos.x    = currentPos.x + step
+    fuelLevel       = fuelLevel - 1
 end
 
 function location.stepZ(step)
-    homePos.z = homePos.z + step
-    fuelLevel = fuelLevel - 1
+    currentPos.z    = currentPos.z + step
+    fuelLevel       = fuelLevel - 1
 end
 
 function location.stepY(step)
-    homePos.y = homePos.y + step
-    fuelLevel = fuelLevel - 1
+    currentPos.y    = currentPos.y + step
+    fuelLevel       = fuelLevel - 1
 end
 
 return location

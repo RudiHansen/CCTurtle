@@ -13,15 +13,15 @@ function modem.init()
 end
 
 function modem.sendStatus(status)
-    local lable     = os.getComputerLabel()
-    local homePos   = location.getHomePos()
-    local fuelLevel = location.getFuelLevel()
+    local label         = os.getComputerLabel()
+    local currentPos    = location.getCurrentPos()
+    local fuelLevel     = location.getFuelLevel()
 
     if(status == nil or status == "") then
         status = "EMPTY"
     end
 
-    rednet.broadcast("TurtleStatus;"..lable..";"..homePos.x..";"..homePos.z..";"..homePos.y..";"..homePos.f .. ";"..fuelLevel..";"..status)
+    rednet.broadcast("TurtleStatus;"..label..";"..currentPos.x..";"..currentPos.z..";"..currentPos.y..";"..currentPos.f .. ";"..fuelLevel..";"..status)
 end
 
 return modem

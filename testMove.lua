@@ -25,7 +25,7 @@ function calcMove(endPos,axisPriority)
     local axisPriorityIdx       = 1
     local currentAxisPriority   = string.sub(axisPriority,axisPriorityIdx,axisPriorityIdx)
     local moveToDo              = ""
-    local startPos              = location.getHomePos()
+    local startPos              = location.getCurrentPos()
 
     while( startPos.x ~= endPos.x or startPos.z ~= endPos.z or startPos.y ~= endPos.y) do
         currentAxisPriority   = string.sub(axisPriority,axisPriorityIdx,axisPriorityIdx)
@@ -61,7 +61,7 @@ function calcMove(endPos,axisPriority)
         if( moveToDo ~= nil and moveToDo ~= "") then
             move.move(moveToDo)
         end
-        startPos = location.getHomePos()    
+        startPos = location.getCurrentPos()    
     end
 end
 

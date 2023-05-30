@@ -38,10 +38,10 @@ function move.move(direction)
 end
 
 function move.turnToFace(newFace)
-    homePos = location.getHomePos()
+    local currentPos = location.getCurrentPos()
 
     newHeading = move.face2Int(newFace)
-    currentHeading = move.face2Int(homePos.f)
+    currentHeading = move.face2Int(currentPos.f)
 
     local rotations = (newHeading - currentHeading) % 4
     if rotations < 0 then
@@ -54,7 +54,7 @@ function move.turnToFace(newFace)
             turtle.turnRight()
         end
     end
-    location.setHomePosFace(newFace)
+    location.setCurrentPosFace(newFace)
 end
 
 function move.face2Int(face)

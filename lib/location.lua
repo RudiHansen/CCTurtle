@@ -43,6 +43,27 @@ function location.writeLocationToFile()
     end
 end
 
+function location.setHomePos(x,z,y,f)
+    homePos.x = x
+    homePos.z = z
+    homePos.y = y
+    homePos.f = f
+end
+
+function location.setRefuelPos(x,z,y,f)
+    refuelPos.x = x
+    refuelPos.z = z
+    refuelPos.y = y
+    refuelPos.f = f
+end
+
+function location.setDropOffPos(x,z,y,f)
+    dropOffPos.x = x
+    dropOffPos.z = z
+    dropOffPos.y = y
+    dropOffPos.f = f
+end
+
 function location.getCurrentPos()
     if ( type(currentPos.x) ~= "number" and type(currentPos.z) ~= "number" and type(currentPos.y) ~= "number" ) then
         print("ERROR")
@@ -52,6 +73,18 @@ function location.getCurrentPos()
         error()
     end
     return currentPos
+end
+
+function location.getHomePos()
+    return homePos
+end
+
+function location.getRefuelPosPos()
+    return refuelPos
+end
+
+function location.getDropOffPos()
+    return dropOffPos
 end
 
 function location.setCurrentPosFace(face)

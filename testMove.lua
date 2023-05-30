@@ -5,6 +5,9 @@ util      = require("lib.util")
 
 modem.init()
 location.init()
+location.setHomePos(23,10,63,"E")
+location.setRefuelPos(24,14,63,"W")
+location.setDropOffPos(24,9,63,"W")
 
 -- Test Stuff
 --turnToFace("N")
@@ -63,16 +66,21 @@ function calcMove(endPos,axisPriority)
         end
         startPos = location.getCurrentPos()    
     end
+    move.turnToFace(endPos.f)
 end
 
 local result     = ""
-local startPos   = {x=23,z=10,y=63,f="E"}
 local endPos     = {x=29,z=12,y=67,f="N"}
 
 modem.sendStatus("Move")
 result = calcMove(endPos)
-result = calcMove(startPos)
+sleep(1)
+result = calcMove(location.getDropOffPos())
+sleep(1)
+result = calcMove(location.getRefuelPosPos())
+sleep(1)
+result = calcMove(location.getHomePos(),"yzx")
 
-move.turnToFace("E")
+
 modem.sendStatus("Idle")
 location.writeLocationToFile()

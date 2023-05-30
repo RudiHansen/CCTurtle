@@ -79,7 +79,7 @@ function location.getHomePos()
     return homePos
 end
 
-function location.getRefuelPosPos()
+function location.getRefuelPos()
     return refuelPos
 end
 

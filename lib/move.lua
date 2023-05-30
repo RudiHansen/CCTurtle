@@ -9,32 +9,46 @@
 local move = {}
 
 function move.move(direction)
-    --sleep(.5)
+    local result = true;
+
     if(direction=="E")then
         move.turnToFace(direction)
-        turtle.forward()
-        location.stepX(1)
+        result = turtle.forward()
+        if(result == true) then
+            location.stepX(1)
+        end
     elseif(direction=="W")then
         move.turnToFace(direction)
-        turtle.forward()
-        location.stepX(-1)
+        result = turtle.forward()
+        if(result == true) then
+            location.stepX(-1)
+        end
     elseif(direction=="N")then
         move.turnToFace(direction)
-        turtle.forward()
-        location.stepZ(-1)
+        result = turtle.forward()
+        if(result == true) then
+            location.stepZ(-1)
+        end
     elseif(direction=="S")then
         move.turnToFace(direction)
-        turtle.forward()
-        location.stepZ(1)
+        result = turtle.forward()
+        if(result == true) then
+            location.stepZ(1)
+        end
     elseif(direction=="U")then
-        turtle.up()
-        location.stepY(1)
+        result = turtle.up()
+        if(result == true) then
+            location.stepY(1)
+        end
     elseif(direction=="D")then
-        turtle.down()
-        location.stepY(-1)
+        result = turtle.down()
+        if(result == true) then
+            location.stepY(-1)
+        end
     end
     location.writeLocationToFile()
     modem.sendStatus("Move")
+    return result
 end
 
 function move.turnToFace(newFace)

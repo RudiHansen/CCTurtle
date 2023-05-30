@@ -2,7 +2,9 @@ modem     = require("lib.modem")
 location  = require("lib.location")
 move      = require("lib.move")
 util      = require("lib.util")
+logFile   = require("lib.logFile")
 
+logFile.logFileOpen()
 modem.init()
 location.init()
 location.setHomePos(23,10,63,"E")
@@ -29,6 +31,8 @@ function calcMove(endPos,axisPriority)
     local currentAxisPriority   = string.sub(axisPriority,axisPriorityIdx,axisPriorityIdx)
     local moveToDo              = ""
     local startPos              = location.getCurrentPos()
+    local result                = true
+    local moveErrors            = 0
 
     while( startPos.x ~= endPos.x or startPos.z ~= endPos.z or startPos.y ~= endPos.y) do
         currentAxisPriority   = string.sub(axisPriority,axisPriorityIdx,axisPriorityIdx)
@@ -62,7 +66,19 @@ function calcMove(endPos,axisPriority)
         end
 
         if( moveToDo ~= nil and moveToDo ~= "") then
-            move.move(moveToDo)
+            result = move.move(moveToDo)
+            logFile.logWrite("moveToDo="..tostring(moveToDo).." result="..tostring(result))            
+            if(result == false) then
+                axisPriorityIdx = util.incNumberMax(axisPriorityIdx,4)
+                moveErrors = moveErrors + 1
+                if (moveErrors > 3) then
+                    modem.sendStatus("Blocked")
+                    print("Can't move, please remove the obstacles!")
+                    util.waitForUserKey()
+                    moveErrors = 0
+                    modem.sendStatus("Move")
+                end
+            end
         end
         startPos = location.getCurrentPos()    
     end
@@ -70,17 +86,22 @@ function calcMove(endPos,axisPriority)
 end
 
 local result     = ""
-local endPos     = {x=29,z=12,y=67,f="N"}
+local endPos     = {x=40,z=12,y=67,f="N"}
 
 modem.sendStatus("Move")
+logFile.logWrite("Move to endPos")
 result = calcMove(endPos)
 sleep(1)
+logFile.logWrite("Move to dropOffPos")
 result = calcMove(location.getDropOffPos())
 sleep(1)
-result = calcMove(location.getRefuelPosPos())
+logFile.logWrite("Move to RefuelPos")
+result = calcMove(location.getRefuelPos())
 sleep(1)
-result = calcMove(location.getHomePos(),"yzx")
+logFile.logWrite("Move to HomePos")
+result = calcMove(location.getHomePos())
 
 
 modem.sendStatus("Idle")
 location.writeLocationToFile()
+logFile.logFileClose()

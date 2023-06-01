@@ -22,9 +22,12 @@ function printPos(pos)
     print(type(pos.x) .. " " .. type(pos.z) .. " " .. type(pos.y) .. " " .. type(pos.f))
 end
 
+inventory.pickUpFuel()
+
 
 local result     = ""
-local endPos     = {x=40,z=12,y=67,f="N"}
+local endPos     = {x=70,z=12,y=67,f="N"}
+
 
 modem.sendStatus("Move")
 logFile.logWrite("Move to endPos")
@@ -36,9 +39,9 @@ sleep(1)
 logFile.logWrite("Move to RefuelPos")
 result = move.moveToPos(location.getRefuelPos())
 sleep(1)
+
 logFile.logWrite("Move to HomePos")
 result = move.moveToPos(location.getHomePos())
-
 
 modem.sendStatus("Idle")
 location.writeLocationToFile()

@@ -11,8 +11,9 @@
 
 local inventory = {}
 
-local maxFuelLevel = 1000
+local maxFuelLevel = 400
 local minFuelLevel = 200
+local refuelItems  = 1
 
 function inventory.getRemainingEmptyStorageSlots()
     local remainingEmptySlots = 0
@@ -24,59 +25,45 @@ function inventory.getRemainingEmptyStorageSlots()
     return remainingEmptySlots
 end
 
+function inventory.selectFirstEmptyStorageSlot()
+    for i=1,16 do
+        turtle.select(i)
+        if(turtle.getItemCount(i) == 0) then
+            return
+        end
+    end
+end
+
 function inventory.pickUpFuel()
-    util.outputVariable(1,"Going to pick up fuel")
+    local result = true
+    modem.sendStatus("Refuel")
+    logFile.logWrite("Start refuel.")
+    logFile.logWrite("Fuel level = " .. turtle.getFuelLevel())
+
     -- Save current position
-    local originalPos = location.getCurrentPos()
+    local originalPos = location.getCurrentPosCopy()
+    logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
 
     -- Move to the fuel storage
-    move.moveToFuelPosition(false)
+    move.moveToPos(location.getRefuelPos())
+    modem.sendStatus("Refuel")
 
-    -- Face the chest
-    move.turnToHeading(2)
-
-    -- Test if there is a chest.
-    local success, data = turtle.inspect()
-    if success and string.match(data.name,"crude_storage_unit") then
-        util.outputVariable(0,"Found a crude_storage_unit")
-    else
-        util.outputVariable(0,"Did not find a crude_storage_unit")
-        util.outputVariable(0,"Did find ",data.name)
-        util.outputVariable(1,"Ups I seem to be at the wrong position, there is not crude_storage_unit here, stopping all work!")
-        util.outputVariable(2,"Error : crude_storage_unit not found")
-        logFile.logFileClose()
-        error()
+    while( result == true and turtle.getFuelLevel() < maxFuelLevel) do
+        result = turtle.suck(refuelItems)
+        logFile.logWrite("Suck =" .. tostring(result))
+        if(result == true) then
+            result = turtle.refuel(refuelItems)
+            logFile.logWrite("Refuel =" .. tostring(result))
+        end
+        logFile.logWrite("Fuel level = " .. turtle.getFuelLevel())
     end
 
-    result = turtle.select(1)
-    result = turtle.suck()
-    local data = turtle.getItemDetail()
 
-    if data then
-        if(data.name == "minecraft:charcoal" and data.count == 64)then
-            util.outputVariable(0,"Picked up fuel count",data.count)
-            util.outputVariable(0,"Name",data.name)
-        else
-            util.outputVariable(2,"Error1 : problem picking up fuel")
-            logFile.logFileClose()
-            error()
-            end
-    else
-        util.outputVariable(2,"Error2 : problem picking up fuel")
-        logFile.logFileClose()
-        error()
-    end
-
-    util.outputVariable(1,"Picked up fuel, now returning to work.")
-    util.outputVariable(0,"Going back to Pos","")
-    util.outputVariable(0,"originalPos.x",originalPos.x)
-    util.outputVariable(0,"originalPos.y",originalPos.y)
-    util.outputVariable(0,"originalPos.z",originalPos.z)
-    move.moveToPosition(originalPos.x,originalPos.y,originalPos.z,false)
-    util.outputVariable(1,"Resuming work.")
-
-    -- Face the original direction
-    move.turnToHeading(0)
+    logFile.logWrite("Picked up fuel, now returning to work.")
+    modem.sendStatus("Work")
+    logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
+    move.moveToPos(originalPos)
+    logFile.logWrite("Ended refuel.")
 end
 
 function inventory.emptyStorageSlots(refuel)

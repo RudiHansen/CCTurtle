@@ -28,13 +28,12 @@ function util.any2String(anyType)
        local s = '{ '
        for k,v in pairs(anyType) do
           if type(k) ~= 'number' then k = '"'..k..'"' end
-          s = s .. '['..k..'] = ' .. dump(v) .. ','
+          s = s .. '['..k..'] = ' .. util.any2String(v) .. ','
        end
        return s .. '} '
     else
        return tostring(anyType)
     end
- end
-
+end
 
 return util

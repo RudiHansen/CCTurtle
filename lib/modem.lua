@@ -15,7 +15,7 @@ end
 function modem.sendStatus(status)
     local label         = os.getComputerLabel()
     local currentPos    = location.getCurrentPos()
-    local fuelLevel     = location.getFuelLevel()
+    local fuelLevel     = turtle.getFuelLevel()
 
     if(status == nil or status == "") then
         status = "EMPTY"

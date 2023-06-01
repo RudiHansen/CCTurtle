@@ -12,9 +12,6 @@ local refuelPos     = {x=0,z=0,y=0,f=""}
 local dropOffPos    = {x=0,z=0,y=0,f=""}
 local currentPos    = {x=0,z=0,y=0,f=""}
 
-
-local fuelLevel = 0
-
 function location.init()
     -- Read location from file
     local locationFileName = "location.dat"
@@ -75,6 +72,14 @@ function location.getCurrentPos()
     return currentPos
 end
 
+function location.getCurrentPosCopy()
+    local posCopy = {}
+    for k, v in pairs(currentPos) do
+        posCopy[k] = v
+    end
+    return posCopy
+end
+
 function location.getHomePos()
     return homePos
 end
@@ -89,10 +94,6 @@ end
 
 function location.setCurrentPosFace(face)
     currentPos.f = face
-end
-
-function location.getFuelLevel()
-    return fuelLevel
 end
 
 function location.stepX(step)

@@ -54,7 +54,7 @@ function move.moveToPos(endPos,axisPriority)
 
         if( moveToDo ~= nil and moveToDo ~= "") then
             result = move.move(moveToDo)
-            logFile.logWrite("moveToDo="..tostring(moveToDo).." result="..tostring(result))            
+            --logFile.logWrite("moveToDo="..tostring(moveToDo).." result="..tostring(result))            
             if(result == false) then
                 axisPriorityIdx = util.incNumberMax(axisPriorityIdx,4)
                 moveErrors = moveErrors + 1

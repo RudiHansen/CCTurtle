@@ -4,6 +4,7 @@ inventory = require("lib.inventory")
 move      = require("lib.move")
 util      = require("lib.util")
 logFile   = require("lib.logFile")
+blocks    = require("lib.blocks")
 
 logFile.logFileOpen()
 modem.init()

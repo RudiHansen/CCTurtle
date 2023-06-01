@@ -17,18 +17,12 @@ location.setDropOffPos(24,9,63,"W")
 --sleep(2)
 --turnToFace("E")
 
-function printPos(pos)
-    print(pos.x .. " " .. pos.z .. " " .. pos.y .. " " .. pos.f)
-    print(type(pos.x) .. " " .. type(pos.z) .. " " .. type(pos.y) .. " " .. type(pos.f))
-end
-
-inventory.emptyStorageSlots()
+--inventory.emptyStorageSlots()
 --inventory.pickUpFuel()
-
+inventory.checkFuelLevelAndRefuel()
 
 local result     = ""
 local endPos     = {x=70,z=12,y=67,f="N"}
-
 
 modem.sendStatus("Move")
 logFile.logWrite("Move to endPos")

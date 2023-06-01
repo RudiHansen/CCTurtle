@@ -115,27 +115,11 @@ function inventory.emptyStorageSlots()
     logFile.logWrite("Ended refuel.")
 end
 
--- Fuel functions
--- These functions are simply copyed from turtleMiner.lua
--- For right now refuling is simply done from inventory slot 1
-function inventory.refuel()
-    local refuelStatus = true
-    util.outputVariable(1,"Refueling start level",turtle.getFuelLevel())
-    turtle.select(1) -- Slot 1 is the fuel slot
-    refuelStatus = turtle.refuel()
-    util.outputVariable(1,"Refuel result",refuelStatus)
-    util.outputVariable(1,"Refueling end level",turtle.getFuelLevel())
-    if(refuelStatus == false)then
-        inventory.emptyStorageSlots()
-        inventory.pickUpFuel()
-    end
-end
-
 function inventory.checkFuelLevelAndRefuel()
     local fuelLevel = turtle.getFuelLevel()
 
     if(fuelLevel < minFuelLevel) then
-        inventory.refuel()
+        inventory.pickUpFuel()
     end
 end
 

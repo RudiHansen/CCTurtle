@@ -76,59 +76,43 @@ function inventory.pickUpFuel()
     logFile.logWrite("Ended refuel.")
 end
 
-function inventory.emptyStorageSlots(refuel)
-    util.outputVariable(1,"Returning to drop off items.")
+function inventory.emptyStorageSlots()
+    modem.sendStatus("Empty")
+    logFile.logWrite("Drop off items")
 
     -- Save current position
-    local originalPos = location.getCurrentPos()
-    util.outputVariable(0,"Saving Pos","")
-    util.outputVariable(0,"1-originalPos.x",originalPos.x)
-    util.outputVariable(0,"1-originalPos.y",originalPos.y)
-    util.outputVariable(0,"1-originalPos.z",originalPos.z)
-    
-    move.moveToHomePosition(false)
-    util.outputVariable(0,"2-originalPos.x",originalPos.x)
-    util.outputVariable(0,"2-originalPos.y",originalPos.y)
-    util.outputVariable(0,"2-originalPos.z",originalPos.z)
-    
-    -- Face the chest
-    move.turnToHeading(2)
+    local originalPos = location.getCurrentPosCopy()
+    logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
+
+    -- Move to the drop storage
+    move.moveToPos(location.getDropOffPos())
+    modem.sendStatus("Empty")
 
     -- Test if there is a chest.
     local success, data = turtle.inspect()
     if success and string.match(data.name,"chest") then
-        util.outputVariable(0,"Found a chest")
+        logFile.logWrite("Found a chest")
     else
-        util.outputVariable(0,"Did not find a chest")
-        util.outputVariable(1,"Ups I seem to be at the wrong position, there is not chest here, stopping all work!")
-        util.outputVariable(2,"Error : Chest not found")
-        logFile.logFileClose()
+        move.moveToPos(originalPos)
+        modem.sendStatus("ERROR!")
+        local errorMessage = "Drop off chest not found"
+        print(errorMessage)
+        logFile.logWrite(errorMessage)
+        location.writeLocationToFile()
         error()
     end
-    util.outputVariable(0,"3-originalPos.x",originalPos.x)
-    util.outputVariable(0,"3-originalPos.y",originalPos.y)
-    util.outputVariable(0,"3-originalPos.z",originalPos.z)
 
-    -- Drop all items from slot 2-16
+    -- Drop all items from slot 1-16
     for i=1,16 do
         turtle.select(i)
         turtle.drop()
     end
 
-    -- Face the original direction
-    move.turnToHeading(0)
-
-    if(refuel==true)then
-        inventory.pickUpFuel()
-    end
-
-    util.outputVariable(1,"Dropped of all items, now returning to work.")
-    util.outputVariable(0,"Going back to Pos","")
-    util.outputVariable(0,"originalPos.x",originalPos.x)
-    util.outputVariable(0,"originalPos.y",originalPos.y)
-    util.outputVariable(0,"originalPos.z",originalPos.z)
-    move.moveToPosition(originalPos.x,originalPos.y,originalPos.z,false)
-    util.outputVariable(1,"Resuming work.")
+    logFile.logWrite("Dropped of all items, now returning to work.")
+    modem.sendStatus("Work")
+    logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
+    move.moveToPos(originalPos)
+    logFile.logWrite("Ended refuel.")
 end
 
 -- Fuel functions

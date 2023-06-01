@@ -21,7 +21,16 @@ function modem.sendStatus(status)
         status = "EMPTY"
     end
 
-    rednet.broadcast("TurtleStatus;"..label..";"..currentPos.x..";"..currentPos.z..";"..currentPos.y..";"..currentPos.f .. ";"..fuelLevel..";"..status)
+    local statusMessage = "TurtleStatus;"..label..";"..currentPos.x..";"..currentPos.z..";"..currentPos.y..";"..currentPos.f .. ";"..fuelLevel..";"..status
+
+    rednet.broadcast(statusMessage,"S")
+end
+
+function modem.askQuestionBlockAction(blockName)
+    rednet.broadcast(blockName,"QB")
+
+    id,message, protocol = rednet.receive() --wait until a message is received
+    return message    
 end
 
 return modem

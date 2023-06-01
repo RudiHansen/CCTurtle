@@ -20,10 +20,6 @@ local blocksTurtleCanMine       = {}
 local blocksTurtleCantMine      = {}
 
 function blocks.inspectDig(direction,dig)
-    --util.outputVariable(0,"In inspectDig","")
-    --util.outputVariable(0,"direction",direction)
-    --util.outputVariable(0,"dig",dig)
-
     local result
     local inspectData
     local blockAction
@@ -35,15 +31,16 @@ function blocks.inspectDig(direction,dig)
     elseif(direction=="down")then
         result, inspectData = turtle.inspectDown()
     else
-        util.outputVariable(2,"Error in move.inspectDig, on turtle.inspect")
-        util.outputVariable(2,"Called with wrong direction=",direction)
+        logFile.logWrite("Error in blocks.inspectDig")
         error()
     end
-    --util.outputVariable(0,"result",result)
-
+    logFile.logWrite("result " .. tostring(result))
+    logFile.logWrite("inspectData " .. util.any2String(inspectData))
+    
     if(result==false) then
         return true
     elseif (dig==true) then
+        logFile.logWrite("Calling inspectedBlokMatchCanDig "..inspectData.name)
         blockAction = blocks.inspectedBlokMatchCanDig(inspectData.name)
         if(blockAction=="mine") then
             if(direction=="forward")then
@@ -71,8 +68,11 @@ function blocks.inspectDig(direction,dig)
                 end
                 result = true
             else
-                util.outputVariable(2,"Error in move.inspectDig, on turtle.inspect")
-                util.outputVariable(2,"Called with wrong direction=",direction)
+                logFile.logWrite("Problem in blocks.inspectDig")
+                logFile.logWrite("direction " .. tostring(direction))
+                logFile.logWrite("inspectData.Name " .. tostring(inspectData.Name))
+                modem.sendStatus("ERROR!")
+                location.writeLocationToFile()
                 error()
             end
             return result
@@ -84,8 +84,6 @@ function blocks.inspectDig(direction,dig)
         return true
     elseif (dig==false) then
         blockAction = blocks.inspectedBlokMatchCanDig(inspectData.name)
-
-        blockAction = blocks.inspectedBlokMatchCanDig(inspectData.name)
         if(blockAction=="mine") then
             return false
         elseif(blockAction=="ignore") then
@@ -95,12 +93,15 @@ function blocks.inspectDig(direction,dig)
         end
 
     end
-    util.outputVariable(2,"Error in move.inspectDig, we should newer be here in the code.")
+    logFile.logWrite("Problem in blocks.inspectDig")
+    logFile.logWrite("Should newer be here in the code")
+    modem.sendStatus("ERROR!")
+    location.writeLocationToFile()
     error()
 end
 
 function blocks.inspectedBlokMatchCanDig(blockName)
-
+    logFile.logWrite("In inspectedBlokMatchCanDig blockName=" .. blockName)
     for i, value in ipairs(blocksTurtleCanMine) do
         if blockName == value then
             return "mine"
@@ -117,53 +118,28 @@ function blocks.inspectedBlokMatchCanDig(blockName)
         end
     end
 
-    status.setJobStatus("Waiting for user")
-    status.updateStatus()
-    status.writeStatusFile()
-
-    print("I found this block ("..blockName..") what should i do?")
-    print("m=mine i=ignore p=pass a=abort")
-    local event, key, is_held = os.pullEvent("key")
-    util.outputVariable(0,"KeyPressed was ",keys.getName(key))
-    if(keys.getName(key)=="m")then
-        util.outputVariable(0,"Adding to canmine list")
+    logFile.logWrite("Call  askQuestionBlockAction blockName=" .. blockName)
+    modem.sendStatus("?")
+    local blockAction = modem.askQuestionBlockAction(blockName)
+    modem.sendStatus("Work")
+    if(blockAction=="mine")then
         table.insert(blocksTurtleCanMine,blockName)
         blocks.saveData()
-        status.setJobStatus("Working")
-        status.updateStatus()
-        status.writeStatusFile()
-            return "mine"
-    elseif(keys.getName(key)=="i")then
-        util.outputVariable(0,"Adding to ignore list")
+        return "mine"
+    elseif(blockAction=="ignore")then
         table.insert(blocksTurtleCanIgnore,blockName)
         blocks.saveData()
-        status.setJobStatus("Working")
-        status.updateStatus()
-        status.writeStatusFile()
-            return "ignore"
-    elseif(keys.getName(key)=="p")then
-        util.outputVariable(0,"Adding to cantmine list")
+        return "ignore"
+    elseif(blockAction=="pass")then
         table.insert(blocksTurtleCantMine,blockName)
         blocks.saveData()
-        status.setJobStatus("Working")
-        status.updateStatus()
-        status.writeStatusFile()
-            return "pass"
-    elseif(keys.getName(key)=="a")then
-        move.moveToHomePosition(false)
-        inventory.emptyStorageSlots()
-        move.turnToHeading(0)
-        status.setJobStatus("Error..")
-        status.updateStatus()
-        status.writeStatusFile()
-            error()
+        return "pass"
+    else
+        logFile.logWrite("Problem in blocks.inspectedBlokMatchCanDig")
+        modem.sendStatus("ERROR!")
+        location.writeLocationToFile()
+        error()
     end
-
-    status.setJobStatus("Working")
-    status.updateStatus()
-    status.writeStatusFile()
-
-    return "pass"
 end
 
 function blocks.saveData()

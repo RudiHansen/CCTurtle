@@ -48,6 +48,7 @@ function inventory.pickUpFuel()
     move.moveToPos(location.getRefuelPos())
     modem.sendStatus("Refuel")
 
+    inventory.selectFirstEmptyStorageSlot()
     while( result == true and turtle.getFuelLevel() < maxFuelLevel) do
         result = turtle.suck(refuelItems)
         logFile.logWrite("Suck =" .. tostring(result))
@@ -58,6 +59,15 @@ function inventory.pickUpFuel()
         logFile.logWrite("Fuel level = " .. turtle.getFuelLevel())
     end
 
+    if(result == false) then
+        move.moveToPos(originalPos)
+        modem.sendStatus("ERROR!")
+        local errorMessage = "Error refueling please fix!"
+        print(errorMessage)
+        logFile.logWrite(errorMessage)
+        location.writeLocationToFile()
+        error()
+    end
 
     logFile.logWrite("Picked up fuel, now returning to work.")
     modem.sendStatus("Work")

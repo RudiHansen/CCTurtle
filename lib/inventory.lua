@@ -37,12 +37,12 @@ end
 function inventory.pickUpFuel()
     local result = true
     modem.sendStatus("Refuel")
-    logFile.logWrite("Start refuel.")
-    logFile.logWrite("Fuel level = " .. turtle.getFuelLevel())
+    --logFile.logWrite("Start refuel.")
+    --logFile.logWrite("Fuel level = " .. turtle.getFuelLevel())
 
     -- Save current position
     local originalPos = location.getCurrentPosCopy()
-    logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
+    --logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
 
     -- Move to the fuel storage
     move.moveToPos(location.getRefuelPos())
@@ -51,12 +51,12 @@ function inventory.pickUpFuel()
     inventory.selectFirstEmptyStorageSlot()
     while( result == true and turtle.getFuelLevel() < maxFuelLevel) do
         result = turtle.suck(refuelItems)
-        logFile.logWrite("Suck =" .. tostring(result))
+        --logFile.logWrite("Suck =" .. tostring(result))
         if(result == true) then
             result = turtle.refuel(refuelItems)
-            logFile.logWrite("Refuel =" .. tostring(result))
+            --logFile.logWrite("Refuel =" .. tostring(result))
         end
-        logFile.logWrite("Fuel level = " .. turtle.getFuelLevel())
+        --logFile.logWrite("Fuel level = " .. turtle.getFuelLevel())
     end
 
     if(result == false) then
@@ -64,25 +64,25 @@ function inventory.pickUpFuel()
         modem.sendStatus("ERROR!")
         local errorMessage = "Error refueling please fix!"
         print(errorMessage)
-        logFile.logWrite(errorMessage)
+        --logFile.logWrite(errorMessage)
         location.writeLocationToFile()
         error()
     end
 
-    logFile.logWrite("Picked up fuel, now returning to work.")
+    --logFile.logWrite("Picked up fuel, now returning to work.")
     modem.sendStatus("Work")
-    logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
+    --logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
     move.moveToPos(originalPos)
-    logFile.logWrite("Ended refuel.")
+    --logFile.logWrite("Ended refuel.")
 end
 
 function inventory.emptyStorageSlots()
     modem.sendStatus("Empty")
-    logFile.logWrite("Drop off items")
+    --logFile.logWrite("Drop off items")
 
     -- Save current position
     local originalPos = location.getCurrentPosCopy()
-    logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
+    --logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
 
     -- Move to the drop storage
     move.moveToPos(location.getDropOffPos())
@@ -91,13 +91,13 @@ function inventory.emptyStorageSlots()
     -- Test if there is a chest.
     local success, data = turtle.inspect()
     if success and string.match(data.name,"chest") then
-        logFile.logWrite("Found a chest")
+        --logFile.logWrite("Found a chest")
     else
         move.moveToPos(originalPos)
         modem.sendStatus("ERROR!")
         local errorMessage = "Drop off chest not found"
         print(errorMessage)
-        logFile.logWrite(errorMessage)
+        --logFile.logWrite(errorMessage)
         location.writeLocationToFile()
         error()
     end
@@ -108,11 +108,11 @@ function inventory.emptyStorageSlots()
         turtle.drop()
     end
 
-    logFile.logWrite("Dropped of all items, now returning to work.")
+    --logFile.logWrite("Dropped of all items, now returning to work.")
     modem.sendStatus("Work")
-    logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
+    --logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
     move.moveToPos(originalPos)
-    logFile.logWrite("Ended refuel.")
+    --logFile.logWrite("Ended refuel.")
 end
 
 function inventory.checkFuelLevelAndRefuel()

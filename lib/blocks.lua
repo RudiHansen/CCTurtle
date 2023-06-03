@@ -23,6 +23,8 @@ local blocksTurtleCantMine      = {}
 -- Return values ("OK"-Path free turtle can move, "BYPASS"-Something is blocking turtle cant move that direction
 -- "ERROR"-This should not happen)
 function blocks.inspectDig(direction,dig)
+    --logFile.logWrite("in blocks.inspectDig",direction,dig)
+
     local result
     local inspectData
     local blockAction
@@ -35,16 +37,17 @@ function blocks.inspectDig(direction,dig)
     elseif(direction=="D")then
         result, inspectData = turtle.inspectDown()
     else
-        logFile.logWrite("Error in blocks.inspectDig")
+        --logFile.logWrite("Error in blocks.inspectDig")
         error()
     end
-    logFile.logWrite("result " .. tostring(result))
-    logFile.logWrite("inspectData.name " .. util.any2String(inspectData.name))
+    --logFile.logWrite("result " .. tostring(result))
+    --logFile.logWrite("inspectData.name " .. util.any2String(inspectData.name))
     
     if(result==false) then -- There is no block in front of the turtle
+        --logFile.logWrite("*Return OK")
         return "OK"
     elseif (dig==true) then
-        logFile.logWrite("Calling inspectedBlokMatchCanDig "..inspectData.name)
+        --logFile.logWrite("Calling inspectedBlokMatchCanDig "..inspectData.name)
         blockAction = blocks.inspectedBlokMatchCanDig(inspectData.name)
         if(blockAction=="mine") then
             if(direction=="W" or direction=="E" or direction=="N" or direction =="S")then
@@ -72,47 +75,53 @@ function blocks.inspectDig(direction,dig)
                 end
                 result = true
             else
-                logFile.logWrite("Problem in blocks.inspectDig")
-                logFile.logWrite("direction " .. tostring(direction))
-                logFile.logWrite("inspectData.Name " .. tostring(inspectData.Name))
+                --logFile.logWrite("Problem in blocks.inspectDig")
+                --logFile.logWrite("direction " .. tostring(direction))
+                --logFile.logWrite("inspectData.Name " .. tostring(inspectData.Name))
                 modem.sendStatus("ERROR!")
                 location.writeLocationToFile()
                 error()
             end
             if(result==true) then
+                --logFile.logWrite("*2Return OK")
                 return "OK"
             else
-                logFile.logWrite("Problem in blocks.inspectDig with result from dig")
+                --logFile.logWrite("Problem in blocks.inspectDig with result from dig")
                 modem.sendStatus("ERROR!")
                 location.writeLocationToFile()
                 error()
             end
         elseif(blockAction=="ignore") then
+            --logFile.logWrite("*3Return OK")
             return "OK"
         elseif(blockAction=="pass") then
+            --logFile.logWrite("*Return BYPASS")
             return "BYPASS"
         end
         return true
     elseif (dig==false) then
         blockAction = blocks.inspectedBlokMatchCanDig(inspectData.name)
         if(blockAction=="mine") then
+            --logFile.logWrite("*4Return BYPASS")
             return "BYPASS"
         elseif(blockAction=="ignore") then
+            --logFile.logWrite("*4Return OK")
             return "OK"
         elseif(blockAction=="pass") then
+            --logFile.logWrite("*5Return BYPASS")
             return "BYPASS"
         end
 
     end
-    logFile.logWrite("Problem in blocks.inspectDig")
-    logFile.logWrite("Should newer be here in the code")
+    --logFile.logWrite("Problem in blocks.inspectDig")
+    --logFile.logWrite("Should newer be here in the code")
     modem.sendStatus("ERROR!")
     location.writeLocationToFile()
     error()
 end
 
 function blocks.inspectedBlokMatchCanDig(blockName)
-    logFile.logWrite("In inspectedBlokMatchCanDig blockName=" .. blockName)
+    --logFile.logWrite("In inspectedBlokMatchCanDig blockName=" .. blockName)
     for i, value in ipairs(blocksTurtleCanMine) do
         if blockName == value then
             return "mine"
@@ -129,7 +138,7 @@ function blocks.inspectedBlokMatchCanDig(blockName)
         end
     end
 
-    logFile.logWrite("Call  askQuestionBlockAction blockName=" .. blockName)
+    --logFile.logWrite("Call  askQuestionBlockAction blockName=" .. blockName)
     modem.sendStatus("?")
     local blockAction = modem.askQuestionBlockAction(blockName)
     modem.sendStatus("Work")
@@ -146,7 +155,7 @@ function blocks.inspectedBlokMatchCanDig(blockName)
         blocks.saveData()
         return "pass"
     else
-        logFile.logWrite("Problem in blocks.inspectedBlokMatchCanDig")
+        --logFile.logWrite("Problem in blocks.inspectedBlokMatchCanDig")
         modem.sendStatus("ERROR!")
         location.writeLocationToFile()
         error()

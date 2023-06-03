@@ -9,9 +9,13 @@
 local move = {}
 
 -- Traverse the area to a Position using axisPriority.
-function move.traverseToPos(endPos,axisPriority)
+function move.traverseToPos(endPos,axisPriority,dig)
+    logFile.logWrite("in move.traverseToPos",endPos, axisPriority, dig)
     if(axisPriority == nil or axisPriority == "") then
         axisPriority = "xzy"
+    end
+    if(dig == nil or dig == "") then
+        dig = false
     end
 
     local startPos      = location.getCurrentPos()
@@ -20,8 +24,18 @@ function move.traverseToPos(endPos,axisPriority)
     local moveErrors    = 0
 
     while(location.comparePos(startPos, endPos) == false)do
-        nextStep = move.getNextStep(startPos, endPos, axisPriority)
-        result = move.move(moveToDo)
+        nextStep    = move.getNextStep(startPos, endPos, axisPriority)
+        logFile.logWrite("startPos =",startPos)
+        logFile.logWrite("endPos   =",endPos)
+        logFile.logWrite("nextStep =",nextStep)
+        result      = blocks.inspectDig(nextStep,true)
+        logFile.logWrite("inspectDig ",result)
+        if(result == "OK") then
+            result      = move.move(nextStep)
+            logFile.logWrite("move ",result)
+        else
+            result = false
+        end
         if(result == false) then
             axisPriorityIdx = util.incNumberMax(axisPriorityIdx,4)
             moveErrors = moveErrors + 1
@@ -35,20 +49,30 @@ function move.traverseToPos(endPos,axisPriority)
         end
         startPos = location.getCurrentPos()    
     end
+
+    if(startPos.f ~= endPos.f) then
+        move.turnToFace(endPos.f)
+    end
 end
 
 -- Get the next step to get from startPos to endPos using axisPriority
--- TODO : Perhaps add check for it move is possible. (blocks.inspectDig("forward",true))
--- TODO : Parameter for if turtle should dig out blocks
 -- TODO : Add parameter for how to move, direct path or traverse
 function move.getNextStep(startPos, endPos, axisPriority)
+    --logFile.logWrite("in move.getNextStep")
+    --logFile.logWrite("startPos",startPos)
+    --logFile.logWrite("endPos",endPos)
+    --logFile.logWrite("axisPriority",axisPriority)
+
     local nextStep              = ""
     local axisPriorityIdx       = 0
     local currentAxisPriority   = ""
 
-    while(nextStep ~= "")do
+    while(nextStep == "")do
         axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
         currentAxisPriority     = string.sub(axisPriority,axisPriorityIdx,axisPriorityIdx)
+        --logFile.logWrite("1-axisPriorityIdx",axisPriorityIdx)
+        --logFile.logWrite("1-currentAxisPriority",currentAxisPriority)
+        --logFile.logWrite("1-nextStep",nextStep)
         if( currentAxisPriority == "x" ) then
             if(startPos.x > endPos.x) then
                 nextStep = "W"
@@ -68,8 +92,9 @@ function move.getNextStep(startPos, endPos, axisPriority)
                 nextStep = "U"
             end
         end
-        -- TODO : Perhaps add check for it move is possible.
+        --logFile.logWrite("2-nextStep",nextStep)
     end
+    --logFile.logWrite("return",nextStep)
     return nextStep
 end
 
@@ -140,6 +165,7 @@ function move.moveToPos(endPos,axisPriority)
 end
 
 function move.move(direction)
+    --logFile.logWrite("in move.move",direction)
     local result = true;
 
     if(direction=="E")then

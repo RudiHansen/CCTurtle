@@ -40,6 +40,13 @@ function location.writeLocationToFile()
     end
 end
 
+function location.setCurrentPos(x,z,y,f)
+    currentPos.x = x
+    currentPos.z = z
+    currentPos.y = y
+    currentPos.f = f
+end
+
 function location.setHomePos(x,z,y,f)
     homePos.x = x
     homePos.z = z
@@ -93,7 +100,7 @@ function location.getDropOffPos()
 end
 
 function location.comparePos(pos1, pos2)
-    if(pos1.x == pos2.x and pos1.z == pos2.z and pos1.y == pos2.y and pos1.f == pos2.f)then
+    if(pos1.x == pos2.x and pos1.z == pos2.z and pos1.y == pos2.y)then
         return true 
     else
         return false

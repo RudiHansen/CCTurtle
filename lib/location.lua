@@ -92,6 +92,14 @@ function location.getDropOffPos()
     return dropOffPos
 end
 
+function location.comparePos(pos1, pos2)
+    if(pos1.x == pos2.x and pos1.z == pos2.z and pos1.y == pos2.y and pos1.f == pos2.f)then
+        return true 
+    else
+        return false
+    end
+end
+
 function location.setCurrentPosFace(face)
     currentPos.f = face
 end

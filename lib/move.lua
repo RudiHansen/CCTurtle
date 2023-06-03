@@ -8,7 +8,74 @@
 
 local move = {}
 
+-- Traverse the area to a Position using axisPriority.
+function move.traverseToPos(endPos,axisPriority)
+    if(axisPriority == nil or axisPriority == "") then
+        axisPriority = "xzy"
+    end
+
+    local startPos      = location.getCurrentPos()
+    local nextStep      = ""
+    local result        = true
+    local moveErrors    = 0
+
+    while(location.comparePos(startPos, endPos) == false)do
+        nextStep = move.getNextStep(startPos, endPos, axisPriority)
+        result = move.move(moveToDo)
+        if(result == false) then
+            axisPriorityIdx = util.incNumberMax(axisPriorityIdx,4)
+            moveErrors = moveErrors + 1
+            if (moveErrors > 3) then
+                modem.sendStatus("Blocked")
+                print("Can't move, please remove the obstacles!")
+                util.waitForUserKey()
+                moveErrors = 0
+                modem.sendStatus("Move")
+            end
+        end
+        startPos = location.getCurrentPos()    
+    end
+end
+
+-- Get the next step to get from startPos to endPos using axisPriority
+-- TODO : Perhaps add check for it move is possible. (blocks.inspectDig("forward",true))
+-- TODO : Parameter for if turtle should dig out blocks
+-- TODO : Add parameter for how to move, direct path or traverse
+function move.getNextStep(startPos, endPos, axisPriority)
+    local nextStep              = ""
+    local axisPriorityIdx       = 0
+    local currentAxisPriority   = ""
+
+    while(nextStep ~= "")do
+        axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
+        currentAxisPriority     = string.sub(axisPriority,axisPriorityIdx,axisPriorityIdx)
+        if( currentAxisPriority == "x" ) then
+            if(startPos.x > endPos.x) then
+                nextStep = "W"
+            elseif(startPos.x < endPos.x) then
+                nextStep = "E"
+            end
+        elseif( currentAxisPriority == "z" ) then
+            if(startPos.z > endPos.z) then
+                nextStep = "N"
+            elseif(startPos.z < endPos.z) then
+                nextStep = "S"
+            end
+        elseif( currentAxisPriority == "y" ) then
+            if(startPos.y > endPos.y) then
+                nextStep = "D"
+            elseif(startPos.y < endPos.y) then
+                nextStep = "U"
+            end
+        end
+        -- TODO : Perhaps add check for it move is possible.
+    end
+    return nextStep
+end
+
 -- Move to endPos based on axisPriority 
+-- TODO: Refactor look at move.traverseToPos, this method should use same method, and might even be more or less the same
+-- TODO: and perhaps the two methods needs to be one method.
 function move.moveToPos(endPos,axisPriority)
     if(axisPriority == nil or axisPriority == "") then
         axisPriority = "xzy"
@@ -133,6 +200,7 @@ function move.turnToFace(newFace)
         end
     end
     location.setCurrentPosFace(newFace)
+    location.writeLocationToFile()
 end
 
 function move.face2Int(face)

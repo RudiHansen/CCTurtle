@@ -18,8 +18,17 @@ blocks.loadData()
 --turnToFace("N")
 --sleep(2)
 --turnToFace("E")
+sleep(1)
+result = blocks.inspectDig("U",true)
+print(result)
 
-blocks.inspectDig("forward",true)
+sleep(1)
+result = blocks.inspectDig("S",true)
+print(result)
+
+sleep(1)
+result = blocks.inspectDig("E",true)
+print(result)
 
 --inventory.emptyStorageSlots()
 --inventory.pickUpFuel()

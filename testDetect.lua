@@ -1,11 +1,11 @@
---print(turtle.detect())
+print(turtle.detect())
 --print(turtle.detectUp())
 --print(turtle.detectDown())
 
---print(turtle.inspect())
+print(turtle.inspect())
 --print(turtle.inspectUp())
 --print(turtle.inspectDown())
-
+error()
 startTime = os.clock()
 
 for i = 1, 100, 1 do
@@ -20,4 +20,3 @@ for i = 1, 100, 1 do
 end
 
 print(os.clock()-startTime)
-

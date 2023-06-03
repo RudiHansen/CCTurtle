@@ -19,31 +19,35 @@ local blocksTurtleCanIgnore     = {}
 local blocksTurtleCanMine       = {}
 local blocksTurtleCantMine      = {}
 
+-- Inspect if it possible to move in direction (W/E/N/S/D/U), if dig then try to dig block.
+-- Return values ("OK"-Path free turtle can move, "BYPASS"-Something is blocking turtle cant move that direction
+-- "ERROR"-This should not happen)
 function blocks.inspectDig(direction,dig)
     local result
     local inspectData
     local blockAction
 
-    if(direction=="forward")then
+    if(direction=="W" or direction=="E" or direction=="N" or direction =="S")then
+        move.turnToFace(direction)
         result, inspectData = turtle.inspect()
-    elseif(direction=="up")then
+    elseif(direction=="U")then
         result, inspectData = turtle.inspectUp()
-    elseif(direction=="down")then
+    elseif(direction=="D")then
         result, inspectData = turtle.inspectDown()
     else
         logFile.logWrite("Error in blocks.inspectDig")
         error()
     end
     logFile.logWrite("result " .. tostring(result))
-    logFile.logWrite("inspectData " .. util.any2String(inspectData))
+    logFile.logWrite("inspectData.name " .. util.any2String(inspectData.name))
     
-    if(result==false) then
-        return true
+    if(result==false) then -- There is no block in front of the turtle
+        return "OK"
     elseif (dig==true) then
         logFile.logWrite("Calling inspectedBlokMatchCanDig "..inspectData.name)
         blockAction = blocks.inspectedBlokMatchCanDig(inspectData.name)
         if(blockAction=="mine") then
-            if(direction=="forward")then
+            if(direction=="W" or direction=="E" or direction=="N" or direction =="S")then
                 result = turtle.dig()
                 result = turtle.detect()
                 while(result) do
@@ -51,7 +55,7 @@ function blocks.inspectDig(direction,dig)
                     result = turtle.detect()
                 end
                 result = true
-            elseif(direction=="up")then
+            elseif(direction=="U")then
                 result = turtle.digUp()
                 result = turtle.detectUp()
                 while(result) do
@@ -59,7 +63,7 @@ function blocks.inspectDig(direction,dig)
                     result = turtle.detectUp()
                 end
                 result = true
-            elseif(direction=="down")then
+            elseif(direction=="D")then
                 result = turtle.digDown()
                 result = turtle.detectDown()
                 while(result) do
@@ -75,21 +79,28 @@ function blocks.inspectDig(direction,dig)
                 location.writeLocationToFile()
                 error()
             end
-            return result
+            if(result==true) then
+                return "OK"
+            else
+                logFile.logWrite("Problem in blocks.inspectDig with result from dig")
+                modem.sendStatus("ERROR!")
+                location.writeLocationToFile()
+                error()
+            end
         elseif(blockAction=="ignore") then
-            return true
+            return "OK"
         elseif(blockAction=="pass") then
-            return false
+            return "BYPASS"
         end
         return true
     elseif (dig==false) then
         blockAction = blocks.inspectedBlokMatchCanDig(inspectData.name)
         if(blockAction=="mine") then
-            return false
+            return "BYPASS"
         elseif(blockAction=="ignore") then
-            return true
+            return "OK"
         elseif(blockAction=="pass") then
-            return false
+            return "BYPASS"
         end
 
     end

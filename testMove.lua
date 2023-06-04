@@ -18,22 +18,22 @@ location.setCurrentPos(23,10,63,"E")
 location.writeLocationToFile()
 
 --inventory.emptyStorageSlots()
---inventory.pickUpFuel()
+inventory.pickUpFuel()
 --inventory.checkFuelLevelAndRefuel()
 
 local result     = ""
 local endPos     = {x=28,z=14,y=63,f="E"}
 
-result = move.moveToPos(endPos)
+result = move.moveToPos(endPos,"",false)
 print("moveToPos "..tostring(result))
 sleep(1)
 
 endPos = {x=30,z=18,y=63,f="E"}
-result = move.traverseToPos(endPos)
-print("traverseToPos "..tostring(result))
+result = move.moveToPos(endPos,"",true)
+print("moveToPos "..tostring(result))
 sleep(1)
 
-result = move.moveToPos(location.getHomePos(),"zxy")
+result = move.moveToPos(location.getHomePos(),"zxy",false)
 print("moveToPos "..tostring(result))
 sleep(1)
 

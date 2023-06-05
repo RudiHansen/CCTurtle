@@ -18,11 +18,12 @@ function move.moveToPos(endPos,axisPriority,dig)
         dig = false
     end
 
-    local startPos          = location.getCurrentPos()
-    local nextStep          = ""
-    local result            = true
-    local moveErrors        = 0
-    local axisPriorityIdx   = 1
+    local startPos              = location.getCurrentPos()
+    local nextStep              = ""
+    local result                = true
+    local moveErrors            = 0
+    local currentAxisPriority   = ""
+    local axisPriorityIdx       = 1
 
     while(location.comparePos(startPos, endPos) == false)do
         currentAxisPriority     = string.sub(axisPriority,axisPriorityIdx,axisPriorityIdx)
@@ -62,18 +63,17 @@ function move.moveToPos(endPos,axisPriority,dig)
 end
 
 -- Get the next step to get from startPos to endPos using axis
--- TODO : Add parameter for how to move, direct path or traverse
 function move.getNextStep(startPos, endPos, axis)
-    logFile.logWrite("in move.getNextStep")
-    logFile.logWrite("startPos",startPos)
-    logFile.logWrite("endPos",endPos)
-    logFile.logWrite("axis",axis)
+    --logFile.logWrite("in move.getNextStep")
+    --logFile.logWrite("startPos",startPos)
+    --logFile.logWrite("endPos",endPos)
+    --logFile.logWrite("axis",axis)
 
     local nextStep              = ""
 
-    logFile.logWrite("1-axisPriorityIdx",axisPriorityIdx)
-    logFile.logWrite("1-currentAxisPriority",currentAxisPriority)
-    logFile.logWrite("1-nextStep",nextStep)
+    --logFile.logWrite("1-axisPriorityIdx",axisPriorityIdx)
+    --logFile.logWrite("1-currentAxisPriority",currentAxisPriority)
+    --logFile.logWrite("1-nextStep",nextStep)
     if( axis == "x" ) then
         if(startPos.x > endPos.x) then
             nextStep = "W"
@@ -93,7 +93,7 @@ function move.getNextStep(startPos, endPos, axis)
             nextStep = "U"
         end
     end
-    logFile.logWrite("1-return",nextStep)
+    --logFile.logWrite("1-return",nextStep)
     return nextStep
 end
 

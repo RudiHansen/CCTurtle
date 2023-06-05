@@ -1,3 +1,5 @@
+util      = require("lib.util")
+
 -- Create an empty grid table
 local grid = {}
 
@@ -29,3 +31,5 @@ local value = getGridValue(2, 3, 4)
 print(value) -- Output: 42
 print(getGridValue(2,3,7))
 print(getGridValue(2,3,8))
+
+print(util.any2String(grid))

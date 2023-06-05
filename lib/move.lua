@@ -25,20 +25,25 @@ function move.moveToPos(endPos,axisPriority,dig)
     local axisPriorityIdx   = 1
 
     while(location.comparePos(startPos, endPos) == false)do
-        nextStep    = move.getNextStep(startPos, endPos, axisPriority)
+        currentAxisPriority     = string.sub(axisPriority,axisPriorityIdx,axisPriorityIdx)
+
+        nextStep    = move.getNextStep(startPos, endPos, currentAxisPriority)
         logFile.logWrite("startPos =",startPos)
         logFile.logWrite("endPos   =",endPos)
         logFile.logWrite("nextStep =",nextStep)
-        result      = blocks.inspectDig(nextStep,true)
-        logFile.logWrite("inspectDig ",result)
-        if(result == "OK") then
-            result      = move.move(nextStep)
-            logFile.logWrite("move ",result)
+
+        if(nextStep~="") then
+            result      = blocks.inspectDig(nextStep,true)
+            logFile.logWrite("inspectDig ",result)
+            if(result == "OK") then
+                result      = move.move(nextStep)
+                logFile.logWrite("move ",result)
+            else
+                result = false
+                axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
+            end
         else
-            result = false
-        end
-        if(result == false) then
-            axisPriorityIdx = util.incNumberMax(axisPriorityIdx,4)
+            axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
             moveErrors = moveErrors + 1
             if (moveErrors > 3) then
                 modem.sendStatus("Blocked")
@@ -56,46 +61,39 @@ function move.moveToPos(endPos,axisPriority,dig)
     end
 end
 
--- Get the next step to get from startPos to endPos using axisPriority
+-- Get the next step to get from startPos to endPos using axis
 -- TODO : Add parameter for how to move, direct path or traverse
-function move.getNextStep(startPos, endPos, axisPriority)
-    --logFile.logWrite("in move.getNextStep")
-    --logFile.logWrite("startPos",startPos)
-    --logFile.logWrite("endPos",endPos)
-    --logFile.logWrite("axisPriority",axisPriority)
+function move.getNextStep(startPos, endPos, axis)
+    logFile.logWrite("in move.getNextStep")
+    logFile.logWrite("startPos",startPos)
+    logFile.logWrite("endPos",endPos)
+    logFile.logWrite("axis",axis)
 
     local nextStep              = ""
-    local axisPriorityIdx       = 0
-    local currentAxisPriority   = ""
 
-    while(nextStep == "")do
-        axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
-        currentAxisPriority     = string.sub(axisPriority,axisPriorityIdx,axisPriorityIdx)
-        --logFile.logWrite("1-axisPriorityIdx",axisPriorityIdx)
-        --logFile.logWrite("1-currentAxisPriority",currentAxisPriority)
-        --logFile.logWrite("1-nextStep",nextStep)
-        if( currentAxisPriority == "x" ) then
-            if(startPos.x > endPos.x) then
-                nextStep = "W"
-            elseif(startPos.x < endPos.x) then
-                nextStep = "E"
-            end
-        elseif( currentAxisPriority == "z" ) then
-            if(startPos.z > endPos.z) then
-                nextStep = "N"
-            elseif(startPos.z < endPos.z) then
-                nextStep = "S"
-            end
-        elseif( currentAxisPriority == "y" ) then
-            if(startPos.y > endPos.y) then
-                nextStep = "D"
-            elseif(startPos.y < endPos.y) then
-                nextStep = "U"
-            end
+    logFile.logWrite("1-axisPriorityIdx",axisPriorityIdx)
+    logFile.logWrite("1-currentAxisPriority",currentAxisPriority)
+    logFile.logWrite("1-nextStep",nextStep)
+    if( axis == "x" ) then
+        if(startPos.x > endPos.x) then
+            nextStep = "W"
+        elseif(startPos.x < endPos.x) then
+            nextStep = "E"
         end
-        --logFile.logWrite("2-nextStep",nextStep)
+    elseif( axis == "z" ) then
+        if(startPos.z > endPos.z) then
+            nextStep = "N"
+        elseif(startPos.z < endPos.z) then
+            nextStep = "S"
+        end
+    elseif( axis == "y" ) then
+        if(startPos.y > endPos.y) then
+            nextStep = "D"
+        elseif(startPos.y < endPos.y) then
+            nextStep = "U"
+        end
     end
-    --logFile.logWrite("return",nextStep)
+    logFile.logWrite("1-return",nextStep)
     return nextStep
 end
 

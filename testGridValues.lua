@@ -1,35 +1,87 @@
 util      = require("lib.util")
+logFile   = require("lib.logFile")
 
--- Create an empty grid table
-local grid = {}
+-- Create an empty gridMap table
+local gridMap = {}
 
 -- Function to set the value at given coordinates (x, y, z)
-local function setGridValue(x, y, z, value)
-    if not grid[x] then
-        grid[x] = {}
+local function setGridMapValue(x, y, z, value)
+    --logFile.logWrite("setGridMapValue ",x,y,z,value)
+    if not gridMap[x] then
+        gridMap[x] = {}
     end
-    if not grid[x][y] then
-        grid[x][y] = {}
+    if not gridMap[x][y] then
+        gridMap[x][y] = {}
     end
-    grid[x][y][z] = value
+    gridMap[x][y][z] = value
 end
 
 -- Function to get the value at given coordinates (x, y, z)
-local function getGridValue(x, y, z)
-    if not grid[x] or not grid[x][y] then
+local function getGridMapValue(x, y, z)
+    if not gridMap[x] or not gridMap[x][y] then
         return nil
     end
-    return grid[x][y][z]
+    return gridMap[x][y][z]
 end
 
--- Set value at coordinates (2, 3, 4)
-setGridValue(2, 3, 4, "A")
-setGridValue(2, 3, 7, "B")
+local function initGridMap(startPos, endPos)
+    logFile.logWrite("initGridMap ",startPos,endPos)
 
--- Get value at coordinates (2, 3, 4)
-local value = getGridValue(2, 3, 4)
-print(value) -- Output: 42
-print(getGridValue(2,3,7))
-print(getGridValue(2,3,8))
+    local startTime = os.clock()
+    local values    = 0
+    local incX      = 0
+    local incZ      = 0
+    local incY      = 0
 
-print(util.any2String(grid))
+    if(startPos.x > endPos.x) then
+        incX = -1
+    else
+        incX = 1
+    end
+
+    if(startPos.z > endPos.z) then
+        incZ = -1
+    else
+        incZ = 1
+    end
+
+    if(startPos.y > endPos.y) then
+        incY = -1
+    else
+        incY = 1
+    end
+
+    logFile.logWrite("initGridMap ",incX,incZ,incY)
+
+    for ix = startPos.x, endPos.x,incX do
+        for iy = startPos.y, endPos.y,incY do
+            for iz = startPos.z, endPos.z,incZ do
+                setGridMapValue(ix,iz,iy,0)
+                values = values + 1
+            end
+        end
+    end
+    logFile.logWrite("initGridMap set",values," values")
+    logFile.logWrite("in ",os.clock()-startTime)
+end
+
+logFile.logFileOpen()
+
+
+local startPos     = {x=-30,z=10,y=63,f="E"}
+local endPos       = {x=32,z=12,y=66,f="E"}
+
+initGridMap(startPos,endPos)
+
+
+setGridMapValue(30, 10, 63, "A")
+
+logFile.logWrite("Val ",getGridMapValue(-30,10,63))
+logFile.logWrite("Val ",getGridMapValue(31,10,63))
+logFile.logWrite("Val ",getGridMapValue(32,10,63))
+logFile.logWrite("Val ",getGridMapValue(30,11,63))
+logFile.logWrite("Val ",getGridMapValue(31,11,63))
+logFile.logWrite("Val ",getGridMapValue(32,11,63))
+logFile.logWrite("Val ",getGridMapValue(30,12,63))
+logFile.logWrite("Val ",getGridMapValue(31,12,63))
+logFile.logWrite("Val ",getGridMapValue(32,12,63))

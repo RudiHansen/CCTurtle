@@ -5,6 +5,7 @@ move      = require("lib.move")
 util      = require("lib.util")
 logFile   = require("lib.logFile")
 blocks    = require("lib.blocks")
+gridMap   = require("lib.gridMap")
 
 logFile.logFileOpen()
 modem.init()
@@ -18,24 +19,24 @@ location.setCurrentPos(23,10,63,"E")
 location.writeLocationToFile()
 
 --inventory.emptyStorageSlots()
-inventory.pickUpFuel()
---inventory.checkFuelLevelAndRefuel()
+--inventory.pickUpFuel()
+inventory.checkFuelLevelAndRefuel()
 
 local result     = ""
-local endPos     = {x=28,z=14,y=63,f="E"}
+local startDig   = {x=71,z=35,y=66,f="E"}
+local areaStart  = {x=73,z=35,y=63,f="E"}
+local areaEnd    = {x=83,z=45,y=73,f="E"}
 
-result = move.moveToPos(endPos,"",false)
-print("moveToPos "..tostring(result))
-sleep(1)
+result = move.moveToPos(startDig)
 
-endPos = {x=30,z=18,y=63,f="E"}
-result = move.moveToPos(endPos,"",true)
-print("moveToPos "..tostring(result))
-sleep(1)
+--result = move.traverseArea(areaStart,areaEnd,"xzy",true)
+result = move.traverseArea(areaStart,areaEnd,"zyx",true)
+
+
 
 result = move.moveToPos(location.getHomePos(),"zxy",false)
-print("moveToPos "..tostring(result))
-sleep(1)
+--print("moveToPos "..tostring(result))
+--sleep(1)
 
 modem.sendStatus("Idle")
 location.writeLocationToFile()

@@ -34,7 +34,7 @@ function gridMap.getGridMapValue(x, z, y)
 end
 
 function gridMap.initGridMap(startPos, endPos)
-    logFile.logWrite("initGridMap ",startPos,endPos)
+    --logFile.logWrite("initGridMap ",startPos,endPos)
 
     local startTime = os.clock()
     local values    = 0
@@ -60,7 +60,7 @@ function gridMap.initGridMap(startPos, endPos)
         incY = 1
     end
 
-    logFile.logWrite("initGridMap ",incX,incZ,incY)
+    --logFile.logWrite("initGridMap ",incX,incZ,incY)
 
     for ix = startPos.x, endPos.x,incX do
         for iy = startPos.y, endPos.y,incY do
@@ -70,8 +70,26 @@ function gridMap.initGridMap(startPos, endPos)
             end
         end
     end
-    logFile.logWrite("initGridMap set",values," values")
-    logFile.logWrite("in ",os.clock()-startTime)
+    --logFile.logWrite("initGridMap set",values," values")
+    --logFile.logWrite("in ",os.clock()-startTime)
+end
+
+function gridMap.setGridMapDirection(direction,value)
+    local currentPos = location.getCurrentPosCopy()
+
+    if(direction=="W")then
+        gridMap.setGridMapValue(currentPos.x-1,currentPos.z,currentPos.y,value)
+    elseif(direction=="E")then
+        gridMap.setGridMapValue(currentPos.x+1,currentPos.z,currentPos.y,value)
+    elseif(direction=="N")then
+        gridMap.setGridMapValue(currentPos.x,currentPos.z-1,currentPos.y,value)
+    elseif(direction=="S")then
+        gridMap.setGridMapValue(currentPos.x,currentPos.z+1,currentPos.y,value)
+    elseif(direction=="U")then
+        gridMap.setGridMapValue(currentPos.x,currentPos.z,currentPos.y+1,value)
+    elseif(direction=="D")then
+        gridMap.setGridMapValue(currentPos.x,currentPos.z,currentPos.y-1,value)
+    end
 end
 
 return gridMap

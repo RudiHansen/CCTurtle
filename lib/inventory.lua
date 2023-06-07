@@ -11,9 +11,9 @@
 
 local inventory = {}
 
-local maxFuelLevel = 400
+local maxFuelLevel = 1000
 local minFuelLevel = 200
-local refuelItems  = 1
+local refuelItems  = 2
 
 function inventory.getRemainingEmptyStorageSlots()
     local remainingEmptySlots = 0

@@ -8,6 +8,114 @@
 
 local move = {}
 
+function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
+    -- Setup variables
+    if(axisPriority == nil or axisPriority == "") then
+        axisPriority = {"x","z","y"}
+    else
+        axisPriority = {string.sub(axisPriority,1,1),string.sub(axisPriority,2,2),string.sub(axisPriority,3,3)}
+    end
+
+    if(dig == nil or dig == "") then
+        dig = false
+    end
+    local startPos = {};
+
+    -- Write debug info
+    logFile.logWrite("in move.traverseArea")
+    logFile.logWrite("areaStart=",areaStart)
+    logFile.logWrite("areaEnd=",areaEnd)
+    logFile.logWrite("axisPriority=",axisPriority)
+    logFile.logWrite("dig=",dig)
+
+    -- Initialize the Grid map
+    gridMap.initGridMap(areaStart,areaEnd)
+
+    -- Get start position.
+    if(axisPriority[1] == "x") then
+        startPos.x = areaStart.x - 1
+        startPos.z = areaStart.z
+        startPos.y = areaStart.y
+        startPos.f = areaStart.f
+    elseif(axisPriority[1] == "z") then
+        startPos.x = areaStart.x
+        startPos.z = areaStart.z - 1
+        startPos.y = areaStart.y
+        startPos.f = areaStart.f
+    elseif(axisPriority[1] == "y") then
+        startPos.x = areaStart.x
+        startPos.z = areaStart.z
+        startPos.y = areaStart.y - 1
+        startPos.f = areaStart.f
+    end
+    logFile.logWrite("startPos",startPos)
+
+    -- Move turtle to a starting position.
+    move.moveToPos(startPos,"",true)
+
+    -- Calculated steps to traverse the area.
+    local nextMove      = ""
+    local priorityIdx   = 1
+    local currentPos    = location.getCurrentPosCopy()
+    local val1          = 9
+    local val2          = 9
+    local checkedX      = false
+    local checkedZ      = false
+    local checkedY      = false
+
+    while(checkedX==false or checkedZ==false or checkedY==false)do
+        if(axisPriority[priorityIdx] == "x") then
+            val1 = gridMap.getGridMapValue(currentPos.x+1, currentPos.z, currentPos.y)
+            val2 = gridMap.getGridMapValue(currentPos.x-1, currentPos.z, currentPos.y)
+            if(val1==0) then
+                nextMove = "E"
+            elseif(val2==0) then
+                nextMove = "W"
+            end
+            checkedX = true
+        elseif(axisPriority[priorityIdx] == "z") then
+            val1 = gridMap.getGridMapValue(currentPos.x, currentPos.z+1, currentPos.y)
+            val2 = gridMap.getGridMapValue(currentPos.x, currentPos.z-1, currentPos.y)
+            if(val1==0) then
+                nextMove = "S"
+            elseif(val2==0) then
+                nextMove = "N"
+            end
+            checkedZ = true
+        elseif(axisPriority[priorityIdx] == "y") then
+            val1 = gridMap.getGridMapValue(currentPos.x, currentPos.z, currentPos.y+1)
+            val2 = gridMap.getGridMapValue(currentPos.x, currentPos.z, currentPos.y-1)
+            if(val1==0) then
+                nextMove = "U"
+            elseif(val2==0) then
+                nextMove = "D"
+            end
+            checkedY = true
+        end
+        logFile.logWrite("nextMove",nextMove)
+        if(nextMove~="") then
+            result      = blocks.inspectDig(nextMove,true)
+            logFile.logWrite("inspectDig ",result)
+            if(result == "OK") then
+                gridMap.setGridMapDirection(nextMove,1)
+                result      = move.move(nextMove)
+                logFile.logWrite("move ",result)
+            elseif(result=="BYPASS") then
+                gridMap.setGridMapDirection(nextMove,2)
+            end
+            nextMove = ""
+            priorityIdx = 1
+            checkedX = false
+            checkedZ = false
+            checkedY = false
+        else
+            priorityIdx         = util.incNumberMax(priorityIdx,4)
+        end
+        currentPos    = location.getCurrentPosCopy()
+    end
+
+end
+
 -- Move to a Position using axisPriority, if dig=true then dig block
 function move.moveToPos(endPos,axisPriority,dig)
     logFile.logWrite("in move.moveToPos",endPos, axisPriority, dig)

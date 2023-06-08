@@ -34,9 +34,9 @@ function gridMap.getGridMapValue(x, z, y)
 end
 
 function gridMap.initGridMap(startPos, endPos)
-    --logFile.logWrite("initGridMap ",startPos,endPos)
+    logFile.logWrite("initGridMap ",startPos,endPos)
 
-    local startTime = os.clock()
+    local startTime = os.epoch()
     local values    = 0
     local incX      = 0
     local incZ      = 0
@@ -60,7 +60,7 @@ function gridMap.initGridMap(startPos, endPos)
         incY = 1
     end
 
-    --logFile.logWrite("initGridMap ",incX,incZ,incY)
+    logFile.logWrite("initGridMap ",incX,incZ,incY)
 
     for ix = startPos.x, endPos.x,incX do
         for iy = startPos.y, endPos.y,incY do
@@ -70,8 +70,8 @@ function gridMap.initGridMap(startPos, endPos)
             end
         end
     end
-    --logFile.logWrite("initGridMap set",values," values")
-    --logFile.logWrite("in ",os.clock()-startTime)
+    logFile.logWrite("initGridMap set",values," values")
+    logFile.logWrite("in ",os.epoch()-startTime)
 end
 
 function gridMap.setGridMapDirection(direction,value)

@@ -118,7 +118,7 @@ end
 
 -- Move to a Position using axisPriority, if dig=true then dig block
 function move.moveToPos(endPos,axisPriority,dig)
-    logFile.logWrite("in move.moveToPos",endPos, axisPriority, dig)
+    --logFile.logWrite("in move.moveToPos",endPos, axisPriority, dig)
     if(axisPriority == nil or axisPriority == "") then
         axisPriority = "xzy"
     end
@@ -137,16 +137,16 @@ function move.moveToPos(endPos,axisPriority,dig)
         currentAxisPriority     = string.sub(axisPriority,axisPriorityIdx,axisPriorityIdx)
 
         nextStep    = move.getNextStep(startPos, endPos, currentAxisPriority)
-        logFile.logWrite("startPos =",startPos)
-        logFile.logWrite("endPos   =",endPos)
-        logFile.logWrite("nextStep =",nextStep)
+        --logFile.logWrite("startPos =",startPos)
+        --logFile.logWrite("endPos   =",endPos)
+        --logFile.logWrite("nextStep =",nextStep)
 
         if(nextStep~="") then
             result      = blocks.inspectDig(nextStep,true)
-            logFile.logWrite("inspectDig ",result)
+            --logFile.logWrite("inspectDig ",result)
             if(result == "OK") then
                 result      = move.move(nextStep)
-                logFile.logWrite("move ",result)
+                --logFile.logWrite("move ",result)
             else
                 result = false
                 axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)

@@ -16,12 +16,15 @@ local minFuelLevel = 200
 local refuelItems  = 2
 
 function inventory.getRemainingEmptyStorageSlots()
+    local startTime = os.epoch()
     local remainingEmptySlots = 0
     for i=1,16 do
         if(turtle.getItemCount(i) == 0) then
             remainingEmptySlots = remainingEmptySlots + 1            
         end
     end
+    logFile.logWrite("inventory.getRemainingEmptyStorageSlots took ",os.epoch()-startTime)
+    logFile.logWrite("remainingEmptySlots",remainingEmptySlots)
     return remainingEmptySlots
 end
 
@@ -120,6 +123,12 @@ function inventory.checkFuelLevelAndRefuel()
 
     if(fuelLevel < minFuelLevel) then
         inventory.pickUpFuel()
+    end
+end
+
+function inventory.checkInventoryAndEmpty()
+    if(inventory.getRemainingEmptyStorageSlots() <= 1) then
+        inventory.emptyStorageSlots()
     end
 end
 

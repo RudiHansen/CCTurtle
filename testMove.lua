@@ -21,16 +21,17 @@ location.writeLocationToFile()
 --inventory.emptyStorageSlots()
 --inventory.pickUpFuel()
 inventory.checkFuelLevelAndRefuel()
+inventory.checkInventoryAndEmpty()
 
 local result     = ""
 local startDig   = {x=71,z=35,y=66,f="E"}
 local areaStart  = {x=73,z=35,y=63,f="E"}
 local areaEnd    = {x=83,z=45,y=73,f="E"}
 
-result = move.moveToPos(startDig)
+--result = move.moveToPos(startDig)
 
 --result = move.traverseArea(areaStart,areaEnd,"xzy",true)
-result = move.traverseArea(areaStart,areaEnd,"zyx",true)
+--result = move.traverseArea(areaStart,areaEnd,"zyx",true)
 
 
 

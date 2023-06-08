@@ -6,7 +6,7 @@ print(turtle.inspect())
 --print(turtle.inspectUp())
 --print(turtle.inspectDown())
 error()
-startTime = os.clock()
+startTime = os.epoch()
 
 for i = 1, 100, 1 do
     --ret = turtle.detect()
@@ -19,4 +19,4 @@ for i = 1, 100, 1 do
     turtle.turnLeft()
 end
 
-print(os.clock()-startTime)
+print(os.epoch()-startTime)

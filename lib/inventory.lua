@@ -6,7 +6,7 @@
     TODO
 
     CHANGE LOG
-    2023-03-18 : Initial Version, functions copyed from turtleMiner and cleaned up.
+    2023-03-18 : Initial Version, functions copied from turtleMiner and cleaned up.
 ]]
 
 local inventory = {}
@@ -131,6 +131,20 @@ function inventory.checkInventoryAndEmpty()
         inventory.emptyStorageSlots()
     end
 end
+
+-- TODO : Right now this is called in move.traverseArea
+-- TODO : But a more permanent and robust solution needs to be found.
+function inventory.checkForStopCommand()
+    if(fs.exists("STOP.dat")) then
+        fs.move("STOP.dat","STOPNOT.dat")
+        move.moveToPos(location.getHomePos(),"zxy",false)
+        modem.sendStatus("STOP")
+        location.writeLocationToFile()
+        logFile.logFileClose()
+        error
+    end
+end
+
 
 
 return inventory

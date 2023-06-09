@@ -112,6 +112,7 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
             priorityIdx         = util.incNumberMax(priorityIdx,4)
         end
         currentPos    = location.getCurrentPosCopy()
+        inventory.checkForStopCommand()
     end
 
 end

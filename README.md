@@ -32,3 +32,4 @@ Also might need to change priority to also contain + and - (x+,x-,z+,z-,...)
 Quite clearly I need to work on the bypass system, since the tmp fix is not working, and sometimes makes the turtle run off.
 Right now what I did with changing axisPriorityIdx on bypass in move.moveToPos works better than before, so lets see where it gets us.
 
+Implement a system for synchronizing block data files, so all turtles has the same data files.

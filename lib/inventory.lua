@@ -25,8 +25,8 @@ function inventory.getRemainingEmptyStorageSlots()
             remainingEmptySlots = remainingEmptySlots + 1            
         end
     end
-    logFile.logWrite("inventory.getRemainingEmptyStorageSlots took ",os.epoch()-startTime)
-    logFile.logWrite("remainingEmptySlots",remainingEmptySlots)
+    --logFile.logWrite("inventory.getRemainingEmptyStorageSlots took ",os.epoch()-startTime)
+    --logFile.logWrite("remainingEmptySlots",remainingEmptySlots)
     return remainingEmptySlots
 end
 
@@ -65,6 +65,7 @@ function inventory.pickUpFuel()
         local errorMessage = "Error refueling please fix!"
         print(errorMessage)
         --logFile.logWrite(errorMessage)
+        --logFile.logWrite("At pos : ",location.getCurrentPos())
         location.writeLocationToFile()
         return false
     end
@@ -92,7 +93,8 @@ function inventory.emptyStorageSlots()
         local errorMessage = "Drop off chest not found"
         print(errorMessage)
         --logFile.logWrite(errorMessage)
-        location.writeLocationToFile()
+        --logFile.logWrite("At pos : ",location.getCurrentPos())
+        --location.writeLocationToFile()
         return false
     end
 
@@ -159,10 +161,10 @@ function inventory.checkAll(force)
         return
     end
     
-    logFile.logWrite("inventory.checkAll ",checkAll)
-    logFile.logWrite("checkStop=",checkStop)
-    logFile.logWrite("checkFuel=",checkFuel)
-    logFile.logWrite("checkInventory=",checkInventory)
+    --logFile.logWrite("inventory.checkAll ",checkAll)
+    --logFile.logWrite("checkStop=",checkStop)
+    --logFile.logWrite("checkFuel=",checkFuel)
+    --logFile.logWrite("checkInventory=",checkInventory)
 
     checkAll = false
 
@@ -176,7 +178,7 @@ function inventory.checkAll(force)
 
     -- Save current position
     local originalPos = location.getCurrentPosCopy()
-    logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
+    --logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
 
     if(checkFuel == true)then
         inventory.emptyStorageSlots()
@@ -190,7 +192,7 @@ function inventory.checkAll(force)
 
     move.moveToPos(originalPos,yzx)
     checkAll = true
-    logFile.logWrite("Ended checkAll")
+    --logFile.logWrite("Ended checkAll")
 end
 
 

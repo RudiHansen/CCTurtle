@@ -87,6 +87,14 @@ function location.getCurrentPosCopy()
     return posCopy
 end
 
+function location.copyPos(pos)
+    local posCopy = {}
+    for k, v in pairs(pos) do
+        posCopy[k] = v
+    end
+    return posCopy
+end
+
 function location.getHomePos()
     return homePos
 end

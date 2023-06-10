@@ -1,8 +1,19 @@
+util      = require("lib.util")
+
 print(turtle.detect())
 --print(turtle.detectUp())
 --print(turtle.detectDown())
 
-print(turtle.inspect())
+local success, data = turtle.inspect()
+--print(util.any2String(success))
+--print(util.any2String(data))
+if success and string.match(data.name,"chest") then
+    print("Found a chest")
+else
+    print("Found : " .. data.name)
+end
+
+
 --print(turtle.inspectUp())
 --print(turtle.inspectDown())
 error()

@@ -14,6 +14,8 @@ local inventory = {}
 local maxFuelLevel = 1000
 local minFuelLevel = 200
 local refuelItems  = 2
+local checkAll     = true
+local checkCounter = 1
 
 function inventory.getRemainingEmptyStorageSlots()
     local startTime = os.epoch()
@@ -43,10 +45,6 @@ function inventory.pickUpFuel()
     --logFile.logWrite("Start refuel.")
     --logFile.logWrite("Fuel level = " .. turtle.getFuelLevel())
 
-    -- Save current position
-    local originalPos = location.getCurrentPosCopy()
-    --logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
-
     -- Move to the fuel storage
     move.moveToPos(location.getRefuelPos())
     modem.sendStatus("Refuel")
@@ -63,29 +61,23 @@ function inventory.pickUpFuel()
     end
 
     if(result == false) then
-        move.moveToPos(originalPos)
         modem.sendStatus("ERROR!")
         local errorMessage = "Error refueling please fix!"
         print(errorMessage)
         --logFile.logWrite(errorMessage)
         location.writeLocationToFile()
-        error()
+        return false
     end
 
     --logFile.logWrite("Picked up fuel, now returning to work.")
     modem.sendStatus("Work")
     --logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
-    move.moveToPos(originalPos)
-    --logFile.logWrite("Ended refuel.")
+    return true
 end
 
 function inventory.emptyStorageSlots()
     modem.sendStatus("Empty")
     --logFile.logWrite("Drop off items")
-
-    -- Save current position
-    local originalPos = location.getCurrentPosCopy()
-    --logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
 
     -- Move to the drop storage
     move.moveToPos(location.getDropOffPos())
@@ -96,13 +88,12 @@ function inventory.emptyStorageSlots()
     if success and string.match(data.name,"chest") then
         --logFile.logWrite("Found a chest")
     else
-        move.moveToPos(originalPos)
         modem.sendStatus("ERROR!")
         local errorMessage = "Drop off chest not found"
         print(errorMessage)
         --logFile.logWrite(errorMessage)
         location.writeLocationToFile()
-        error()
+        return false
     end
 
     -- Drop all items from slot 1-16
@@ -114,37 +105,93 @@ function inventory.emptyStorageSlots()
     --logFile.logWrite("Dropped of all items, now returning to work.")
     modem.sendStatus("Work")
     --logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
-    move.moveToPos(originalPos)
-    --logFile.logWrite("Ended refuel.")
+    return true
 end
 
-function inventory.checkFuelLevelAndRefuel()
+function inventory.checkFuelLevel()
     local fuelLevel = turtle.getFuelLevel()
 
     if(fuelLevel < minFuelLevel) then
-        inventory.pickUpFuel()
+        return true
     end
+    return false
 end
 
-function inventory.checkInventoryAndEmpty()
+function inventory.checkInventoryStatus()
     if(inventory.getRemainingEmptyStorageSlots() <= 1) then
-        inventory.emptyStorageSlots()
+        return true
     end
+    return false
 end
 
--- TODO : Right now this is called in move.traverseArea
--- TODO : But a more permanent and robust solution needs to be found.
+-- TODO : Should perhaps change this to ask the server instead of checking the file
 function inventory.checkForStopCommand()
     if(fs.exists("STOP.dat")) then
         fs.move("STOP.dat","STOPNOT.dat")
+        return true
+    end
+    return false
+end
+
+function inventory.checkAll(force)
+    local checkStop         = false
+    local checkFuel         = false
+    local checkInventory    = false
+    
+    if(force==nil)then
+        force=false
+    end
+
+    if(checkAll == false) then
+        return
+    end
+    
+    if(checkCounter % 10 == 0 or force) then
+        checkStop         = inventory.checkForStopCommand()
+    end
+    if(checkCounter % 20 == 0 or force) then
+        checkFuel         = inventory.checkFuelLevel()
+        checkInventory    = inventory.checkInventoryStatus()
+    end
+    checkCounter = checkCounter + 1
+    
+    if((checkStop or checkFuel or checkInventory)==false) then
+        return
+    end
+    
+    logFile.logWrite("inventory.checkAll ",checkAll)
+    logFile.logWrite("checkStop=",checkStop)
+    logFile.logWrite("checkFuel=",checkFuel)
+    logFile.logWrite("checkInventory=",checkInventory)
+
+    checkAll = false
+
+    if(checkStop==true)then
         move.moveToPos(location.getHomePos(),"zxy",false)
         modem.sendStatus("STOP")
         location.writeLocationToFile()
         logFile.logFileClose()
-        error
+        error()
     end
-end
 
+    -- Save current position
+    local originalPos = location.getCurrentPosCopy()
+    logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
+
+    if(checkFuel == true)then
+        inventory.emptyStorageSlots()
+        checkInventory = false
+        inventory.pickUpFuel()
+    end
+
+    if(checkInventory == true)then
+        inventory.emptyStorageSlots()
+    end
+
+    move.moveToPos(originalPos,yzx)
+    checkAll = true
+    logFile.logWrite("Ended checkAll")
+end
 
 
 return inventory

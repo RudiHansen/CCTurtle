@@ -24,3 +24,5 @@ All these checks for fuel, storage and stop command, has to be done in one metho
 There might have to be some sort of status value set so one does not run when the others are running, had a problem with it in the old system
 Then I need to find the right place to run this check, might be in function move.move might not?
 
+Would also like turtle to report fuel level to computer, to display in status
+

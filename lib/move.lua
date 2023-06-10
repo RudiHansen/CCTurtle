@@ -48,7 +48,7 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
         startPos.y = areaStart.y - 1
         startPos.f = areaStart.f
     end
-    logFile.logWrite("startPos",startPos)
+    --logFile.logWrite("startPos",startPos)
 
     -- Move turtle to a starting position.
     move.moveToPos(startPos,"",true)
@@ -92,14 +92,14 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
             end
             checkedY = true
         end
-        logFile.logWrite("nextMove",nextMove)
+        --logFile.logWrite("nextMove",nextMove)
         if(nextMove~="") then
             result      = blocks.inspectDig(nextMove,true)
-            logFile.logWrite("inspectDig ",result)
+            --logFile.logWrite("inspectDig ",result)
             if(result == "OK") then
                 gridMap.setGridMapDirection(nextMove,1)
                 result      = move.move(nextMove)
-                logFile.logWrite("move ",result)
+                --logFile.logWrite("move ",result)
             elseif(result=="BYPASS") then
                 gridMap.setGridMapDirection(nextMove,2)
             end
@@ -112,14 +112,19 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
             priorityIdx         = util.incNumberMax(priorityIdx,4)
         end
         currentPos    = location.getCurrentPosCopy()
-        inventory.checkForStopCommand()
+        inventory.checkAll()
     end
 
 end
 
 -- Move to a Position using axisPriority, if dig=true then dig block
 function move.moveToPos(endPos,axisPriority,dig)
-    --logFile.logWrite("in move.moveToPos",endPos, axisPriority, dig)
+    logFile.logWrite("in move.moveToPos")
+    logFile.logWrite("CurrentPos   :",location.getCurrentPos())
+    logFile.logWrite("endPos       :",endPos)
+    logFile.logWrite("axisPriority :",axisPriority)
+    logFile.logWrite("dig          :",dig)
+
     if(axisPriority == nil or axisPriority == "") then
         axisPriority = "xzy"
     end
@@ -143,11 +148,15 @@ function move.moveToPos(endPos,axisPriority,dig)
         --logFile.logWrite("nextStep =",nextStep)
 
         if(nextStep~="") then
-            result      = blocks.inspectDig(nextStep,true)
+            result      = blocks.inspectDig(nextStep,false)
             --logFile.logWrite("inspectDig ",result)
             if(result == "OK") then
                 result      = move.move(nextStep)
                 --logFile.logWrite("move ",result)
+            elseif(result == "BYPASS") then
+                -- TODO: This is a tmp fix of bypass
+                nextStep = "U"
+                result      = move.move(nextStep)
             else
                 result = false
                 axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)

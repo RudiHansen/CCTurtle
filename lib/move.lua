@@ -155,8 +155,10 @@ function move.moveToPos(endPos,axisPriority,dig)
                 --logFile.logWrite("move ",result)
             elseif(result == "BYPASS") then
                 -- TODO: This is a tmp fix of bypass
-                nextStep = "U"
-                result      = move.move(nextStep)
+                -- nextStep = "U"
+                --result      = move.move(nextStep)
+                result = false
+                axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
             else
                 result = false
                 axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)

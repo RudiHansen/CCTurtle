@@ -14,8 +14,6 @@ Report status into to Computer
 Make move function, for now thinking that its one function called with direction to move, and the method then updates turtles position and reports it to main computer.
 
 # Next Step
-Would also like turtle to report fuel level to computer, to display in status
-
 Make system for giving Turtles jobs from the computer.
 So the turtle should be able to ask the computer for jobs.
 Also the computer should be able to handle more than one turtle, and split a big dig job into smaller jobs for more than one Turtle.

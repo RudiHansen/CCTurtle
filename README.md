@@ -14,10 +14,6 @@ Report status into to Computer
 Make move function, for now thinking that its one function called with direction to move, and the method then updates turtles position and reports it to main computer.
 
 # Next Step
-Move everything to a new dig site, like clean out some of the area to the east of the base.
-
-There is also some status messages not being sent, think for now the fuel, inventory and stop statuses are not being shown on the computer.
-
 Would also like turtle to report fuel level to computer, to display in status
 
 Make system for giving Turtles jobs from the computer.

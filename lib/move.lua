@@ -38,11 +38,12 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
         startPos.z = startPos.z-1
     end
     logFile.logWrite("startPos",startPos)
-
+    
     -- Move turtle to a starting position.
+    modem.sendStatus("Work")
     move.moveToPos(startPos,"",true)
     gridMap.setGridMapValue(startPos.x,startPos.z,startPos.y,1)
-
+    
     -- Calculated steps to traverse the area.
     local nextMove      = ""
     local priorityIdx   = 1
@@ -52,7 +53,7 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
     local checkedX      = false
     local checkedZ      = false
     local checkedY      = false
-
+    
     while(checkedX==false or checkedZ==false or checkedY==false)do
         logFile.logWrite("axisPriority[priorityIdx]",axisPriority[priorityIdx])
         if(axisPriority[priorityIdx] == "x") then
@@ -109,7 +110,7 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
         currentPos    = location.getCurrentPosCopy()
         inventory.checkAll()
     end
-
+    modem.sendStatus("Idle")
 end
 
 -- Move to a Position using axisPriority, if dig=true then dig block
@@ -162,11 +163,12 @@ function move.moveToPos(endPos,axisPriority,dig)
             axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
             moveErrors = moveErrors + 1
             if (moveErrors > 3) then
+                local saveStatus = modem.getStatus()
                 modem.sendStatus("Blocked")
                 print("Can't move, please remove the obstacles!")
                 util.waitForUserKey()
                 moveErrors = 0
-                modem.sendStatus("Move")
+                modem.sendStatus(saveStatus)
             end
         end
         startPos = location.getCurrentPos()    
@@ -252,7 +254,7 @@ function move.move(direction)
         end
     end
     location.writeLocationToFile()
-    modem.sendStatus("Move")
+    modem.sendStatus()
     return result
 end
 

@@ -14,6 +14,7 @@ location.setHomePos(75,-41,63,"S")
 location.setRefuelPos(73,-40,63,"N")
 location.setDropOffPos(74,-40,63,"N")
 blocks.loadData()
+modem.sendStatus("Work")
 
 location.setCurrentPos(75,-41,63,"S")
 location.writeLocationToFile()
@@ -23,9 +24,9 @@ inventory.checkAll(true)
 logFile.logWrite("2")
 
 local result     = ""
-local startDig   = {x=82,z=-30,y=63,f="S"}
-local areaStart  = {x=82,z=-29,y=63,f="S"}
-local areaEnd    = {x=73,z=-19,y=69,f="S"}
+local startDig   = {x=82,z=-19,y=63,f="S"}
+local areaStart  = {x=82,z=-18,y=63,f="S"}
+local areaEnd    = {x=73,z=-10,y=74,f="S"}
 
 result = move.moveToPos(startDig,"yzx")
 logFile.logWrite("3")

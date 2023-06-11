@@ -11,9 +11,9 @@
 
 local inventory = {}
 
-local maxFuelLevel = 1000
-local minFuelLevel = 200
-local refuelItems  = 2
+local maxFuelLevel = 2000
+local minFuelLevel = 400
+local refuelItems  = 4
 local checkAll     = true
 local checkCounter = 1
 
@@ -41,13 +41,13 @@ end
 
 function inventory.pickUpFuel()
     local result = true
+    local saveStatus = modem.getStatus()
     modem.sendStatus("Refuel")
     --logFile.logWrite("Start refuel.")
     --logFile.logWrite("Fuel level = " .. turtle.getFuelLevel())
 
     -- Move to the fuel storage
     move.moveToPos(location.getRefuelPos())
-    modem.sendStatus("Refuel")
 
     inventory.selectFirstEmptyStorageSlot()
     while( result == true and turtle.getFuelLevel() < maxFuelLevel) do
@@ -71,18 +71,18 @@ function inventory.pickUpFuel()
     end
 
     --logFile.logWrite("Picked up fuel, now returning to work.")
-    modem.sendStatus("Work")
+    modem.sendStatus(saveStatus)
     --logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
     return true
 end
 
 function inventory.emptyStorageSlots()
+    local saveStatus = modem.getStatus()
     modem.sendStatus("Empty")
     --logFile.logWrite("Drop off items")
 
     -- Move to the drop storage
     move.moveToPos(location.getDropOffPos())
-    modem.sendStatus("Empty")
 
     -- Test if there is a chest.
     local success, data = turtle.inspect()
@@ -105,7 +105,7 @@ function inventory.emptyStorageSlots()
     end
 
     --logFile.logWrite("Dropped of all items, now returning to work.")
-    modem.sendStatus("Work")
+    modem.sendStatus(saveStatus)
     --logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
     return true
 end
@@ -148,7 +148,7 @@ function inventory.checkAll(force)
         return
     end
     
-    if(checkCounter % 10 == 0 or force) then
+    if(checkCounter % 5 == 0 or force) then
         checkStop         = inventory.checkForStopCommand()
     end
     if(checkCounter % 20 == 0 or force) then
@@ -169,10 +169,11 @@ function inventory.checkAll(force)
     checkAll = false
 
     if(checkStop==true)then
-        move.moveToPos(location.getHomePos(),"zxy",false)
         modem.sendStatus("STOP")
+        move.moveToPos(location.getHomePos(),"zxy",false)
         location.writeLocationToFile()
         logFile.logFileClose()
+        modem.sendStatus("Idle")
         error()
     end
 

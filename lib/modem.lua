@@ -18,12 +18,13 @@ function modem.sendStatus(newStatus)
     local label         = os.getComputerLabel()
     local currentPos    = location.getCurrentPos()
     local fuelLevel     = turtle.getFuelLevel()
+    local storageSlots  = inventory.getRemainingEmptyStorageSlots()
 
     if(newStatus ~= nil) then
         status = newStatus
     end
 
-    local statusMessage = "TurtleStatus;"..label..";"..currentPos.x..";"..currentPos.z..";"..currentPos.y..";"..currentPos.f .. ";"..fuelLevel..";"..status
+    local statusMessage = "TurtleStatus;"..label..";"..currentPos.x..";"..currentPos.z..";"..currentPos.y..";"..currentPos.f .. ";"..storageSlots..";"..fuelLevel..";"..status
 
     rednet.broadcast(statusMessage,"S")
 end

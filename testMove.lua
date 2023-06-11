@@ -24,9 +24,9 @@ inventory.checkAll(true)
 logFile.logWrite("2")
 
 local result     = ""
-local startDig   = {x=82,z=-19,y=63,f="S"}
-local areaStart  = {x=82,z=-18,y=63,f="S"}
-local areaEnd    = {x=73,z=-10,y=74,f="S"}
+local startDig   = {x=82,z=-10,y=63,f="S"}
+local areaStart  = {x=82,z=-9,y=63,f="S"}
+local areaEnd    = {x=73,z=0,y=74,f="S"}
 
 result = move.moveToPos(startDig,"yzx")
 logFile.logWrite("3")

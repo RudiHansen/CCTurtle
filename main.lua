@@ -29,5 +29,8 @@ location.setDropOffPos(74,-40,63,"N")
 while(true) do
     location.setCurrentPos(math.random(99),math.random(99),math.random(99),"S")
     modem.sendStatus("Test")
-    sleep(2)
+    sleep(5)
 end
+
+-- Finalize script
+logFile.logFileClose()

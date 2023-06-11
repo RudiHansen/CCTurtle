@@ -11,7 +11,7 @@ local modem = {}
 local status = "Idle"
 
 function modem.init()
-    rednet.open("left") --enable the modem attached to the right side of the PC
+    rednet.open("right") --enable the modem attached to the right side of the PC
 end
 
 function modem.sendStatus(newStatus)

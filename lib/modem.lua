@@ -40,4 +40,27 @@ function modem.askQuestionBlockAction(blockName)
     return message    
 end
 
+function modem.askQuestionTurtleJob()
+    logFile.logWrite("modem.askQuestionTurtleJob()")
+    rednet.broadcast(" ","QJ")
+
+    while(true)do
+        id,message, protocol = rednet.receive() --wait until a message is received
+        logFile.logWrite("id",id)
+        logFile.logWrite("message",message)
+        logFile.logWrite("protocol",protocol)
+
+        if(id==0)then
+            logFile.logWrite("id",id)
+            logFile.logWrite("message",message)
+            logFile.logWrite("protocol",protocol)
+
+            if(protocol=="AJ")then
+                local turtleJobData = turtleJobs.Msg2TurtleJob(message)
+                return turtleJobData
+            end
+        end
+    end
+end
+
 return modem

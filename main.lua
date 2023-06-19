@@ -31,6 +31,7 @@ location.setRefuelPos(73,-40,63,"N")
 location.setDropOffPos(74,-40,63,"N")
 
 -- Send initial status message
+location.setCurrentPos(75,-41,63,"S")
 modem.sendStatus("Idle")
 
 -- Test Ask about block.
@@ -48,7 +49,8 @@ while(true) do
             startDig.y = tonumber(turtleJobData.y1)
             startDig.f = turtleJobData.f1
             logFile.logWrite("moveToPos",startDig)
-            move.moveToPos(startDig,"yzx")
+            logFile.logWrite("turtleJobsData.axisPriority",turtleJobData.axisPriority)
+            move.moveToPos(startDig,turtleJobData.axisPriority)
         elseif(turtleJobData.JobType=="traverseArea")then
             startDig.x = tonumber(turtleJobData.x1)
             startDig.z = tonumber(turtleJobData.z1)
@@ -59,7 +61,10 @@ while(true) do
             endDig.y   = tonumber(turtleJobData.y2)
             endDig.f   = turtleJobData.f2
             logFile.logWrite("traverseArea",startDig,endDig)
-            move.traverseArea(startDig,endDig,"xyz",true)
+            move.traverseArea(startDig,endDig,turtleJobData.axisPriority,true)
+        elseif(turtleJobData.JobType=="moveHome")then
+            move.moveToPos(location.getHomePos(),turtleJobData.axisPriority,false)
+            logFile.logWrite("moveHome")
         end
     else
         sleep(5)

@@ -24,6 +24,7 @@ function turtleJobs.Msg2TurtleJob(message)
     turtleJobsData.z2           = fields[9]
     turtleJobsData.y2           = fields[10]
     turtleJobsData.f2           = fields[11]
+    turtleJobsData.axisPriority = fields[12]
 
     return turtleJobsData
 end

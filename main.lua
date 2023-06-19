@@ -41,15 +41,15 @@ modem.sendStatus("Idle")
 while(true) do
     turtleJobData = {}
     turtleJobData = modem.askQuestionTurtleJob()
-    logFile.logWrite("TurtleJob",turtleJobData)
+    --logFile.logWrite("TurtleJob",turtleJobData)
     if(turtleJobData~=nil and turtleJobData.TurtleName==os.getComputerLabel())then
         if(turtleJobData.JobType=="moveToPos")then
             startDig.x = tonumber(turtleJobData.x1)
             startDig.z = tonumber(turtleJobData.z1)
             startDig.y = tonumber(turtleJobData.y1)
             startDig.f = turtleJobData.f1
-            logFile.logWrite("moveToPos",startDig)
-            logFile.logWrite("turtleJobsData.axisPriority",turtleJobData.axisPriority)
+            --logFile.logWrite("moveToPos",startDig)
+            --logFile.logWrite("turtleJobsData.axisPriority",turtleJobData.axisPriority)
             move.moveToPos(startDig,turtleJobData.axisPriority)
         elseif(turtleJobData.JobType=="traverseArea")then
             startDig.x = tonumber(turtleJobData.x1)
@@ -60,11 +60,11 @@ while(true) do
             endDig.z   = tonumber(turtleJobData.z2)
             endDig.y   = tonumber(turtleJobData.y2)
             endDig.f   = turtleJobData.f2
-            logFile.logWrite("traverseArea",startDig,endDig)
+            --logFile.logWrite("traverseArea",startDig,endDig)
             move.traverseArea(startDig,endDig,turtleJobData.axisPriority,true)
         elseif(turtleJobData.JobType=="moveHome")then
+            --logFile.logWrite("moveHome")
             move.moveToPos(location.getHomePos(),turtleJobData.axisPriority,false)
-            logFile.logWrite("moveHome")
         end
     else
         sleep(5)

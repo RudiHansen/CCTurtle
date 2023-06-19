@@ -22,11 +22,11 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
     local startPos = {};
 
     -- Write debug info
-    logFile.logWrite("in move.traverseArea")
-    logFile.logWrite("areaStart=",areaStart)
-    logFile.logWrite("areaEnd=",areaEnd)
-    logFile.logWrite("axisPriority=",axisPriority)
-    logFile.logWrite("dig=",dig)
+    --logFile.logWrite("in move.traverseArea")
+    --logFile.logWrite("areaStart=",areaStart)
+    --logFile.logWrite("areaEnd=",areaEnd)
+    --logFile.logWrite("axisPriority=",axisPriority)
+    --logFile.logWrite("dig=",dig)
 
     -- Initialize the Grid map
     gridMap.initGridMap(areaStart,areaEnd)
@@ -37,7 +37,7 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
     if(axisPriority[1]=="y" and axisPriority[2]=="z") then
         startPos.z = startPos.z-1
     end
-    logFile.logWrite("startPos",startPos)
+    --logFile.logWrite("startPos",startPos)
     
     -- Move turtle to a starting position.
     modem.sendStatus("Work")
@@ -55,12 +55,12 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
     local checkedY      = false
     
     while(checkedX==false or checkedZ==false or checkedY==false)do
-        logFile.logWrite("axisPriority[priorityIdx]",axisPriority[priorityIdx])
+        --logFile.logWrite("axisPriority[priorityIdx]",axisPriority[priorityIdx])
         if(axisPriority[priorityIdx] == "x") then
             val1 = gridMap.getGridMapValue(currentPos.x+1, currentPos.z, currentPos.y)
             val2 = gridMap.getGridMapValue(currentPos.x-1, currentPos.z, currentPos.y)
-            logFile.logWrite("val1=",val1)
-            logFile.logWrite("val2=",val2)
+            --logFile.logWrite("val1=",val1)
+            --logFile.logWrite("val2=",val2)
             if(val1==0) then
                 nextMove = "E"
             elseif(val2==0) then
@@ -86,17 +86,17 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
             end
             checkedY = true
         end
-        logFile.logWrite("nextMove",nextMove)
+        --logFile.logWrite("nextMove",nextMove)
         
         if(nextMove~="") then
             result      = blocks.inspectDig(nextMove,true)
-            logFile.logWrite("inspectDig ",result)
+            --logFile.logWrite("inspectDig ",result)
             if(result == "OK") then
                 gridMap.setGridMapDirection(nextMove,1)
                 result      = move.move(nextMove)
-                logFile.logWrite("move ",result)
+                --logFile.logWrite("move ",result)
             elseif(result=="BYPASS") then
-                logFile.logWrite("bypass",result)
+                --logFile.logWrite("bypass",result)
                 gridMap.setGridMapDirection(nextMove,2)
             end
             nextMove = ""

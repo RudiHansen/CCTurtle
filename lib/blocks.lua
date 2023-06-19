@@ -49,6 +49,8 @@ function blocks.inspectDig(direction,dig)
     elseif (dig==true) then
         logFile.logWrite("Calling inspectedBlokMatchCanDig "..inspectData.name)
         blockAction = blocks.inspectedBlokMatchCanDig(inspectData.name)
+        logFile.logWrite("blockAction",blockAction)
+
         if(blockAction=="mine") then
             if(direction=="W" or direction=="E" or direction=="N" or direction =="S")then
                 result = turtle.dig()
@@ -121,42 +123,49 @@ function blocks.inspectDig(direction,dig)
 end
 
 function blocks.inspectedBlokMatchCanDig(blockName)
-    --logFile.logWrite("In inspectedBlokMatchCanDig blockName=" .. blockName)
+    logFile.logWrite("In inspectedBlokMatchCanDig blockName=" .. blockName)
     for i, value in ipairs(blocksTurtleCanMine) do
         if blockName == value then
+            logFile.logWrite("return mine")
             return "mine"
         end
     end
     for i, value in ipairs(blocksTurtleCanIgnore) do
         if blockName == value then
+            logFile.logWrite("return ignore")
             return "ignore"
         end
     end
     for i, value in ipairs(blocksTurtleCantMine) do
         if blockName == value then
+            logFile.logWrite("return pass")
             return "pass"
         end
     end
 
-    --logFile.logWrite("Call  askQuestionBlockAction blockName=" .. blockName)
+    logFile.logWrite("Call  askQuestionBlockAction blockName=" .. blockName)
     local saveStatus = modem.getStatus()
     modem.sendStatus("?")
     local blockAction = modem.askQuestionBlockAction(blockName)
+    logFile.logWrite("blockAction",blockAction)
     modem.sendStatus(saveStatus)
     if(blockAction=="mine")then
         table.insert(blocksTurtleCanMine,blockName)
         blocks.saveData()
+        logFile.logWrite("2return mine")
         return "mine"
     elseif(blockAction=="ignore")then
         table.insert(blocksTurtleCanIgnore,blockName)
         blocks.saveData()
+        logFile.logWrite("2return ignore")
         return "ignore"
     elseif(blockAction=="pass")then
         table.insert(blocksTurtleCantMine,blockName)
         blocks.saveData()
+        logFile.logWrite("2return pass")
         return "pass"
     else
-        --logFile.logWrite("Problem in blocks.inspectedBlokMatchCanDig")
+        logFile.logWrite("Problem in blocks.inspectedBlokMatchCanDig")
         modem.sendStatus("ERROR!")
         location.writeLocationToFile()
         error()

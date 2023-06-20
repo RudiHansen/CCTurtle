@@ -42,7 +42,7 @@ modem.sendStatus("Idle")
 while(true) do
     turtleJobData = {}
     turtleJobData = modem.askQuestionTurtleJob()
-    --logFile.logWrite("TurtleJob",turtleJobData)
+    logFile.logWrite("TurtleJob",turtleJobData)
     if(turtleJobData~=nil and turtleJobData.TurtleName==os.getComputerLabel())then
         if(turtleJobData.JobType=="moveToPos")then
             startDig.x = tonumber(turtleJobData.x1)
@@ -53,7 +53,7 @@ while(true) do
             --logFile.logWrite("turtleJobsData.axisPriority",turtleJobData.axisPriority)
             --move.moveToPos(startDig,turtleJobData.axisPriority)
             sleep(2)
-            blockAction = blocks.inspectedBlokMatchCanDig("Rudi1")
+            blockAction = modem.askQuestionBlockAction("Rudis stol")
             logFile.logWrite("blockAction",blockAction)
             sleep(2)
         elseif(turtleJobData.JobType=="traverseArea")then
@@ -68,9 +68,15 @@ while(true) do
             logFile.logWrite("traverseArea",startDig,endDig)
             --move.traverseArea(startDig,endDig,turtleJobData.axisPriority,true)
             sleep(2)
+            blockAction = modem.askQuestionBlockAction("Rudis stol")
+            logFile.logWrite("blockAction",blockAction)
+            sleep(2)
         elseif(turtleJobData.JobType=="moveHome")then
             logFile.logWrite("moveHome")
             --move.moveToPos(location.getHomePos(),turtleJobData.axisPriority,false)
+            sleep(2)
+            blockAction = modem.askQuestionBlockAction("Rudis stol")
+            logFile.logWrite("blockAction",blockAction)
             sleep(2)
         end
     else

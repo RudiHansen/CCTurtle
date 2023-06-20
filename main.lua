@@ -27,12 +27,12 @@ blocks.loadData()
 
 -- Set positions
 -- TODO: Get from Main computer
-location.setHomePos(77,-41,63,"S")
+location.setHomePos(75,-41,63,"S")
 location.setRefuelPos(73,-40,63,"N")
 location.setDropOffPos(74,-40,63,"N")
 
 -- Send initial status message
-location.setCurrentPos(77,-41,63,"S")
+location.setCurrentPos(75,-41,63,"S")
 modem.sendStatus("Idle")
 
 -- Test Ask about block.
@@ -50,12 +50,8 @@ while(true) do
             startDig.y = tonumber(turtleJobData.y1)
             startDig.f = turtleJobData.f1
             logFile.logWrite("moveToPos",startDig)
-            --logFile.logWrite("turtleJobsData.axisPriority",turtleJobData.axisPriority)
-            --move.moveToPos(startDig,turtleJobData.axisPriority)
-            sleep(2)
-            blockAction = modem.askQuestionBlockAction("Rudis stol")
-            logFile.logWrite("blockAction",blockAction)
-            sleep(2)
+            logFile.logWrite("turtleJobsData.axisPriority",turtleJobData.axisPriority)
+            move.moveToPos(startDig,turtleJobData.axisPriority)
         elseif(turtleJobData.JobType=="traverseArea")then
             startDig.x = tonumber(turtleJobData.x1)
             startDig.z = tonumber(turtleJobData.z1)
@@ -66,18 +62,10 @@ while(true) do
             endDig.y   = tonumber(turtleJobData.y2)
             endDig.f   = turtleJobData.f2
             logFile.logWrite("traverseArea",startDig,endDig)
-            --move.traverseArea(startDig,endDig,turtleJobData.axisPriority,true)
-            sleep(2)
-            blockAction = modem.askQuestionBlockAction("Rudis stol")
-            logFile.logWrite("blockAction",blockAction)
-            sleep(2)
+            move.traverseArea(startDig,endDig,turtleJobData.axisPriority,true)
         elseif(turtleJobData.JobType=="moveHome")then
             logFile.logWrite("moveHome")
-            --move.moveToPos(location.getHomePos(),turtleJobData.axisPriority,false)
-            sleep(2)
-            blockAction = modem.askQuestionBlockAction("Rudis stol")
-            logFile.logWrite("blockAction",blockAction)
-            sleep(2)
+            move.moveToPos(location.getHomePos(),turtleJobData.axisPriority,false)
         end
     else
         if(noJobsCount>5)then

@@ -25,8 +25,8 @@ logFile.logWrite("TurtleJob",turtleJobData)
 modem.sendStatus("2")
 sleep(math.random(2,6))
 
-blockAction = modem.askQuestionBlockAction("Rudis stol")
-logFile.logWrite("blockAction",blockAction)
+--blockAction = modem.askQuestionBlockAction("Rudis stol")
+--logFile.logWrite("blockAction",blockAction)
 modem.sendStatus("3")
 sleep(math.random(2,6))
 
@@ -36,8 +36,8 @@ logFile.logWrite("TurtleJob",turtleJobData)
 modem.sendStatus("4")
 sleep(math.random(2,6))
 
-blockAction = modem.askQuestionBlockAction("Rudis stol")
-logFile.logWrite("blockAction",blockAction)
+--blockAction = modem.askQuestionBlockAction("Rudis stol")
+--logFile.logWrite("blockAction",blockAction)
 modem.sendStatus("5")
 sleep(math.random(2,6))
 

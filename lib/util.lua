@@ -36,4 +36,14 @@ function util.any2String(anyType)
     end
 end
 
+function util.stringLen(txt,length)
+    if(length>100)then
+        print("ERROR IN util.stringLen, length more than 100")
+        error()
+    end
+    txt = string.format( "%-100s", txt )
+    txt = string.sub(txt,1,length)
+    return txt
+end
+
 return util

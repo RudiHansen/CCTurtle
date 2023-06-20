@@ -15,6 +15,7 @@ gridMap     = require("lib.gridMap")
 turtleJobs  = require("lib.turtleJobs")
 
 -- Init Variables
+local noJobsCount   = 0
 local turtleJobData = {}
 local startDig      = {x=82,z=-10,y=63,f="S"}
 local endDig        = {x=82,z=-10,y=63,f="S"}
@@ -48,9 +49,13 @@ while(true) do
             startDig.z = tonumber(turtleJobData.z1)
             startDig.y = tonumber(turtleJobData.y1)
             startDig.f = turtleJobData.f1
-            --logFile.logWrite("moveToPos",startDig)
+            logFile.logWrite("moveToPos",startDig)
             --logFile.logWrite("turtleJobsData.axisPriority",turtleJobData.axisPriority)
-            move.moveToPos(startDig,turtleJobData.axisPriority)
+            --move.moveToPos(startDig,turtleJobData.axisPriority)
+            sleep(2)
+            blockAction = blocks.inspectedBlokMatchCanDig("Rudi1")
+            logFile.logWrite("blockAction",blockAction)
+            sleep(2)
         elseif(turtleJobData.JobType=="traverseArea")then
             startDig.x = tonumber(turtleJobData.x1)
             startDig.z = tonumber(turtleJobData.z1)
@@ -60,13 +65,22 @@ while(true) do
             endDig.z   = tonumber(turtleJobData.z2)
             endDig.y   = tonumber(turtleJobData.y2)
             endDig.f   = turtleJobData.f2
-            --logFile.logWrite("traverseArea",startDig,endDig)
-            move.traverseArea(startDig,endDig,turtleJobData.axisPriority,true)
+            logFile.logWrite("traverseArea",startDig,endDig)
+            --move.traverseArea(startDig,endDig,turtleJobData.axisPriority,true)
+            sleep(2)
         elseif(turtleJobData.JobType=="moveHome")then
-            --logFile.logWrite("moveHome")
-            move.moveToPos(location.getHomePos(),turtleJobData.axisPriority,false)
+            logFile.logWrite("moveHome")
+            --move.moveToPos(location.getHomePos(),turtleJobData.axisPriority,false)
+            sleep(2)
         end
     else
+        if(noJobsCount>5)then
+            logFile.logWrite("Exit main.")    
+            logFile.logFileClose()
+            error()
+        end
+        logFile.logWrite("No jobs.")
+        noJobsCount = noJobsCount + 1
         sleep(5)
     end
 end

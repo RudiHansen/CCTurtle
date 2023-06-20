@@ -44,21 +44,18 @@ function modem.askQuestionTurtleJob()
     logFile.logWrite("modem.askQuestionTurtleJob()")
     rednet.broadcast(" ","QJ")
 
-    while(true)do
-        id,message, protocol = rednet.receive() --wait until a message is received
-        logFile.logWrite("id",id)
-        logFile.logWrite("message",message)
-        logFile.logWrite("protocol",protocol)
+    id,message, protocol = rednet.receive() --wait until a message is received
+    logFile.logWrite("id",id)
+    logFile.logWrite("message",message)
+    logFile.logWrite("protocol",protocol)
 
-        if(id==0)then
-            logFile.logWrite("if id==",id)
-
-            if(protocol=="AJ")then
-                logFile.logWrite("protocol AJ")
-                local turtleJobData = turtleJobs.Msg2TurtleJob(message)
-                logFile.logWrite("turtleJobData",turtleJobData)
-                return turtleJobData
-            end
+    if(id==0)then
+        logFile.logWrite("if id==",id)
+        if(protocol=="AJ")then
+            logFile.logWrite("protocol AJ")
+            local turtleJobData = turtleJobs.Msg2TurtleJob(message)
+            logFile.logWrite("turtleJobData",turtleJobData)
+            return turtleJobData
         end
     end
 end

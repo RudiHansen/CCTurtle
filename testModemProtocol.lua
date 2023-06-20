@@ -9,7 +9,7 @@ blocks      = require("lib.blocks")
 gridMap     = require("lib.gridMap")
 turtleJobs  = require("lib.turtleJobs")
 
-location.setCurrentPos(75,-41,63,"S")
+location.setCurrentPos(77,-41,63,"S")
 modem.sendStatus("Idle")
 sleep(math.random(1,10))
 

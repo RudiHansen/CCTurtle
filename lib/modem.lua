@@ -34,9 +34,12 @@ function modem.getStatus()
 end
 
 function modem.askQuestionBlockAction(blockName)
-    rednet.broadcast(blockName,"QB")
+    logFile.logWrite("in modem.askQuestionBlockAction ",blockName)
+    rednet.send(0,blockName,"QB")
+    logFile.logWrite("rednet.send QB")
 
     id,message, protocol = rednet.receive() --wait until a message is received
+    logFile.logWrite("Received",id,message,protocol)
     return message    
 end
 

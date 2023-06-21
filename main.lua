@@ -65,6 +65,8 @@ while(true) do
             move.traverseArea(startDig,endDig,turtleJobData.axisPriority,true)
         elseif(turtleJobData.JobType=="moveHome")then
             logFile.logWrite("moveHome")
+            inventory.emptyStorageSlots()
+            inventory.pickUpFuel()
             move.moveToPos(location.getHomePos(),turtleJobData.axisPriority,false)
         end
     else

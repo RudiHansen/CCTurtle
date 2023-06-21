@@ -170,6 +170,8 @@ function inventory.checkAll(force)
 
     if(checkStop==true)then
         modem.sendStatus("STOP")
+        inventory.emptyStorageSlots()
+        inventory.pickUpFuel()
         move.moveToPos(location.getHomePos(),"zxy",false)
         location.writeLocationToFile()
         logFile.logFileClose()

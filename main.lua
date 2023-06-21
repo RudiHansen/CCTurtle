@@ -39,7 +39,9 @@ modem.sendStatus("Idle")
 -- modem.askQuestionBlockAction("Rudis stol")
 
 -- Send Turtle status to computer
-while(true) do
+local doLoop = true
+
+while(doLoop) do
     turtleJobData = {}
     turtleJobData = modem.askQuestionTurtleJob()
     logFile.logWrite("TurtleJob",turtleJobData)
@@ -64,22 +66,25 @@ while(true) do
             logFile.logWrite("traverseArea",startDig,endDig)
             move.traverseArea(startDig,endDig,turtleJobData.axisPriority,true)
         elseif(turtleJobData.JobType=="moveHome")then
-            logFile.logWrite("moveHome")
-            inventory.emptyStorageSlots()
-            inventory.pickUpFuel()
-            move.moveToPos(location.getHomePos(),turtleJobData.axisPriority,false)
+            doLoop = false
         end
     else
         if(noJobsCount>5)then
             logFile.logWrite("Exit main.")    
             logFile.logFileClose()
-            error()
+            doLoop = false
         end
         logFile.logWrite("No jobs.")
         noJobsCount = noJobsCount + 1
         sleep(5)
     end
 end
+
+-- End action for turtle
+logFile.logWrite("moveHome")
+inventory.emptyStorageSlots()
+inventory.pickUpFuel()
+move.moveToPos(location.getHomePos(),turtleJobData.axisPriority,false)
 
 -- Finalize script
 logFile.logFileClose()

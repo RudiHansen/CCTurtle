@@ -8,6 +8,8 @@
 
 local move = {}
 
+local moveAxisPriority   = "zxy"
+
 function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
     -- Setup variables
     if(axisPriority == nil or axisPriority == "") then
@@ -35,7 +37,8 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
     -- TODO : Needs also to work on other axisPriority orders.
     startPos = location.copyPos(areaStart)
     if(axisPriority[1]=="y" and axisPriority[2]=="z") then
-        startPos.z = startPos.z-1
+        startPos.z          = startPos.z-1
+        moveAxisPriority    = "zxy"
     end
     --logFile.logWrite("startPos",startPos)
     
@@ -122,7 +125,7 @@ function move.moveToPos(endPos,axisPriority,dig)
     --logFile.logWrite("dig          :",dig)
 
     if(axisPriority == nil or axisPriority == "") then
-        axisPriority = "xzy"
+        axisPriority = moveAxisPriority
     end
     if(dig == nil or dig == "") then
         dig = false

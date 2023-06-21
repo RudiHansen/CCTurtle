@@ -26,7 +26,7 @@ function modem.sendStatus(newStatus)
 
     local statusMessage = "TurtleStatus;"..label..";"..currentPos.x..";"..currentPos.z..";"..currentPos.y..";"..currentPos.f .. ";"..storageSlots..";"..fuelLevel..";"..status
 
-    rednet.broadcast(statusMessage,"S")
+    rednet.send(0,statusMessage,"S")
 end
 
 function modem.getStatus()
@@ -38,7 +38,7 @@ function modem.askQuestionBlockAction(blockName)
     rednet.send(0,blockName,"QB")
     logFile.logWrite("rednet.send QB")
 
-    id,message, protocol = rednet.receive() --wait until a message is received
+    id,message, protocol = rednet.receive("AB") --wait until a message is received
     logFile.logWrite("Received",id,message,protocol)
     return message    
 end

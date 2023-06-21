@@ -34,31 +34,31 @@ function modem.getStatus()
 end
 
 function modem.askQuestionBlockAction(blockName)
-    logFile.logWrite("in modem.askQuestionBlockAction ",blockName)
+    --logFile.logWrite("in modem.askQuestionBlockAction ",blockName)
     rednet.send(0,blockName,"QB")
-    logFile.logWrite("rednet.send QB")
+    --logFile.logWrite("rednet.send QB")
 
     id,message, protocol = rednet.receive("AB") --wait until a message is received
-    logFile.logWrite("Received",id,message,protocol)
+    --logFile.logWrite("Received",id,message,protocol)
     return message    
 end
 
 function modem.askQuestionTurtleJob()
-    logFile.logWrite("in modem.askQuestionTurtleJob()")
+    --logFile.logWrite("in modem.askQuestionTurtleJob()")
     rednet.send(0," ","QJ")
-    logFile.logWrite("Send QJ")
+    --logFile.logWrite("Send QJ")
 
     id,message, protocol = rednet.receive("AJ") --wait until a message is received
-    logFile.logWrite("id",id)
-    logFile.logWrite("message",message)
-    logFile.logWrite("protocol",protocol)
+    --logFile.logWrite("id",id)
+    --logFile.logWrite("message",message)
+    --logFile.logWrite("protocol",protocol)
 
     if(id==0)then
-        logFile.logWrite("if id==",id)
+        --logFile.logWrite("if id==",id)
         if(protocol=="AJ")then
-            logFile.logWrite("protocol AJ")
+            --logFile.logWrite("protocol AJ")
             local turtleJobData = turtleJobs.Msg2TurtleJob(message)
-            logFile.logWrite("turtleJobData",turtleJobData)
+            --logFile.logWrite("turtleJobData",turtleJobData)
             return turtleJobData
         end
     end

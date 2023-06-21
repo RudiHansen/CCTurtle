@@ -47,9 +47,9 @@ function blocks.inspectDig(direction,dig)
         --logFile.logWrite("*Return OK")
         return "OK"
     elseif (dig==true) then
-        logFile.logWrite("Calling inspectedBlokMatchCanDig "..inspectData.name)
+        --logFile.logWrite("Calling inspectedBlokMatchCanDig "..inspectData.name)
         blockAction = blocks.inspectedBlokMatchCanDig(inspectData.name)
-        logFile.logWrite("blockAction",blockAction)
+        --logFile.logWrite("blockAction",blockAction)
 
         if(blockAction=="mine") then
             if(direction=="W" or direction=="E" or direction=="N" or direction =="S")then
@@ -85,7 +85,7 @@ function blocks.inspectDig(direction,dig)
                 error()
             end
             if(result==true) then
-                logFile.logWrite("*2Return OK")
+                --logFile.logWrite("*2Return OK")
                 return "OK"
             else
                 logFile.logWrite("Problem in blocks.inspectDig with result from dig")
@@ -94,23 +94,23 @@ function blocks.inspectDig(direction,dig)
                 error()
             end
         elseif(blockAction=="ignore") then
-            logFile.logWrite("*3Return OK")
+            --logFile.logWrite("*3Return OK")
             return "OK"
         elseif(blockAction=="pass") then
-            logFile.logWrite("*Return BYPASS")
+            --logFile.logWrite("*Return BYPASS")
             return "BYPASS"
         end
         return true
     elseif (dig==false) then
         blockAction = blocks.inspectedBlokMatchCanDig(inspectData.name)
         if(blockAction=="mine") then
-            logFile.logWrite("*4Return BYPASS")
+            --logFile.logWrite("*4Return BYPASS")
             return "BYPASS"
         elseif(blockAction=="ignore") then
-            logFile.logWrite("*4Return OK")
+            --logFile.logWrite("*4Return OK")
             return "OK"
         elseif(blockAction=="pass") then
-            logFile.logWrite("*5Return BYPASS")
+            --logFile.logWrite("*5Return BYPASS")
             return "BYPASS"
         end
 

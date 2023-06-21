@@ -71,7 +71,6 @@ while(doLoop) do
     else
         if(noJobsCount>5)then
             logFile.logWrite("Exit main.")    
-            logFile.logFileClose()
             doLoop = false
         end
         logFile.logWrite("No jobs.")

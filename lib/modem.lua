@@ -42,9 +42,9 @@ end
 
 function modem.askQuestionTurtleJob()
     logFile.logWrite("modem.askQuestionTurtleJob()")
-    rednet.broadcast(" ","QJ")
+    rednet.send(1," ","QJ")
 
-    id,message, protocol = rednet.receive() --wait until a message is received
+    id,message, protocol = rednet.receive("AJ") --wait until a message is received
     logFile.logWrite("id",id)
     logFile.logWrite("message",message)
     logFile.logWrite("protocol",protocol)

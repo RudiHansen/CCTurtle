@@ -23,7 +23,7 @@ local blocksTurtleCantMine      = {}
 -- Return values ("OK"-Path free turtle can move, "BYPASS"-Something is blocking turtle cant move that direction
 -- "ERROR"-This should not happen)
 function blocks.inspectDig(direction,dig)
-    logFile.logWrite("in blocks.inspectDig",direction,dig)
+    --logFile.logWrite("in blocks.inspectDig",direction,dig)
 
     local result
     local inspectData
@@ -40,11 +40,11 @@ function blocks.inspectDig(direction,dig)
         logFile.logWrite("Error in blocks.inspectDig")
         error()
     end
-    logFile.logWrite("result " .. tostring(result))
-    logFile.logWrite("inspectData.name " .. util.any2String(inspectData.name))
+    --logFile.logWrite("result " .. tostring(result))
+    --logFile.logWrite("inspectData.name " .. util.any2String(inspectData.name))
     
     if(result==false) then -- There is no block in front of the turtle
-        logFile.logWrite("*Return OK")
+        --logFile.logWrite("*Return OK")
         return "OK"
     elseif (dig==true) then
         logFile.logWrite("Calling inspectedBlokMatchCanDig "..inspectData.name)
@@ -123,46 +123,46 @@ function blocks.inspectDig(direction,dig)
 end
 
 function blocks.inspectedBlokMatchCanDig(blockName)
-    logFile.logWrite("In inspectedBlokMatchCanDig blockName=" .. blockName)
+    --logFile.logWrite("In inspectedBlokMatchCanDig blockName=" .. blockName)
     for i, value in ipairs(blocksTurtleCanMine) do
         if blockName == value then
-            logFile.logWrite("return mine")
+            --logFile.logWrite("return mine")
             return "mine"
         end
     end
     for i, value in ipairs(blocksTurtleCanIgnore) do
         if blockName == value then
-            logFile.logWrite("return ignore")
+            --logFile.logWrite("return ignore")
             return "ignore"
         end
     end
     for i, value in ipairs(blocksTurtleCantMine) do
         if blockName == value then
-            logFile.logWrite("return pass")
+            --logFile.logWrite("return pass")
             return "pass"
         end
     end
 
-    logFile.logWrite("Call  askQuestionBlockAction blockName=" .. blockName)
+    --logFile.logWrite("Call  askQuestionBlockAction blockName=" .. blockName)
     local saveStatus = modem.getStatus()
     modem.sendStatus("?")
     local blockAction = modem.askQuestionBlockAction(blockName)
-    logFile.logWrite("blockAction",blockAction)
+    --logFile.logWrite("blockAction",blockAction)
     modem.sendStatus(saveStatus)
     if(blockAction=="mine")then
         table.insert(blocksTurtleCanMine,blockName)
         blocks.saveData()
-        logFile.logWrite("2return mine")
+        --logFile.logWrite("2return mine")
         return "mine"
     elseif(blockAction=="ignore")then
         table.insert(blocksTurtleCanIgnore,blockName)
         blocks.saveData()
-        logFile.logWrite("2return ignore")
+        --logFile.logWrite("2return ignore")
         return "ignore"
     elseif(blockAction=="pass")then
         table.insert(blocksTurtleCantMine,blockName)
         blocks.saveData()
-        logFile.logWrite("2return pass")
+        --logFile.logWrite("2return pass")
         return "pass"
     else
         logFile.logWrite("Problem in blocks.inspectedBlokMatchCanDig")

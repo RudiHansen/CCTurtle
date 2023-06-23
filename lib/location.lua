@@ -48,7 +48,7 @@ function location.setCurrentPos(x,z,y,f)
 end
 
 function location.resetCurrentPosToHome()
-    local cpHomePos = location.getCurrentPos
+    local cpHomePos = location.getCurrentPos()
 
     currentPos.x = cpHomePos.x
     currentPos.z = cpHomePos.z

@@ -69,7 +69,6 @@ while(doLoop) do
         end
         logFile.logWrite("No jobs.")
         noJobsCount = noJobsCount + 1
-        sleep(5)
     end
 end
 

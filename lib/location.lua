@@ -48,12 +48,13 @@ function location.setCurrentPos(x,z,y,f)
 end
 
 function location.resetCurrentPosToHome()
-    local cpHomePos = location.getCurrentPos()
+    local cpHomePos = location.getHomePos()
 
     currentPos.x = cpHomePos.x
     currentPos.z = cpHomePos.z
     currentPos.y = cpHomePos.y
     currentPos.f = cpHomePos.f
+    logFile.logWrite("currentPos",currentPos)
 end
 
 
@@ -163,9 +164,9 @@ function location.str2Location(text)
         table.insert(fields, field)
     end
     local retLocation  = {}
-    retLocation.x      = fields[3]
-    retLocation.z      = fields[4]
-    retLocation.y      = fields[5]
+    retLocation.x      = tonumber(fields[3])
+    retLocation.z      = tonumber(fields[4])
+    retLocation.y      = tonumber(fields[5])
     retLocation.f      = fields[6]
 
     logFile.logWrite("retLocation",retLocation)

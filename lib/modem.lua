@@ -64,4 +64,14 @@ function modem.askQuestionTurtleJob()
     end
 end
 
+function modem.askQuestionAboutLocation(locationName)
+    logFile.logWrite("in modem.askQuestionAboutLocation",locationName)
+    rednet.send(0,locationName,"QL")
+    logFile.logWrite("rednet.send QL")
+
+    id,message, protocol = rednet.receive("AL") --wait until a message is received
+    logFile.logWrite("Received",id,message,protocol)
+    return message    
+end
+
 return modem

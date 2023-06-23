@@ -47,6 +47,16 @@ function location.setCurrentPos(x,z,y,f)
     currentPos.f = f
 end
 
+function location.resetCurrentPosToHome()
+    local cpHomePos = location.getCurrentPos
+
+    currentPos.x = cpHomePos.x
+    currentPos.z = cpHomePos.z
+    currentPos.y = cpHomePos.y
+    currentPos.f = cpHomePos.f
+end
+
+
 function location.setHomePos(x,z,y,f)
     homePos.x = x
     homePos.z = z
@@ -96,15 +106,27 @@ function location.copyPos(pos)
 end
 
 function location.getHomePos()
-    return homePos
+    logFile.logWrite("In location.getHomePos")
+    local strReply = modem.askQuestionAboutLocation(os.getComputerLabel())
+    logFile.logWrite("strReply",strReply)
+    
+    return location.str2Location(strReply)
 end
 
 function location.getRefuelPos()
-    return refuelPos
+    logFile.logWrite("In location.getRefuelPos")
+    local strReply = modem.askQuestionAboutLocation("Fuel")
+    logFile.logWrite("strReply",strReply)
+    
+    return location.str2Location(strReply)
 end
 
 function location.getDropOffPos()
-    return dropOffPos
+    logFile.logWrite("In location.getRefuelPos")
+    local strReply = modem.askQuestionAboutLocation("DropOff")
+    logFile.logWrite("strReply",strReply)
+    
+    return location.str2Location(strReply)
 end
 
 function location.comparePos(pos1, pos2)
@@ -132,6 +154,22 @@ end
 function location.stepY(step)
     currentPos.y    = currentPos.y + step
     fuelLevel       = fuelLevel - 1
+end
+
+function location.str2Location(text)
+    logFile.logWrite("location.str2Location",text)
+    fields = {}
+    for field in string.gmatch(text, "[^,]+") do
+        table.insert(fields, field)
+    end
+    local retLocation  = {}
+    retLocation.x      = fields[3]
+    retLocation.z      = fields[4]
+    retLocation.y      = fields[5]
+    retLocation.f      = fields[6]
+
+    logFile.logWrite("retLocation",retLocation)
+    return retLocation
 end
 
 return location

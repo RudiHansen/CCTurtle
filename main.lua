@@ -25,14 +25,8 @@ modem.init()
 location.init()
 blocks.loadData()
 
--- Set positions
--- TODO: Get from Main computer
-location.setHomePos(75,-41,63,"S")
-location.setRefuelPos(73,-40,63,"N")
-location.setDropOffPos(74,-40,63,"N")
-
 -- Send initial status message
-location.setCurrentPos(75,-41,63,"S")
+location.resetCurrentPosToHome()
 modem.sendStatus("Idle")
 
 -- Test Ask about block.

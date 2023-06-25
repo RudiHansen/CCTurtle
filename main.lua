@@ -47,7 +47,9 @@ while(doLoop) do
             startDig.f = turtleJobData.f1
             logFile.logWrite("moveToPos",startDig)
             logFile.logWrite("turtleJobsData.axisPriority",turtleJobData.axisPriority)
+            modem.sendTurtleJobStatus(turtleJobData,"RUN")
             move.moveToPos(startDig,turtleJobData.axisPriority)
+            modem.sendTurtleJobStatus(turtleJobData,"DONE")
         elseif(turtleJobData.JobType=="traverseArea")then
             startDig.x = tonumber(turtleJobData.x1)
             startDig.z = tonumber(turtleJobData.z1)
@@ -58,8 +60,11 @@ while(doLoop) do
             endDig.y   = tonumber(turtleJobData.y2)
             endDig.f   = turtleJobData.f2
             logFile.logWrite("traverseArea",startDig,endDig)
+            modem.sendTurtleJobStatus(turtleJobData,"RUN")
             move.traverseArea(startDig,endDig,turtleJobData.axisPriority,true)
+            modem.sendTurtleJobStatus(turtleJobData,"DONE")
         elseif(turtleJobData.JobType=="moveHome")then
+            modem.sendTurtleJobStatus(turtleJobData,"DONE")
             doLoop = false
         end
     else

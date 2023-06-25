@@ -29,6 +29,12 @@ function modem.sendStatus(newStatus)
     rednet.send(0,statusMessage,"S")
 end
 
+function modem.sendTurtleJobStatus(turtleJobData,status)
+    logFile.logWrite("modem.sendTurtleJobStatus",turtleJobData.Id,status)
+    local statusMessage = turtleJobData.Id .. "," .. status
+    rednet.send(0,statusMessage,"SJ")
+end
+
 function modem.getStatus()
     return status
 end

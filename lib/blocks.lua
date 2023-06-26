@@ -23,26 +23,26 @@ local blocksTurtleCantMine      = {}
 -- Return values ("OK"-Path free turtle can move, "BYPASS"-Something is blocking turtle cant move that direction
 -- "ERROR"-This should not happen)
 function blocks.inspectDig(direction,dig)
-    --logFile.logWrite("in blocks.inspectDig",direction,dig)
+    logFile.logWrite("in blocks.inspectDig",direction,dig)
 
     local result
     local inspectData
     local blockAction
+    local waitForTurtle = 1
 
-    if(direction=="W" or direction=="E" or direction=="N" or direction =="S")then
-        move.turnToFace(direction)
-        result, inspectData = turtle.inspect()
-    elseif(direction=="U")then
-        result, inspectData = turtle.inspectUp()
-    elseif(direction=="D")then
-        result, inspectData = turtle.inspectDown()
-    else
-        logFile.logWrite("Error in blocks.inspectDig")
-        error()
-    end
+    result, inspectData = blocks.inspectDirection(direction)
     --logFile.logWrite("result " .. tostring(result))
     --logFile.logWrite("inspectData.name " .. util.any2String(inspectData.name))
     
+    -- If the inspectData.name is a Turtle, then try one time to see if it moves.
+    while(waitForTurtle<3 and result==false and inspectData.name=="computercraft:turtle_normal")then
+        logFile.logWrite("waitForTurtle",waitForTurtle)
+        sleep(waitForTurtle)
+        waitForTurtle = waitForTurtle + 1
+        result, inspectData = blocks.inspectDirection(direction)
+        logFile.logWrite("result",result)
+    end
+
     if(result==false) then -- There is no block in front of the turtle
         --logFile.logWrite("*Return OK")
         return "OK"
@@ -120,6 +120,21 @@ function blocks.inspectDig(direction,dig)
     modem.sendStatus("ERROR!")
     location.writeLocationToFile()
     error()
+end
+
+function blocks.inspectDirection(direction)
+    if(direction=="W" or direction=="E" or direction=="N" or direction =="S")then
+        move.turnToFace(direction)
+        result, inspectData = turtle.inspect()
+    elseif(direction=="U")then
+        result, inspectData = turtle.inspectUp()
+    elseif(direction=="D")then
+        result, inspectData = turtle.inspectDown()
+    else
+        logFile.logWrite("Error in blocks.inspectDig")
+        error()
+    end
+    return result, inspectData
 end
 
 function blocks.inspectedBlokMatchCanDig(blockName)

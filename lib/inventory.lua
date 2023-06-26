@@ -193,7 +193,7 @@ function inventory.checkAll(force)
         inventory.emptyStorageSlots()
     end
 
-    move.moveToPos(originalPos,yzx)
+    move.moveToPos(originalPos,"yzx")
     checkAll = true
     --logFile.logWrite("Ended checkAll")
 end

@@ -160,11 +160,8 @@ function blocks.inspectedBlokMatchCanDig(blockName)
     end
 
     --logFile.logWrite("Call  askQuestionBlockAction blockName=" .. blockName)
-    local saveStatus = modem.getStatus()
-    modem.sendStatus("?")
     local blockAction = modem.askQuestionBlockAction(blockName)
     --logFile.logWrite("blockAction",blockAction)
-    modem.sendStatus(saveStatus)
     if(blockAction=="mine")then
         table.insert(blocksTurtleCanMine,blockName)
         blocks.saveData()

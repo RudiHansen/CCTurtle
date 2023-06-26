@@ -35,7 +35,7 @@ function blocks.inspectDig(direction,dig)
     --logFile.logWrite("inspectData.name " .. util.any2String(inspectData.name))
     
     -- If the inspectData.name is a Turtle, then try one time to see if it moves.
-    while(waitForTurtle<3 and result==false and inspectData.name=="computercraft:turtle_normal")then
+    while(waitForTurtle<3 and result==false and inspectData.name=="computercraft:turtle_normal")do
         logFile.logWrite("waitForTurtle",waitForTurtle)
         sleep(waitForTurtle)
         waitForTurtle = waitForTurtle + 1

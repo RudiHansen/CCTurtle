@@ -183,14 +183,10 @@ function inventory.checkAll(force)
     local originalPos = location.getCurrentPosCopy()
     --logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
 
-    if(checkFuel == true)then
+    if(checkFuel == true or checkInventory == true)then
         inventory.emptyStorageSlots()
         checkInventory = false
         inventory.pickUpFuel()
-    end
-
-    if(checkInventory == true)then
-        inventory.emptyStorageSlots()
     end
 
     move.moveToPos(originalPos,"yzx")

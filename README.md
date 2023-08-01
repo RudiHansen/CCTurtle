@@ -1,6 +1,10 @@
 # CCTurtle
 Computercraft Turtle, used in minecraft for controlling a Turtle.
 
+# How to setup a new turtle.
+Give the turtle a label with:
+label set Miner1    (Miner1 is the label the turtle should have)
+
 # Information a turtle should know.
 Its Label
 Its Position

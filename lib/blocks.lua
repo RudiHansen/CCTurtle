@@ -208,6 +208,12 @@ function blocks.loadData()
     local fileCanMine   = io.open(dataFileNameCanMine,  "r")
     local fileCantMine  = io.open(dataFileNameCantMine, "r")
 
+    -- Check if the first file exists, if it does not then I am assuming none of the files exist.
+    local result = fs.exists(dataFileNameIgnore)
+    if(result==false)then
+        return
+    end
+
     -- Read contents of file into a string
     local contentsIgnore    = fileIgnore:read("*all")
     local contentsCanMine   = fileCanMine:read("*all")

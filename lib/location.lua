@@ -13,8 +13,15 @@ local dropOffPos    = {x=0,z=0,y=0,f=""}
 local currentPos    = {x=0,z=0,y=0,f=""}
 
 function location.init()
-    -- Read location from file
     local locationFileName = "location.dat"
+    
+    -- Check if file exists.
+    local result = fs.exists(locationFileName)
+    if(result==false)then
+        return
+    end
+    
+    -- Read location from file
     local locationFile = fs.open(locationFileName, "r")
     currentPos.x = tonumber(locationFile.readLine())
     currentPos.z = tonumber(locationFile.readLine())

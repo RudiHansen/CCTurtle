@@ -1,48 +1,37 @@
-modem     = require("lib.modem")
-location  = require("lib.location")
-inventory = require("lib.inventory")
-move      = require("lib.move")
-util      = require("lib.util")
-logFile   = require("lib.logFile")
-blocks    = require("lib.blocks")
-gridMap   = require("lib.gridMap")
+-- Load all library's
+modem       = require("lib.modem")
+location    = require("lib.location")
+inventory   = require("lib.inventory")
+move        = require("lib.move")
+util        = require("lib.util")
+logFile     = require("lib.logFile")
+blocks      = require("lib.blocks")
+gridMap     = require("lib.gridMap")
+turtleJobs  = require("lib.turtleJobs")
 
+-- Init Variables
+local noJobsCount   = 0
+local turtleJobData = {}
+local startDig      = {x=80,z=41,y=63,f="S"}
+local endDig        = {x=73,z=48,y=63,f="S"}
+-- Init library's
 logFile.logFileOpen()
 modem.init()
 location.init()
-location.setHomePos(75,-41,63,"S")
-location.setRefuelPos(73,-40,63,"N")
-location.setDropOffPos(74,-40,63,"N")
 blocks.loadData()
-modem.sendStatus("Work")
 
-location.setCurrentPos(75,-41,63,"S")
-location.writeLocationToFile()
-
-logFile.logWrite("1")
-inventory.checkAll(true)
-logFile.logWrite("2")
-
-local result     = ""
-local startDig   = {x=82,z=-10,y=63,f="S"}
-local areaStart  = {x=82,z=-9,y=63,f="S"}
-local areaEnd    = {x=73,z=0,y=74,f="S"}
-
-result = move.moveToPos(startDig,"yzx")
-logFile.logWrite("3")
-
---result = move.traverseArea(areaStart,areaEnd,"xzy",true)
-result = move.traverseArea(areaStart,areaEnd,"xyz",true)
-logFile.logWrite("4")
-
-
-
-result = move.moveToPos(location.getHomePos(),"zxy",false)
-logFile.logWrite("5")
-
---print("moveToPos "..tostring(result))
---sleep(1)
-
+-- Send initial status message
+location.resetCurrentPosToHome()
 modem.sendStatus("Idle")
-location.writeLocationToFile()
+
+
+move.traverseArea(startDig,endDig,xyz,true)
+
+-- End action for turtle
+logFile.logWrite("moveHome")
+inventory.emptyStorageSlots()
+inventory.pickUpFuel()
+move.moveToPos(location.getHomePos(),xyz,false)
+
+-- Finalize script
 logFile.logFileClose()

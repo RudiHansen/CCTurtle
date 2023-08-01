@@ -15,3 +15,5 @@ Make move function, for now thinking that its one function called with direction
 
 # Next Step
 Work on block avoidance.
+Inside move.moveToPos and move.traverseArea the BYPASS section needs to work better.
+

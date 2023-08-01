@@ -42,7 +42,7 @@ end
 function modem.askQuestionBlockAction(blockName)
     --logFile.logWrite("in modem.askQuestionBlockAction ",blockName)
     local saveStatus = status
-    modem.sendStatus("COM?")
+    modem.sendStatus("?QB")
 
     rednet.send(0,blockName,"QB")
     --logFile.logWrite("rednet.send QB")
@@ -56,7 +56,7 @@ end
 function modem.askQuestionTurtleJob()
     --logFile.logWrite("in modem.askQuestionTurtleJob()")
     local saveStatus = status
-    modem.sendStatus("COM?")
+    modem.sendStatus("?QJ")
     rednet.send(0," ","QJ")
     --logFile.logWrite("Send QJ")
 
@@ -80,7 +80,7 @@ end
 function modem.askQuestionAboutLocation(locationName)
     --logFile.logWrite("in modem.askQuestionAboutLocation",locationName)
     local saveStatus = status
-    modem.sendStatus("COM?")
+    modem.sendStatus("?QL")
     rednet.send(0,locationName,"QL")
     --logFile.logWrite("rednet.send QL")
 

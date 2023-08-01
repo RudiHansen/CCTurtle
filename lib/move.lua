@@ -100,7 +100,8 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
                 --logFile.logWrite("move ",result)
             elseif(result=="BYPASS") then
                 --logFile.logWrite("bypass",result)
-                gridMap.setGridMapDirection(nextMove,2)
+                --gridMap.setGridMapDirection(nextMove,2)
+                move.byPassBlock(nextMove,areaStart,areaEnd,axisPriority,dig)
             end
             nextMove = ""
             priorityIdx = 1
@@ -156,8 +157,9 @@ function move.moveToPos(endPos,axisPriority,dig)
                 -- TODO: This is a tmp fix of bypass
                 -- nextStep = "U"
                 --result      = move.move(nextStep)
+                move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
                 result = false
-                axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
+                --axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
             else
                 result = false
                 axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
@@ -180,6 +182,47 @@ function move.moveToPos(endPos,axisPriority,dig)
     if(startPos.f ~= endPos.f) then
         move.turnToFace(endPos.f)
     end
+end
+
+function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
+    logFile.logWrite("move.byPassBlock - 1")
+    logFile.logWrite("nextMove",nextMove)
+    logFile.logWrite("startPos",startPos)
+    logFile.logWrite("endPos",endPos)
+    logFile.logWrite("axisPriority",axisPriority)
+    logFile.logWrite("dig",dig)
+
+    local bypassMove = ""
+
+    if(nextMove=="E")then
+        bypassMove = "S"
+    elseif(nextMove=="W")then
+        bypassMove = "N"
+    elseif(nextMove=="N")then
+        bypassMove = "E"
+    elseif(nextMove=="S")then
+        bypassMove = "W"
+    elseif(nextMove=="U")then
+        bypassMove = "S"
+    elseif(nextMove=="D")then
+        bypassMove = "N"
+    end
+
+    logFile.logWrite("move.byPassBlock - 2",)
+    logFile.logWrite("nextMove",nextMove)
+    logFile.logWrite("bypassMove",bypassMove)
+
+    if(nextMove~="" and bypassMove~="") then
+        result      = blocks.inspectDig(bypassMove,dig)
+        logFile.logWrite("inspectDig result",result)
+        if(result == "OK") then
+            gridMap.setGridMapDirection(nextMove,1)
+            result      = move.move(nextMove)
+            logFile.logWrite("move result",result)
+        end
+    end
+
+    error()
 end
 
 -- Get the next step to get from startPos to endPos using axis

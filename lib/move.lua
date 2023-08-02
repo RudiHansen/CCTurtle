@@ -99,7 +99,7 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
                 result      = move.move(nextMove)
                 --logFile.logWrite("move ",result)
             elseif(result=="BYPASS") then
-                --logFile.logWrite("bypass",result)
+                logFile.logWrite("move.traverseArea call bypass",result)
                 gridMap.setGridMapDirection(nextMove,2)
                 move.byPassBlock(nextMove,areaStart,areaEnd,axisPriority,dig)
             end
@@ -157,6 +157,7 @@ function move.moveToPos(endPos,axisPriority,dig)
                 -- TODO: This is a tmp fix of bypass
                 -- nextStep = "U"
                 --result      = move.move(nextStep)
+                logFile.logWrite("move.moveToPos call bypass",result)
                 move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
                 result = false
                 --axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)

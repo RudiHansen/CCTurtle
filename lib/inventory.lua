@@ -11,7 +11,7 @@
 
 local inventory = {}
 
-local maxFuelLevel = 2000
+local maxFuelLevel = 4000
 local minFuelLevel = 400
 local refuelItems  = 4
 local checkAll     = true

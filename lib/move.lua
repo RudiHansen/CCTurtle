@@ -58,12 +58,12 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
     local checkedY      = false
     
     while(checkedX==false or checkedZ==false or checkedY==false)do
-        logFile.logWrite("axisPriority[priorityIdx]",axisPriority[priorityIdx])
+        --logFile.logWrite("axisPriority[priorityIdx]",axisPriority[priorityIdx])
         if(axisPriority[priorityIdx] == "x") then
             val1 = gridMap.getGridMapValue(currentPos.x+1, currentPos.z, currentPos.y)
             val2 = gridMap.getGridMapValue(currentPos.x-1, currentPos.z, currentPos.y)
-            logFile.logWrite("val1=",val1)
-            logFile.logWrite("val2=",val2)
+            --logFile.logWrite("val1=",val1)
+            --logFile.logWrite("val2=",val2)
             if(val1==0) then
                 nextMove = "E"
             elseif(val2==0) then
@@ -89,17 +89,17 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
             end
             checkedY = true
         end
-        logFile.logWrite("nextMove",nextMove)
+        --logFile.logWrite("nextMove",nextMove)
         
         if(nextMove~="") then
             result      = blocks.inspectDig(nextMove,true)
-            logFile.logWrite("inspectDig ",result)
+            --logFile.logWrite("inspectDig ",result)
             if(result == "OK") then
                 gridMap.setGridMapDirection(nextMove,1)
                 result      = move.move(nextMove)
-                logFile.logWrite("move ",result)
+                --logFile.logWrite("move ",result)
             elseif(result=="BYPASS") then
-                logFile.logWrite("bypass",result)
+                --logFile.logWrite("bypass",result)
                 gridMap.setGridMapDirection(nextMove,2)
                 move.byPassBlock(nextMove,areaStart,areaEnd,axisPriority,dig)
             end
@@ -119,11 +119,11 @@ end
 
 -- Move to a Position using axisPriority, if dig=true then dig block
 function move.moveToPos(endPos,axisPriority,dig)
-    logFile.logWrite("in move.moveToPos")
-    logFile.logWrite("CurrentPos   :",location.getCurrentPos())
-    logFile.logWrite("endPos       :",endPos)
-    logFile.logWrite("axisPriority :",axisPriority)
-    logFile.logWrite("dig          :",dig)
+    --logFile.logWrite("in move.moveToPos")
+    --logFile.logWrite("CurrentPos   :",location.getCurrentPos())
+    --logFile.logWrite("endPos       :",endPos)
+    --logFile.logWrite("axisPriority :",axisPriority)
+    --logFile.logWrite("dig          :",dig)
 
     if(axisPriority == nil or axisPriority == "") then
         axisPriority = moveAxisPriority
@@ -143,16 +143,16 @@ function move.moveToPos(endPos,axisPriority,dig)
         currentAxisPriority     = string.sub(axisPriority,axisPriorityIdx,axisPriorityIdx)
 
         nextStep    = move.getNextStep(startPos, endPos, currentAxisPriority)
-        logFile.logWrite("startPos =",startPos)
-        logFile.logWrite("endPos   =",endPos)
-        logFile.logWrite("nextStep =",nextStep)
+        --logFile.logWrite("startPos =",startPos)
+        --logFile.logWrite("endPos   =",endPos)
+        --logFile.logWrite("nextStep =",nextStep)
 
         if(nextStep~="") then
             result      = blocks.inspectDig(nextStep,dig)
-            logFile.logWrite("inspectDig ",result)
+            --logFile.logWrite("inspectDig ",result)
             if(result == "OK") then
                 result      = move.move(nextStep)
-                logFile.logWrite("move ",result)
+                --logFile.logWrite("move ",result)
             elseif(result == "BYPASS") then
                 -- TODO: This is a tmp fix of bypass
                 -- nextStep = "U"

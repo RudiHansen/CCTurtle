@@ -20,4 +20,5 @@ Make move function, for now thinking that its one function called with direction
 # Next Step
 Work on block avoidance.
 Inside move.moveToPos and move.traverseArea the BYPASS section needs to work better.
+And I may have to look at this before I can start digging in my new world, since right now when working on jobs the turtle can't get home from refueling, look at the logfile line 1133
 

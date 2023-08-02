@@ -81,7 +81,8 @@ end
 logFile.logWrite("moveHome")
 inventory.emptyStorageSlots()
 inventory.pickUpFuel()
-move.moveToPos(location.getHomePos(),turtleJobData.axisPriority,false)
+--move.moveToPos(location.getHomePos(),turtleJobData.axisPriority,false)
+move.moveToPos(location.getHomePos(),'xzy',false)
 
 -- Finalize script
 logFile.logFileClose()

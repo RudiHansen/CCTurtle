@@ -194,13 +194,20 @@ function move.moveToPos(endPos,axisPriority,dig)
 end
 
 -- TODO : First some refactoring of this code.
+--        New lib moveHelper for some of the functions.
 -- TODO : Then make it handle the case where it does not get back on track
 -- TODO : Improve the setting of origMove, sideMove1 and sideMove2
 --        Thinking it may have to set them differently in some way.
 --        From the result in my first test when it kind of dug into the wall
 --        When it could have moved to the other side with no digging.
+--        
 -- TODO : Fix problem in bypass U and D
 --        It kind of skips a complete level of digging 
+--        I actually think this might go for 2 of the 3 directions.
+--        Like this job, where E&W are lets call it the main move direction, 
+--        the two other S&N, U&D might not be able to use the same method, without
+--        it causing some digging to be skipped.
+
 function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
     logFile.logWrite("move.byPassBlock - 1")
     logFile.logWrite("nextMove",nextMove)
@@ -217,20 +224,20 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
         sideMove1 = "S"
         sideMove2 = "N"
     elseif(origMove=="W")then
-        sideMove1 = "N"
-        sideMove2 = "S"
+        sideMove1 = "S"
+        sideMove2 = "N"
     elseif(origMove=="N")then
         sideMove1 = "E"
         sideMove2 = "W"
     elseif(origMove=="S")then
-        sideMove1 = "W"
-        sideMove2 = "E"
+        sideMove1 = "E"
+        sideMove2 = "W"
     elseif(origMove=="U")then
         sideMove1 = "S"
         sideMove2 = "N"
     elseif(origMove=="D")then
-        sideMove1 = "N"
-        sideMove2 = "S"
+        sideMove1 = "S"
+        sideMove2 = "N"
     end
 
     logFile.logWrite("move.byPassBlock - 2")

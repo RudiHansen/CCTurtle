@@ -93,7 +93,7 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
         
         if(nextMove~="") then
             result      = blocks.inspectDig(nextMove,true)
-            logFile.logWrite("inspectDig ",result)
+            --logFile.logWrite("inspectDig ",result)
             if(result == "OK") then
                 gridMap.setGridMapDirection(nextMove,1)
                 result      = move.move(nextMove)

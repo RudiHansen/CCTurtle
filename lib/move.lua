@@ -101,15 +101,15 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
             elseif(result=="BYPASS") then
                 logFile.logWrite("In Bypass")
                 -- Temp fix for bypass, until I get the ByPass to work.
-                local saveStatus = modem.getStatus()
-                modem.sendStatus("Blocked")
-                print("Can't move, please remove the obstacles!")
-                util.waitForUserKey()
-                modem.sendStatus(saveStatus)
+                --local saveStatus = modem.getStatus()
+                --modem.sendStatus("Blocked")
+                --print("Can't move, please remove the obstacles!")
+                --util.waitForUserKey()
+                --modem.sendStatus(saveStatus)
 
-                --logFile.logWrite("move.traverseArea call bypass",result)
-                --gridMap.setGridMapDirection(nextMove,2)
-                --move.byPassBlock(nextMove,areaStart,areaEnd,axisPriority,dig)
+                logFile.logWrite("move.traverseArea call bypass",result)
+                gridMap.setGridMapDirection(nextMove,2)
+                move.byPassBlock(nextMove,areaStart,areaEnd,axisPriority,dig)
             end
             nextMove = ""
             priorityIdx = 1
@@ -193,6 +193,14 @@ function move.moveToPos(endPos,axisPriority,dig)
     end
 end
 
+-- TODO : First some refactoring of this code.
+-- TODO : Then make it handle the case where it does not get back on track
+-- TODO : Improve the setting of origMove, sideMove1 and sideMove2
+--        Thinking it may have to set them differently in some way.
+--        From the result in my first test when it kind of dug into the wall
+--        When it could have moved to the other side with no digging.
+-- TODO : Fix problem in bypass U and D
+--        It kind of skips a complete level of digging 
 function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
     logFile.logWrite("move.byPassBlock - 1")
     logFile.logWrite("nextMove",nextMove)
@@ -201,37 +209,79 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
     logFile.logWrite("axisPriority",axisPriority)
     logFile.logWrite("dig",dig)
 
-    local bypassMove = ""
+    local origMove = nextMove
+    local sideMove1 = ""
+    local sideMove2 = ""
 
-    if(nextMove=="E")then
-        bypassMove = "S"
-    elseif(nextMove=="W")then
-        bypassMove = "N"
-    elseif(nextMove=="N")then
-        bypassMove = "E"
-    elseif(nextMove=="S")then
-        bypassMove = "W"
-    elseif(nextMove=="U")then
-        bypassMove = "S"
-    elseif(nextMove=="D")then
-        bypassMove = "N"
+    if(origMove=="E")then
+        sideMove1 = "S"
+        sideMove2 = "N"
+    elseif(origMove=="W")then
+        sideMove1 = "N"
+        sideMove2 = "S"
+    elseif(origMove=="N")then
+        sideMove1 = "E"
+        sideMove2 = "W"
+    elseif(origMove=="S")then
+        sideMove1 = "W"
+        sideMove2 = "E"
+    elseif(origMove=="U")then
+        sideMove1 = "S"
+        sideMove2 = "N"
+    elseif(origMove=="D")then
+        sideMove1 = "N"
+        sideMove2 = "S"
     end
 
     logFile.logWrite("move.byPassBlock - 2")
-    logFile.logWrite("nextMove",nextMove)
-    logFile.logWrite("bypassMove",bypassMove)
+    logFile.logWrite("origMove",origMove)
+    logFile.logWrite("sideMove1",sideMove1)
+    logFile.logWrite("sideMove2",sideMove2)
 
-    if(nextMove~="" and bypassMove~="") then
-        result      = blocks.inspectDig(bypassMove,dig)
-        logFile.logWrite("inspectDig result",result)
-        if(result == "OK") then
-            gridMap.setGridMapDirection(nextMove,1)
-            result      = move.move(nextMove)
-            logFile.logWrite("move result",result)
-        end
+    --[[
+    The original move was E                 (origMove)
+    Then i have to try to move S            (sideMove1)
+    The repeat moving E until I can move N  (sideMove2)
+    ]]
+
+    local keepMoving = true
+
+    -- Try to move sideMove1
+    logFile.logWrite("Try to move sideMove1")
+    result      = blocks.inspectDig(sideMove1,dig)
+    if(result == "OK") then
+        gridMap.setGridMapDirection(sideMove1,1)
+        result      = move.move(sideMove1)
+    else
+        gridMap.setGridMapDirection(sideMove1,2)
+        keepMoving=false
     end
 
-    error()
+    while(keepMoving==true) do
+        -- Try to move origMove
+        logFile.logWrite("Try to move origMove")
+        result      = blocks.inspectDig(origMove,dig)
+        if(result == "OK") then
+            gridMap.setGridMapDirection(origMove,1)
+            result      = move.move(origMove)
+        else
+            gridMap.setGridMapDirection(origMove,2)
+            keepMoving=false
+        end
+
+        -- Try to move sideMove2
+        logFile.logWrite("Try to move sideMove2")
+        if(keepMoving==true) then
+            result      = blocks.inspectDig(sideMove2,dig)
+            if(result == "OK") then
+                gridMap.setGridMapDirection(sideMove2,1)
+                result      = move.move(sideMove2)
+                keepMoving=false
+            else
+                gridMap.setGridMapDirection(sideMove2,2)
+            end
+        end
+    end
 end
 
 -- Get the next step to get from startPos to endPos using axis

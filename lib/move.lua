@@ -93,15 +93,23 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
         
         if(nextMove~="") then
             result      = blocks.inspectDig(nextMove,true)
-            --logFile.logWrite("inspectDig ",result)
+            logFile.logWrite("inspectDig ",result)
             if(result == "OK") then
                 gridMap.setGridMapDirection(nextMove,1)
                 result      = move.move(nextMove)
                 --logFile.logWrite("move ",result)
             elseif(result=="BYPASS") then
-                logFile.logWrite("move.traverseArea call bypass",result)
-                gridMap.setGridMapDirection(nextMove,2)
-                move.byPassBlock(nextMove,areaStart,areaEnd,axisPriority,dig)
+                logFile.logWrite("In Bypass")
+                -- Temp fix for bypass, until I get the ByPass to work.
+                local saveStatus = modem.getStatus()
+                modem.sendStatus("Blocked")
+                print("Can't move, please remove the obstacles!")
+                util.waitForUserKey()
+                modem.sendStatus(saveStatus)
+
+                --logFile.logWrite("move.traverseArea call bypass",result)
+                --gridMap.setGridMapDirection(nextMove,2)
+                --move.byPassBlock(nextMove,areaStart,areaEnd,axisPriority,dig)
             end
             nextMove = ""
             priorityIdx = 1

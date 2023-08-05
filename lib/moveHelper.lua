@@ -7,7 +7,7 @@
 
 local moveHelper = {}
 
-function moveHelper.calculateMoves(nextMove)
+function moveHelper.calculateMoves(nextMove,endPos)
     local origMove = nextMove
     local sideMove1 = ""
     local sideMove2 = ""

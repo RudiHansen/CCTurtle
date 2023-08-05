@@ -167,11 +167,14 @@ function move.moveToPos(endPos,axisPriority,dig)
                 logFile.logWrite("move ",result)
             elseif(result == "BYPASS") then
                 -- TODO: This is a tmp fix of bypass
-                --result = false
-                --axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
-
-                logFile.logWrite("move.move call bypass",result)
-                move.byPassBlock(nextStep,startPos,endPos,axisPriority,dig)
+                if(moveErrors > 2) then
+                    logFile.logWrite("move.move call bypass",result)
+                    move.byPassBlock(nextStep,startPos,endPos,axisPriority,dig)
+                    moveErrors = 0
+                else
+                    result = false
+                    axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
+                end
             else
                 result = false
                 axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
@@ -226,7 +229,7 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
     logFile.logWrite("dig",dig)
     logFile.logWrite("At pos : ",location.getCurrentPos())
 
-    local origMove, sideMove1, sideMove2 = moveHelper.calculateMoves(nextMove)
+    local origMove, sideMove1, sideMove2 = moveHelper.calculateMoves(nextMove,endPos)
     local keepMoving = true
 
     -- Try to move sideMove1

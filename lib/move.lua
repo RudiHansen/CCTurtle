@@ -155,16 +155,16 @@ function move.moveToPos(endPos,axisPriority,dig)
         currentAxisPriority     = string.sub(axisPriority,axisPriorityIdx,axisPriorityIdx)
 
         nextStep    = move.getNextStep(startPos, endPos, currentAxisPriority)
-        logFile.logWrite("startPos =",startPos)
-        logFile.logWrite("endPos   =",endPos)
-        logFile.logWrite("nextStep =",nextStep)
+        --logFile.logWrite("startPos =",startPos)
+        --logFile.logWrite("endPos   =",endPos)
+        --logFile.logWrite("nextStep =",nextStep)
 
         if(nextStep~="") then
             result      = blocks.inspectDig(nextStep,dig)
-            logFile.logWrite("inspectDig ",result)
+            --logFile.logWrite("inspectDig ",result)
             if(result == "OK") then
                 result      = move.move(nextStep)
-                logFile.logWrite("move ",result)
+                logFile.logWrite("Check ok move result",result)
             elseif(result == "BYPASS") then
                 -- TODO: This is a tmp fix of bypass
                 if(moveErrors > 2) then
@@ -184,12 +184,16 @@ function move.moveToPos(endPos,axisPriority,dig)
             moveErrors = moveErrors + 1
             logFile.logWrite("moveErrors ",moveErrors)
             if (moveErrors > 3) then
-                local saveStatus = modem.getStatus()
-                logFile.logWrite("Blocked")
-                modem.sendStatus("Blocked")
-                print("Can't move, please remove the obstacles!")
-                util.waitForUserKey()
+                logFile.logWrite("move.move call bypass when blocked",result)
+                move.byPassBlock(nextStep,startPos,endPos,axisPriority,dig)
                 moveErrors = 0
+
+                --local saveStatus = modem.getStatus()
+                --logFile.logWrite("Blocked")
+                --modem.sendStatus("Blocked")
+                --print("Can't move, please remove the obstacles!")
+                --util.waitForUserKey()
+                --moveErrors = 0
                 modem.sendStatus(saveStatus)
             end
         end
@@ -227,44 +231,95 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
     logFile.logWrite("endPos",endPos)
     logFile.logWrite("axisPriority",axisPriority)
     logFile.logWrite("dig",dig)
-    logFile.logWrite("At pos : ",location.getCurrentPos())
+    logFile.logWrite("Pos : ",location.getCurrentPos())
 
     local origMove, sideMove1, sideMove2 = moveHelper.calculateMoves(nextMove,endPos)
-    local keepMoving = true
+    local doSideMove1   = true
+    local keepMoving    = true
+    local doNext        = true
+    --[[
+    origMode    W
+    sideMove1   S
+    sideMove2   N
+    Current:
+        Try to move sideMove1
+            YES : LOOP
+                Try origMove
+                YES : Try move sideMove2
+                    NO : Do nothing
+                NO  : Break Look
+            END LOOP
+
+    New:
+        Try to move sideMove1
+            NO : Reverse sideMove1
+            YES: LOOP
+                Try origMove
+                YES : Try move sideMove2
+                    NO : No nothing
+                NO  : Break Look
+            END LOOP
+
+    ]]
 
     -- Try to move sideMove1
-    logFile.logWrite("Try to move sideMove1=",sideMove1)
-    result      = blocks.inspectDig(sideMove1,dig)
-    if(result == "OK") then
-        gridMap.setGridMapDirection(sideMove1,1)
-        result      = move.move(sideMove1)
-    else
-        gridMap.setGridMapDirection(sideMove1,2)
-        keepMoving=false
+    while(doSideMove1==true)do
+        logFile.logWrite("Try to move sideMove1=",sideMove1)
+        result      = blocks.inspectDig(sideMove1,dig)
+        logFile.logWrite("result",result)
+        if(result == "OK") then
+            gridMap.setGridMapDirection(sideMove1,1)
+            result      = move.move(sideMove1)
+            logFile.logWrite("Pos : ",location.getCurrentPos())
+            keepMoving  = true
+            doSideMove1 = false
+        else
+            gridMap.setGridMapDirection(sideMove1,2)
+            keepMoving      = false
+            logFile.logWrite("moveHelper.reverseMoveDirection",sideMove1)
+            sideMove1       = moveHelper.reverseMoveDirection(sideMove1)
+            logFile.logWrite("Result",sideMove1)
+            doSideMove1 = true
+        end
+        -- Test if origMove Is possible
+        logFile.logWrite("Test origMove=",origMove)
+        result      = blocks.inspectDig(origMove,dig)
+        logFile.logWrite("result",result)
+        if(result ~= "OK")then
+            doSideMove1=true
+        end
+        logFile.logWrite("doSideMove1",doSideMove1)
     end
 
     while(keepMoving==true) do
         -- Try to move origMove
+        doNext=true
         logFile.logWrite("Try to move origMove=",origMove)
         result      = blocks.inspectDig(origMove,dig)
+        logFile.logWrite("result",result)
         if(result == "OK") then
             gridMap.setGridMapDirection(origMove,1)
             result      = move.move(origMove)
+            logFile.logWrite("Pos : ",location.getCurrentPos())
         else
             gridMap.setGridMapDirection(origMove,2)
-            keepMoving=false
+            --keepMoving=false
+            --doNext=false
         end
-
-        -- Try to move sideMove2
-        logFile.logWrite("Try to move sideMove2=",sideMove2)
-        if(keepMoving==true) then
-            result      = blocks.inspectDig(sideMove2,dig)
-            if(result == "OK") then
-                gridMap.setGridMapDirection(sideMove2,1)
-                result      = move.move(sideMove2)
-                keepMoving=false
-            else
-                gridMap.setGridMapDirection(sideMove2,2)
+        if(doNext==true)then
+            -- Try to move sideMove2
+            logFile.logWrite("Try to move sideMove2=",sideMove2)
+            logFile.logWrite("result",result)
+            if(keepMoving==true) then
+                result      = blocks.inspectDig(sideMove2,dig)
+                if(result == "OK") then
+                    gridMap.setGridMapDirection(sideMove2,1)
+                    result      = move.move(sideMove2)
+                    logFile.logWrite("Pos : ",location.getCurrentPos())
+                    keepMoving=false
+                else
+                    gridMap.setGridMapDirection(sideMove2,2)
+                end
             end
         end
     end

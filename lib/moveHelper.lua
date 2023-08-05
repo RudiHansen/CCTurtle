@@ -38,4 +38,25 @@ function moveHelper.calculateMoves(nextMove,endPos)
     return origMove, sideMove1, sideMove2
 end
 
+function moveHelper.reverseMoveDirection(moveVal)
+    if(moveVal=="S")then
+        return "N"
+    end
+    if(moveVal=="N")then
+        return "S"
+    end
+    if(moveVal=="W")then
+        return "E"
+    end
+    if(moveVal=="E")then
+        return "W"
+    end
+    if(moveVal=="U")then
+        return "D"
+    end
+    if(moveVal=="D")then
+        return "U"
+    end
+end
+
 return moveHelper

@@ -226,35 +226,7 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
     logFile.logWrite("dig",dig)
     logFile.logWrite("At pos : ",location.getCurrentPos())
 
-    local origMove = nextMove
-    local sideMove1 = ""
-    local sideMove2 = ""
-
-    if(origMove=="E")then
-        sideMove1 = "S"
-        sideMove2 = "N"
-    elseif(origMove=="W")then
-        sideMove1 = "S"
-        sideMove2 = "N"
-    elseif(origMove=="N")then
-        sideMove1 = "E"
-        sideMove2 = "W"
-    elseif(origMove=="S")then
-        sideMove1 = "E"
-        sideMove2 = "W"
-    elseif(origMove=="U")then
-        sideMove1 = "S"
-        sideMove2 = "N"
-    elseif(origMove=="D")then
-        sideMove1 = "S"
-        sideMove2 = "N"
-    end
-
-    logFile.logWrite("move.byPassBlock - 2")
-    logFile.logWrite("origMove",origMove)
-    logFile.logWrite("sideMove1",sideMove1)
-    logFile.logWrite("sideMove2",sideMove2)
-
+    local origMove, sideMove1, sideMove2 = moveHelper.calculateMoves(nextMove)
     local keepMoving = true
 
     -- Try to move sideMove1

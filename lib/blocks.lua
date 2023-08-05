@@ -132,7 +132,7 @@ function blocks.inspectDirection(direction)
     elseif(direction=="D")then
         result, inspectData = turtle.inspectDown()
     else
-        logFile.logWrite("Error in blocks.inspectDig")
+        logFile.logWrite("Error in blocks.inspectDirection",direction)
         error()
     end
     return result, inspectData

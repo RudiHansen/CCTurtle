@@ -131,11 +131,11 @@ end
 
 -- Move to a Position using axisPriority, if dig=true then dig block
 function move.moveToPos(endPos,axisPriority,dig)
-    --logFile.logWrite("in move.moveToPos")
-    --logFile.logWrite("CurrentPos   :",location.getCurrentPos())
-    --logFile.logWrite("endPos       :",endPos)
-    --logFile.logWrite("axisPriority :",axisPriority)
-    --logFile.logWrite("dig          :",dig)
+    logFile.logWrite("in move.moveToPos")
+    logFile.logWrite("CurrentPos   :",location.getCurrentPos())
+    logFile.logWrite("endPos       :",endPos)
+    logFile.logWrite("axisPriority :",axisPriority)
+    logFile.logWrite("dig          :",dig)
 
     if(axisPriority == nil or axisPriority == "") then
         axisPriority = moveAxisPriority
@@ -155,23 +155,23 @@ function move.moveToPos(endPos,axisPriority,dig)
         currentAxisPriority     = string.sub(axisPriority,axisPriorityIdx,axisPriorityIdx)
 
         nextStep    = move.getNextStep(startPos, endPos, currentAxisPriority)
-        --logFile.logWrite("startPos =",startPos)
-        --logFile.logWrite("endPos   =",endPos)
-        --logFile.logWrite("nextStep =",nextStep)
+        logFile.logWrite("startPos =",startPos)
+        logFile.logWrite("endPos   =",endPos)
+        logFile.logWrite("nextStep =",nextStep)
 
         if(nextStep~="") then
             result      = blocks.inspectDig(nextStep,dig)
-            --logFile.logWrite("inspectDig ",result)
+            logFile.logWrite("inspectDig ",result)
             if(result == "OK") then
                 result      = move.move(nextStep)
-                --logFile.logWrite("move ",result)
+                logFile.logWrite("move ",result)
             elseif(result == "BYPASS") then
                 -- TODO: This is a tmp fix of bypass
                 --result = false
                 --axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
 
                 logFile.logWrite("move.move call bypass",result)
-                move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
+                move.byPassBlock(nextStep,startPos,endPos,axisPriority,dig)
             else
                 result = false
                 axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
@@ -179,10 +179,10 @@ function move.moveToPos(endPos,axisPriority,dig)
         else
             axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
             moveErrors = moveErrors + 1
-            --logFile.logWrite("moveErrors ",moveErrors)
+            logFile.logWrite("moveErrors ",moveErrors)
             if (moveErrors > 3) then
                 local saveStatus = modem.getStatus()
-                --logFile.logWrite("Blocked")
+                logFile.logWrite("Blocked")
                 modem.sendStatus("Blocked")
                 print("Can't move, please remove the obstacles!")
                 util.waitForUserKey()

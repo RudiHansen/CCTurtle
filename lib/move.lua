@@ -49,50 +49,10 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
     
     -- Calculated steps to traverse the area.
     local nextMove      = ""
-    local priorityIdx   = 1
-    local currentPos    = location.getCurrentPosCopy()
-    local val1          = 9
-    local val2          = 9
-    local checkedX      = false
-    local checkedZ      = false
-    local checkedY      = false
     
-    while(checkedX==false or checkedZ==false or checkedY==false)do
-        logFile.logWrite("axisPriority[priorityIdx]",axisPriority[priorityIdx])
-        if(axisPriority[priorityIdx] == "x") then
-            val1 = gridMap.getGridMapValue(currentPos.x+1, currentPos.z, currentPos.y)
-            val2 = gridMap.getGridMapValue(currentPos.x-1, currentPos.z, currentPos.y)
-            logFile.logWrite("val1,val2",val1,val2)
-            if(val1==0) then
-                nextMove = "E"
-            elseif(val2==0) then
-                nextMove = "W"
-            end
-            logFile.logWrite("nextMove",nextMove)
-            checkedX = true
-        elseif(axisPriority[priorityIdx] == "z") then
-            val1 = gridMap.getGridMapValue(currentPos.x, currentPos.z+1, currentPos.y)
-            val2 = gridMap.getGridMapValue(currentPos.x, currentPos.z-1, currentPos.y)
-            logFile.logWrite("val1,val2",val1,val2)
-            if(val1==0) then
-                nextMove = "S"
-            elseif(val2==0) then
-                nextMove = "N"
-            end
-            logFile.logWrite("nextMove",nextMove)
-            checkedZ = true
-        elseif(axisPriority[priorityIdx] == "y") then
-            val1 = gridMap.getGridMapValue(currentPos.x, currentPos.z, currentPos.y+1)
-            val2 = gridMap.getGridMapValue(currentPos.x, currentPos.z, currentPos.y-1)
-            logFile.logWrite("val1,val2",val1,val2)
-            if(val1==0) then
-                nextMove = "U"
-            elseif(val2==0) then
-                nextMove = "D"
-            end
-            logFile.logWrite("nextMove",nextMove)
-            checkedY = true
-        end
+    nextMove = moveHelper.calculateNextMove(axisPriority)
+    logFile.logWrite("In move.traverseArea Start loop nextMove=",nextMove)
+    while(nextMove~="")do
         logFile.logWrite("nextMove",nextMove)
         
         if(nextMove~="") then
@@ -116,18 +76,11 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
                 move.byPassBlock(nextMove,areaStart,areaEnd,axisPriority,dig)
             end
             nextMove = ""
-            priorityIdx = 1
-            checkedX = false
-            checkedZ = false
-            checkedY = false
-        else
-            priorityIdx         = util.incNumberMax(priorityIdx,4)
         end
-        currentPos    = location.getCurrentPosCopy()
         inventory.checkAll()
         
-        local loopRun = (checkedX==false or checkedZ==false or checkedY==false)
-        logFile.logWrite("In move.traverseArea end of loop test=",loopRun)
+        nextMove = moveHelper.calculateNextMove(axisPriority)
+        logFile.logWrite("In move.traverseArea end of loop nextMove=",nextMove)
     end
     modem.sendStatus("Idle")
 end

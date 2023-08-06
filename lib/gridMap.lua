@@ -15,7 +15,7 @@ local gridMapData   = {}
 
 -- Function to set the value at given coordinates (x, z, y)
 function gridMap.setGridMapValue(x, z, y, value)
-    --logFile.logWrite("setGridMapValue ",x,z,y,value)
+    logFile.logWrite("setGridMapValue ",x,z,y,value)
     if not gridMapData[x] then
         gridMapData[x] = {}
     end
@@ -27,10 +27,26 @@ end
 
 -- Function to get the value at given coordinates (x, z, y)
 function gridMap.getGridMapValue(x, z, y)
+    logFile.logWrite("Call gridMap.getGridMapValue(x, z, y)",x,z,y)
     if not gridMapData[x] or not gridMapData[x][z] then
-        return nil
+        logFile.logWrite("getGridMapValue x,y,z,ret=",x,y,z,9)
+        return 9
     end
-    return gridMapData[x][z][y]
+    logFile.logWrite("getGridMapValue x,y,z,ret=",x,y,z,gridMapData[x][z][y])
+    local retVal = gridMapData[x][z][y]
+
+    if(retVal ~= 0 and retVal ~= 1 and retVal ~= 2 and retVal ~= 9)then
+        logFile.logWrite("gridMap.getGridMapValue warning")
+        logFile.logWrite("Problem with retVal=(",retVal,")")
+        logFile.logWrite("Type=",type(retVal))
+        retVal = 9
+        logFile.logWrite("Problem with retVal=(",retVal,")")
+        --local saveStatus = modem.getStatus()
+        --modem.sendStatus("Blocked")
+        --util.waitForUserKey()
+        --modem.sendStatus(saveStatus)
+    end
+    return retVal
 end
 
 function gridMap.initGridMap(startPos, endPos)

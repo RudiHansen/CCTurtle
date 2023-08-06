@@ -11,7 +11,7 @@
 
 local inventory = {}
 
-local maxFuelLevel = 4000
+local maxFuelLevel = 2000
 local minFuelLevel = 400
 local refuelItems  = 4
 local checkAll     = true
@@ -120,7 +120,7 @@ function inventory.checkFuelLevel()
 end
 
 function inventory.checkInventoryStatus()
-    if(inventory.getRemainingEmptyStorageSlots() <= 1) then
+    if(inventory.getRemainingEmptyStorageSlots() <= 8) then
         return true
     end
     return false

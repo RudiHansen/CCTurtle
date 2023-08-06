@@ -19,15 +19,17 @@ function moveHelper.calculateMoves(nextMove,endPos)
         sideMove1 = "S"
         sideMove2 = "N"
     elseif(origMove=="N")then
-        sideMove1 = "E"
-        sideMove2 = "W"
+        sideMove1 = "W"
+        sideMove2 = "E"
     elseif(origMove=="S")then
-        sideMove1 = "E"
-        sideMove2 = "W"
+        sideMove1 = "W"
+        sideMove2 = "E"
     elseif(origMove=="U")then
+        logFile.logWrite("in moveHelper.calculateMoves U not implemented.")
         sideMove1 = "S"
         sideMove2 = "N"
     elseif(origMove=="D")then
+        logFile.logWrite("in moveHelper.calculateMoves D not implemented.")
         sideMove1 = "S"
         sideMove2 = "N"
     end

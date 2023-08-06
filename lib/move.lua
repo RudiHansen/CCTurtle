@@ -24,11 +24,11 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
     local startPos = {};
 
     -- Write debug info
-    --logFile.logWrite("in move.traverseArea")
-    --logFile.logWrite("areaStart=",areaStart)
-    --logFile.logWrite("areaEnd=",areaEnd)
-    --logFile.logWrite("axisPriority=",axisPriority)
-    --logFile.logWrite("dig=",dig)
+    logFile.logWrite("in move.traverseArea")
+    logFile.logWrite("areaStart=",areaStart)
+    logFile.logWrite("areaEnd=",areaEnd)
+    logFile.logWrite("axisPriority=",axisPriority)
+    logFile.logWrite("dig=",dig)
 
     -- Initialize the Grid map
     gridMap.initGridMap(areaStart,areaEnd)
@@ -40,7 +40,7 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
         startPos.z          = startPos.z-1
         moveAxisPriority    = "zxy"
     end
-    --logFile.logWrite("startPos",startPos)
+    logFile.logWrite("startPos",startPos)
     
     -- Move turtle to a starting position.
     modem.sendStatus("Work")
@@ -58,52 +58,52 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
     local checkedY      = false
     
     while(checkedX==false or checkedZ==false or checkedY==false)do
-        --logFile.logWrite("axisPriority[priorityIdx]",axisPriority[priorityIdx])
+        logFile.logWrite("axisPriority[priorityIdx]",axisPriority[priorityIdx])
         if(axisPriority[priorityIdx] == "x") then
             val1 = gridMap.getGridMapValue(currentPos.x+1, currentPos.z, currentPos.y)
             val2 = gridMap.getGridMapValue(currentPos.x-1, currentPos.z, currentPos.y)
-            --logFile.logWrite("val1,val2",val1,val2)
+            logFile.logWrite("val1,val2",val1,val2)
             if(val1==0) then
                 nextMove = "E"
             elseif(val2==0) then
                 nextMove = "W"
             end
-            --logFile.logWrite("nextMove",nextMove)
+            logFile.logWrite("nextMove",nextMove)
             checkedX = true
         elseif(axisPriority[priorityIdx] == "z") then
             val1 = gridMap.getGridMapValue(currentPos.x, currentPos.z+1, currentPos.y)
             val2 = gridMap.getGridMapValue(currentPos.x, currentPos.z-1, currentPos.y)
-            --logFile.logWrite("val1,val2",val1,val2)
+            logFile.logWrite("val1,val2",val1,val2)
             if(val1==0) then
                 nextMove = "S"
             elseif(val2==0) then
                 nextMove = "N"
             end
-            --logFile.logWrite("nextMove",nextMove)
+            logFile.logWrite("nextMove",nextMove)
             checkedZ = true
         elseif(axisPriority[priorityIdx] == "y") then
             val1 = gridMap.getGridMapValue(currentPos.x, currentPos.z, currentPos.y+1)
             val2 = gridMap.getGridMapValue(currentPos.x, currentPos.z, currentPos.y-1)
-            --logFile.logWrite("val1,val2",val1,val2)
+            logFile.logWrite("val1,val2",val1,val2)
             if(val1==0) then
                 nextMove = "U"
             elseif(val2==0) then
                 nextMove = "D"
             end
-            --logFile.logWrite("nextMove",nextMove)
+            logFile.logWrite("nextMove",nextMove)
             checkedY = true
         end
-        --logFile.logWrite("nextMove",nextMove)
+        logFile.logWrite("nextMove",nextMove)
         
         if(nextMove~="") then
             result      = blocks.inspectDig(nextMove,true)
-            --logFile.logWrite("inspectDig ",result)
+            logFile.logWrite("inspectDig ",result)
             if(result == "OK") then
                 gridMap.setGridMapDirection(nextMove,1)
                 result      = move.move(nextMove)
-                --logFile.logWrite("move ",result)
+                logFile.logWrite("move ",result)
             elseif(result=="BYPASS") then
-                --logFile.logWrite("In Bypass")
+                logFile.logWrite("In Bypass")
                 -- Temp fix for bypass, until I get the ByPass to work.
                 --local saveStatus = modem.getStatus()
                 --modem.sendStatus("Blocked")
@@ -125,6 +125,9 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
         end
         currentPos    = location.getCurrentPosCopy()
         inventory.checkAll()
+        
+        local loopRun = (checkedX==false or checkedZ==false or checkedY==false)
+        logFile.logWrite("In move.traverseArea end of loop test=",loopRun)
     end
     modem.sendStatus("Idle")
 end
@@ -132,10 +135,10 @@ end
 -- Move to a Position using axisPriority, if dig=true then dig block
 function move.moveToPos(endPos,axisPriority,dig)
     logFile.logWrite("in move.moveToPos")
-    logFile.logWrite("CurrentPos   :",location.getCurrentPos())
-    logFile.logWrite("endPos       :",endPos)
-    logFile.logWrite("axisPriority :",axisPriority)
-    logFile.logWrite("dig          :",dig)
+    --logFile.logWrite("CurrentPos   :",location.getCurrentPos())
+    --logFile.logWrite("endPos       :",endPos)
+    --logFile.logWrite("axisPriority :",axisPriority)
+    --logFile.logWrite("dig          :",dig)
 
     if(axisPriority == nil or axisPriority == "") then
         axisPriority = moveAxisPriority
@@ -164,7 +167,7 @@ function move.moveToPos(endPos,axisPriority,dig)
             --logFile.logWrite("inspectDig ",result)
             if(result == "OK") then
                 result      = move.move(nextStep)
-                logFile.logWrite("Check ok move result",result)
+                --logFile.logWrite("Check ok move result",result)
             elseif(result == "BYPASS") then
                 -- TODO: This is a tmp fix of bypass
                 if(moveErrors > 2) then
@@ -225,18 +228,32 @@ end
 --        May need to add some sort of check to fix that.
 
 function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
-    logFile.logWrite("move.byPassBlock - 1")
+    logFile.logWrite("move.byPassBlock")
+    logFile.logWrite("Start At pos : ",location.getCurrentPos())
     logFile.logWrite("nextMove",nextMove)
     logFile.logWrite("startPos",startPos)
     logFile.logWrite("endPos",endPos)
     logFile.logWrite("axisPriority",axisPriority)
     logFile.logWrite("dig",dig)
-    logFile.logWrite("Pos : ",location.getCurrentPos())
+
+    local startPosition = location.getCurrentPosCopy()
+    logFile.logWrite("startPosition",startPosition)
 
     local origMove, sideMove1, sideMove2 = moveHelper.calculateMoves(nextMove,endPos)
     local doSideMove1   = true
     local keepMoving    = true
     local doNext        = true
+
+    if(origMove=="U" or origMove=="D")then
+        -- TODO: Try to find some way to handle this.
+        logFile.logWrite("In move.byPassBlock blocked")
+        local saveStatus = modem.getStatus()
+        modem.sendStatus("Blocked")
+        print("Can't move, please remove the obstacles!")
+        util.waitForUserKey()
+        modem.sendStatus(saveStatus)
+        return
+    end
     --[[
     origMode    W
     sideMove1   S
@@ -274,12 +291,21 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
             keepMoving  = true
             doSideMove1 = false
         else
-            gridMap.setGridMapDirection(sideMove1,2)
-            keepMoving      = false
-            logFile.logWrite("moveHelper.reverseMoveDirection",sideMove1)
-            sideMove1       = moveHelper.reverseMoveDirection(sideMove1)
-            logFile.logWrite("Result",sideMove1)
-            doSideMove1 = true
+            -- TODO: Try to find some way to handle this.
+            logFile.logWrite("In move.byPassBlock blocked")
+            local saveStatus = modem.getStatus()
+            modem.sendStatus("Blocked")
+            print("Can't move, please remove the obstacles!")
+            util.waitForUserKey()
+            modem.sendStatus(saveStatus)
+            move.move(startPosition,axisPriority,dig)
+            return
+            --gridMap.setGridMapDirection(sideMove1,2)
+            --keepMoving      = false
+            --logFile.logWrite("moveHelper.reverseMoveDirection",sideMove1)
+            --sideMove1       = moveHelper.reverseMoveDirection(sideMove1)
+            --logFile.logWrite("Result",sideMove1)
+            --doSideMove1 = true
         end
         -- Test if origMove Is possible
         logFile.logWrite("Test origMove=",origMove)

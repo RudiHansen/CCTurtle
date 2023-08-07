@@ -104,8 +104,9 @@ function move.moveToPos(endPos,axisPriority,dig)
         --logFile.logWrite("nextStep =",nextStep)
 
         if(nextStep~="") then
+            logFile.logWrite("1 -calling inspectDig ",nextStep,dig)
             result      = blocks.inspectDig(nextStep,dig)
-            --logFile.logWrite("inspectDig ",result)
+            logFile.logWrite("inspectDig ",result)
             if(result == "OK") then
                 result      = move.move(nextStep)
                 --logFile.logWrite("Check ok move result",result)
@@ -161,6 +162,10 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
 
         I will start with this, there might be problems that needs to be fixed after,
         but for now this will do.
+
+        TODO: In the cases where i ask for user assistance, (util.SendStatusAndWaitForUserKey)
+              I do need to try to see if i can fix this, or at least the turtle has to return
+              to the original position it started at, or it seems to resume digging in the wrong place.
     ]]
     --logFile.logWrite("move.byPassBlock")
     --logFile.logWrite("Start At pos : ",location.getCurrentPos())
@@ -185,8 +190,9 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
             util.SendStatusAndWaitForUserKey("Blocked","Problem in sideMove1")
         end
         sideMove1Count = util.incNumber(sideMove1Count)
+        logFile.logWrite("2 -calling inspectDig ",nextStep,dig)
         result = blocks.inspectDig(origMove,dig)
-        --logFile.logWrite("inspectDig origMove result=",result)
+        logFile.logWrite("inspectDig origMove result=",result)
     end
 
     --Then origMove until sideMove2 can be made
@@ -197,8 +203,9 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
         if(result==false)then
             util.SendStatusAndWaitForUserKey("Blocked","Problem in origMove")
         end
+        logFile.logWrite("3 -calling inspectDig ",nextStep,dig)
         result = blocks.inspectDig(sideMove2,dig)
-        --logFile.logWrite("inspectDig sideMove2 result=",result)
+        logFile.logWrite("inspectDig sideMove2 result=",result)
     end
 
     --And then sideMove2 as meany times as we did sideMove1

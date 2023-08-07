@@ -20,6 +20,7 @@ function util.SendStatusAndWaitForUserKey(status,message)
     local saveStatus = modem.getStatus()
     modem.sendStatus(status)
     print(message)
+    logFile.logWrite(status,message)
     util.waitForUserKey()
     modem.sendStatus(saveStatus)
 end

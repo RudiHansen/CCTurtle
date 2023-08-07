@@ -46,4 +46,16 @@ function util.stringLen(txt,length)
     return txt
 end
 
+function util.getIndexOfValue(dataTable,valueToFind)
+    for k,v in pairs(dataTable) do
+        if(v==valueToFind)then
+            return k
+        end
+    end
+    logFile.logWrite("ERROR in util.getIndexOfValue",dataTable,valueToFind)
+    modem.sendStatus("ERROR!")
+    location.writeLocationToFile()
+    error()
+end
+
 return util

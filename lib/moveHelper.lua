@@ -63,21 +63,30 @@ function moveHelper.reverseMoveDirection(moveVal)
 end
 
 -- Helper Functions for move.traverseArea
-function moveHelper.calculateNextMove(axisPriority)
+function moveHelper.calculateNextMove(axisPriority,lastMove)
     local currentPos    = location.getCurrentPosCopy()
     local val1
     local val2
+    local axisPriorityIdx = 1
 
     logFile.logWrite("In moveHelper.calculateNextMove",axisPriority)
-    logFile.logWrite("axisPriority[priorityIdx]",axisPriority[priorityIdx])
+    logFile.logWrite("lastMove",lastMove)
     logFile.logWrite("currentPos",currentPos)
 
-    -- First loop trying to find an unexplored cell to move to
-    logFile.logWrite("In moveHelper.calculateNextMove",axisPriority)
+    -- Check if we can simply repeat lastMove
+    if(lastMove~="" and lastMove~=nil)then
+        val1 = gridMap.getGridMapDirection(lastMove)
+        if(val1 == 0 or val1 == 1)then
+            logFile.logWrite("lastMove can be repeated",lastMove)        
+            return lastMove
+        end
+    end
+
+    -- Then we try to find the nextMove
     logFile.logWrite("First loop")
-    for priorityIdx=1,3,1 do 
+    for axisPriorityIdx=1,3,1 do 
         nextMove = ""
-        if(axisPriority[priorityIdx] == "x") then
+        if(axisPriority[axisPriorityIdx] == "x") then
             val1 = gridMap.getGridMapValue(currentPos.x+1, currentPos.z, currentPos.y)
             val2 = gridMap.getGridMapValue(currentPos.x-1, currentPos.z, currentPos.y)
             logFile.logWrite("val1,val2",val1,val2)
@@ -90,7 +99,7 @@ function moveHelper.calculateNextMove(axisPriority)
                 logFile.logWrite("x,nextMove",nextMove)
                 return nextMove
             end
-        elseif(axisPriority[priorityIdx] == "z") then
+        elseif(axisPriority[axisPriorityIdx] == "z") then
             val1 = gridMap.getGridMapValue(currentPos.x, currentPos.z+1, currentPos.y)
             val2 = gridMap.getGridMapValue(currentPos.x, currentPos.z-1, currentPos.y)
             logFile.logWrite("val1,val2",val1,val2)
@@ -103,7 +112,7 @@ function moveHelper.calculateNextMove(axisPriority)
                 logFile.logWrite("z,nextMove",nextMove)
                 return nextMove
             end
-        elseif(axisPriority[priorityIdx] == "y") then
+        elseif(axisPriority[axisPriorityIdx] == "y") then
             val1 = gridMap.getGridMapValue(currentPos.x, currentPos.z, currentPos.y+1)
             val2 = gridMap.getGridMapValue(currentPos.x, currentPos.z, currentPos.y-1)
             logFile.logWrite("val1,val2",val1,val2)
@@ -122,8 +131,8 @@ function moveHelper.calculateNextMove(axisPriority)
     -- Second loop trying to find a free cell to move to.
     logFile.logWrite("In moveHelper.calculateNextMove",axisPriority)
     logFile.logWrite("Second loop")
-    for priorityIdx=1,3,1 do 
-        if(axisPriority[priorityIdx] == "x") then
+    for axisPriorityIdx=1,3,1 do 
+        if(axisPriority[axisPriorityIdx] == "x") then
             val1 = gridMap.getGridMapValue(currentPos.x+1, currentPos.z, currentPos.y)
             val2 = gridMap.getGridMapValue(currentPos.x-1, currentPos.z, currentPos.y)
             logFile.logWrite("val1,val2",val1,val2)
@@ -136,7 +145,7 @@ function moveHelper.calculateNextMove(axisPriority)
                 logFile.logWrite("x,nextMove",nextMove)
                 return nextMove
             end
-        elseif(axisPriority[priorityIdx] == "z") then
+        elseif(axisPriority[axisPriorityIdx] == "z") then
             val1 = gridMap.getGridMapValue(currentPos.x, currentPos.z+1, currentPos.y)
             val2 = gridMap.getGridMapValue(currentPos.x, currentPos.z-1, currentPos.y)
             logFile.logWrite("val1,val2",val1,val2)
@@ -149,7 +158,7 @@ function moveHelper.calculateNextMove(axisPriority)
                 logFile.logWrite("z,nextMove",nextMove)
                 return nextMove
             end
-        elseif(axisPriority[priorityIdx] == "y") then
+        elseif(axisPriority[axisPriorityIdx] == "y") then
             val1 = gridMap.getGridMapValue(currentPos.x, currentPos.z, currentPos.y+1)
             val2 = gridMap.getGridMapValue(currentPos.x, currentPos.z, currentPos.y-1)
             logFile.logWrite("val1,val2",val1,val2)
@@ -164,6 +173,7 @@ function moveHelper.calculateNextMove(axisPriority)
             end
         end
     end
+
     logFile.logWrite("In moveHelper.calculateNextMove",axisPriority)
     logFile.logWrite("ERROR WE SHOULD NOT GET HERE")
 end

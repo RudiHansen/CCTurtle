@@ -49,8 +49,10 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
     
     -- Calculated steps to traverse the area.
     local nextMove      = ""
+    local lastMove      = ""
     
-    nextMove = moveHelper.calculateNextMove(axisPriority)
+    nextMove = moveHelper.calculateNextMove(axisPriority,lastMove)
+    lastMove = nextMove
     logFile.logWrite("In move.traverseArea Start loop nextMove=",nextMove)
     while(nextMove~="")do
         logFile.logWrite("nextMove",nextMove)
@@ -79,7 +81,8 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
         end
         inventory.checkAll()
         
-        nextMove = moveHelper.calculateNextMove(axisPriority)
+        nextMove = moveHelper.calculateNextMove(axisPriority,lastMove)
+        lastMove = nextMove
         logFile.logWrite("In move.traverseArea end of loop nextMove=",nextMove)
     end
     modem.sendStatus("Idle")
@@ -238,7 +241,7 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
         result      = blocks.inspectDig(sideMove1,dig)
         logFile.logWrite("result",result)
         if(result == "OK") then
-            gridMap.setGridMapDirection(sideMove1,1)
+            --gridMap.setGridMapDirection(sideMove1,1)
             result      = move.move(sideMove1)
             logFile.logWrite("Pos : ",location.getCurrentPos())
             keepMoving  = true
@@ -277,7 +280,7 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
         result      = blocks.inspectDig(origMove,dig)
         logFile.logWrite("result",result)
         if(result == "OK") then
-            gridMap.setGridMapDirection(origMove,1)
+            --gridMap.setGridMapDirection(origMove,1)
             result      = move.move(origMove)
             logFile.logWrite("Pos : ",location.getCurrentPos())
         else
@@ -292,12 +295,12 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
             if(keepMoving==true) then
                 result      = blocks.inspectDig(sideMove2,dig)
                 if(result == "OK") then
-                    gridMap.setGridMapDirection(sideMove2,1)
+                    --gridMap.setGridMapDirection(sideMove2,1)
                     result      = move.move(sideMove2)
                     logFile.logWrite("Pos : ",location.getCurrentPos())
                     keepMoving=false
                 else
-                    gridMap.setGridMapDirection(sideMove2,2)
+                    --gridMap.setGridMapDirection(sideMove2,2)
                 end
             end
         end

@@ -15,7 +15,7 @@ local gridMapData   = {}
 
 -- Function to set the value at given coordinates (x, z, y)
 function gridMap.setGridMapValue(x, z, y, value)
-    logFile.logWrite("setGridMapValue ",x,z,y,value)
+    --logFile.logWrite("setGridMapValue ",x,z,y,value)
     if not gridMapData[x] then
         gridMapData[x] = {}
     end
@@ -107,5 +107,30 @@ function gridMap.setGridMapDirection(direction,value)
         gridMap.setGridMapValue(currentPos.x,currentPos.z,currentPos.y-1,value)
     end
 end
+
+function gridMap.getGridMapDirection(direction)
+    local currentPos = location.getCurrentPosCopy()
+    logFile.logWrite("gridMap.getGridMapDirection",direction)
+
+    if(direction=="W")then
+        return gridMap.getGridMapValue(currentPos.x-1,currentPos.z,currentPos.y)
+    elseif(direction=="E")then
+        return gridMap.getGridMapValue(currentPos.x+1,currentPos.z,currentPos.y)
+    elseif(direction=="N")then
+        return gridMap.getGridMapValue(currentPos.x,currentPos.z-1,currentPos.y)
+    elseif(direction=="S")then
+        return gridMap.getGridMapValue(currentPos.x,currentPos.z+1,currentPos.y)
+    elseif(direction=="U")then
+        return gridMap.getGridMapValue(currentPos.x,currentPos.z,currentPos.y+1)
+    elseif(direction=="D")then
+        return gridMap.getGridMapValue(currentPos.x,currentPos.z,currentPos.y-1)
+    end
+    logFile.logWrite("ERROR in gridMap.getGridMapDirection",direction)
+    modem.sendStatus("ERROR!")
+    location.writeLocationToFile()
+    error()
+
+end
+
 
 return gridMap

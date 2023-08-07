@@ -68,7 +68,9 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
                 move.byPassBlock(nextMove,areaStart,areaEnd,axisPriority,dig)
             end
         end
+        inventory.checkAll()
     end
+    modem.sendStatus("Idle")
 end
 
 function move.traverseAreaOLD(areaStart,areaEnd,axisPriority,dig)

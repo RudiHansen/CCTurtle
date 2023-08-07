@@ -15,11 +15,26 @@ function util.waitForUserKey()
     os.pullEvent("key")
 end
 
+-- TODO: Find all places in existing code where this method can be used, there must be some.
+function util.SendStatusAndWaitForUserKey(status,message)
+    local saveStatus = modem.getStatus()
+    modem.sendStatus(status)
+    print(message)
+    util.waitForUserKey()
+    modem.sendStatus(saveStatus)
+end
+
 function util.incNumberMax(number,max)
     number = number + 1
     if(number==max)then
         number = 1
     end
+    return number
+end
+
+function util.incNumber(number,incValue)
+    incValue = util.setDefaultValueIfEmpty(incValue,1)
+    number = number + incValue
     return number
 end
 

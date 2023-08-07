@@ -65,21 +65,7 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
             if(result==false)then
                 logFile.logWrite("In Bypass")
                 logFile.logWrite("move.traverseArea call bypass",result)
-                
-                local saveStatus = modem.getStatus()
-                modem.sendStatus("Blocked")
-                print("Can't move blocked, press key to run bypass")
-                util.waitForUserKey()
-                modem.sendStatus(saveStatus)
-
                 move.byPassBlock(nextMove,areaStart,areaEnd,axisPriority,dig)
-
-                local saveStatus = modem.getStatus()
-                modem.sendStatus("Blocked")
-                print("Done with bypass, press key to continue.")
-                util.waitForUserKey()
-                modem.sendStatus(saveStatus)
-
             end
         end
     end
@@ -238,26 +224,69 @@ function move.moveToPos(endPos,axisPriority,dig)
     end
 end
 
--- TODO : First some refactoring of this code.
---        New lib moveHelper for some of the functions.
--- TODO : Then make it handle the case where it does not get back on track
--- TODO : Improve the setting of origMove, sideMove1 and sideMove2
---        Thinking it may have to set them differently in some way.
---        From the result in my first test when it kind of dug into the wall
---        When it could have moved to the other side with no digging.
---        
--- TODO : Fix problem in bypass U and D
---        It kind of skips a complete level of digging 
---        I actually think this might go for 2 of the 3 directions.
---        Like this job, where E&W are lets call it the main move direction, 
---        the two other S&N, U&D might not be able to use the same method, without
---        it causing some digging to be skipped.
---
--- TODO : There is also a problem sometimes when trying to bypass a 2x2 block
---        The problem is that it only tries to move sideMove1 one time
---        May need to add some sort of check to fix that.
-
 function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
+    --[[
+        We need to bypass an obstacle with a process like this.
+        There are 3 types of moves that needs to be done.
+        First sideMove1 as meany times needed until origMove can be made
+        Then origMove until sideMove2 can be made
+        And then sideMove2 as meany times as we did sideMove1
+
+        moveHelper.calculateMoves calculates what origMove, sideMove1 and sideMove2 are.
+
+        I will start with this, there might be problems that needs to be fixed after,
+        but for now this will do.
+    ]]
+    logFile.logWrite("move.byPassBlock")
+    logFile.logWrite("Start At pos : ",location.getCurrentPos())
+    logFile.logWrite("nextMove",nextMove)
+    logFile.logWrite("startPos",startPos)
+    logFile.logWrite("endPos",endPos)
+    logFile.logWrite("axisPriority",axisPriority)
+    logFile.logWrite("dig",dig)
+
+    local startPosition = location.getCurrentPosCopy()
+    logFile.logWrite("startPosition",startPosition)
+
+    local origMove, sideMove1, sideMove2    = moveHelper.calculateMoves(nextMove,endPos)
+    local sideMove1Count    = 0
+    local result            = ""
+
+    -- First sideMove1 as meany times needed until sideMove2 can be made
+    while(result~="OK")do
+        result = moveHelper.tryMoveDig(sideMove1)
+        logFile.logWrite("sideMove1 result=",result)
+        if(result==false)then
+            util.SendStatusAndWaitForUserKey("Blocked","Problem in sideMove1")
+        end
+        sideMove1Count = util.incNumber(sideMove1Count)
+        result = blocks.inspectDig(origMove,dig)
+        logFile.logWrite("inspectDig origMove result=",result)
+    end
+
+    --Then origMove until sideMove2 can be made
+    result = ""
+    while(result~="OK")do
+        result = moveHelper.tryMoveDig(origMove)
+        logFile.logWrite("origMove result=",result)
+        if(result==false)then
+            util.SendStatusAndWaitForUserKey("Blocked","Problem in origMove")
+        end
+        result = blocks.inspectDig(sideMove2,dig)
+        logFile.logWrite("inspectDig sideMove2 result=",result)
+    end
+
+    --And then sideMove2 as meany times as we did sideMove1
+    for i=1, sideMove1Count, 1 do
+        result = moveHelper.tryMoveDig(sideMove2)
+        logFile.logWrite("sideMove2 result=",result)
+        if(result==false)then
+            util.SendStatusAndWaitForUserKey("Blocked","Problem in sideMove2")
+        end
+    end
+end
+
+function move.byPassBlockOLD(nextMove,startPos,endPos,axisPriority,dig)
     logFile.logWrite("move.byPassBlock")
     logFile.logWrite("Start At pos : ",location.getCurrentPos())
     logFile.logWrite("nextMove",nextMove)
@@ -284,30 +313,6 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
         modem.sendStatus(saveStatus)
         return
     end
-    --[[
-    origMode    W
-    sideMove1   S
-    sideMove2   N
-    Current:
-        Try to move sideMove1
-            YES : LOOP
-                Try origMove
-                YES : Try move sideMove2
-                    NO : Do nothing
-                NO  : Break Look
-            END LOOP
-
-    New:
-        Try to move sideMove1
-            NO : Reverse sideMove1
-            YES: LOOP
-                Try origMove
-                YES : Try move sideMove2
-                    NO : No nothing
-                NO  : Break Look
-            END LOOP
-
-    ]]
 
     -- Try to move sideMove1
     while(doSideMove1==true)do

@@ -27,12 +27,12 @@ end
 
 -- Function to get the value at given coordinates (x, z, y)
 function gridMap.getGridMapValue(x, z, y)
-    logFile.logWrite("Call gridMap.getGridMapValue(x, z, y)",x,z,y)
+    --logFile.logWrite("Call gridMap.getGridMapValue(x, z, y)",x,z,y)
     if not gridMapData[x] or not gridMapData[x][z] then
-        logFile.logWrite("getGridMapValue x,y,z,ret=",x,y,z,9)
+        --logFile.logWrite("getGridMapValue x,y,z,ret=",x,y,z,9)
         return 9
     end
-    logFile.logWrite("getGridMapValue x,y,z,ret=",x,y,z,gridMapData[x][z][y])
+    --logFile.logWrite("getGridMapValue x,y,z,ret=",x,y,z,gridMapData[x][z][y])
     local retVal = gridMapData[x][z][y]
 
     if(retVal ~= 0 and retVal ~= 1 and retVal ~= 2 and retVal ~= 9)then
@@ -110,7 +110,7 @@ end
 
 function gridMap.getGridMapDirection(direction)
     local currentPos = location.getCurrentPosCopy()
-    logFile.logWrite("gridMap.getGridMapDirection",direction)
+    --logFile.logWrite("gridMap.getGridMapDirection",direction)
 
     if(direction=="W")then
         return gridMap.getGridMapValue(currentPos.x-1,currentPos.z,currentPos.y)

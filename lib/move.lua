@@ -55,97 +55,20 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
     local reverseY = false
     while(nextMove~="")do
         nextMove, reverseX, reverseY = moveHelper.getMove(axisPriority,1,areaStart,areaEnd,reverseX, reverseY)
-        logFile.logWrite("--currentPos",location.getCurrentPos())
-        logFile.logWrite("--nextMove",nextMove)
-        logFile.logWrite("--reverseX",reverseX)
-        logFile.logWrite("--reverseY",reverseY)
+        --logFile.logWrite("--currentPos",location.getCurrentPos())
+        --logFile.logWrite("--nextMove",nextMove)
+        --logFile.logWrite("--reverseX",reverseX)
+        --logFile.logWrite("--reverseY",reverseY)
         if(nextMove~="")then
             result = moveHelper.tryMoveDig(nextMove)
-            logFile.logWrite("--result",result)
+            --logFile.logWrite("--result",result)
             if(result==false)then
-                logFile.logWrite("In Bypass")
-                logFile.logWrite("move.traverseArea call bypass",result)
+                --logFile.logWrite("In Bypass")
+                --logFile.logWrite("move.traverseArea call bypass",result)
                 move.byPassBlock(nextMove,areaStart,areaEnd,axisPriority,dig)
             end
         end
         inventory.checkAll()
-    end
-    modem.sendStatus("Idle")
-end
-
-function move.traverseAreaOLD(areaStart,areaEnd,axisPriority,dig)
-    -- Setup variables
-
-    if(axisPriority == nil or axisPriority == "") then
-        axisPriority = {"x","z","y"}
-    else
-        axisPriority = {string.sub(axisPriority,1,1),string.sub(axisPriority,2,2),string.sub(axisPriority,3,3)}
-    end
-
-    dig = util.setDefaultValueIfEmpty(dig,false)
-    local startPos = {};
-
-    -- Write debug info
-    logFile.logWrite("in move.traverseArea")
-    logFile.logWrite("areaStart=",areaStart)
-    logFile.logWrite("areaEnd=",areaEnd)
-    logFile.logWrite("axisPriority=",axisPriority)
-    logFile.logWrite("dig=",dig)
-
-    -- Initialize the Grid map
-    gridMap.initGridMap(areaStart,areaEnd)
-
-    -- Get start position.
-    -- TODO : Needs also to work on other axisPriority orders.
-    startPos = location.copyPos(areaStart)
-    if(axisPriority[1]=="y" and axisPriority[2]=="z") then
-        startPos.z          = startPos.z-1
-        moveAxisPriority    = "zxy"
-    end
-    logFile.logWrite("startPos",startPos)
-    
-    -- Move turtle to a starting position.
-    modem.sendStatus("Work")
-    move.moveToPos(startPos,"",true)
-    gridMap.setGridMapValue(startPos.x,startPos.z,startPos.y,1)
-    
-    -- Calculated steps to traverse the area.
-    local nextMove      = ""
-    local lastMove      = ""
-    
-    nextMove = moveHelper.calculateNextMove(axisPriority,lastMove)
-    lastMove = nextMove
-    logFile.logWrite("In move.traverseArea Start loop nextMove=",nextMove)
-    while(nextMove~="")do
-        logFile.logWrite("nextMove",nextMove)
-        
-        if(nextMove~="") then
-            result      = blocks.inspectDig(nextMove,true)
-            logFile.logWrite("inspectDig ",result)
-            if(result == "OK") then
-                gridMap.setGridMapDirection(nextMove,1)
-                result      = move.move(nextMove)
-                logFile.logWrite("move ",result)
-            elseif(result=="BYPASS") then
-                logFile.logWrite("In Bypass")
-                -- Temp fix for bypass, until I get the ByPass to work.
-                --local saveStatus = modem.getStatus()
-                --modem.sendStatus("Blocked")
-                --print("Can't move, please remove the obstacles!")
-                --util.waitForUserKey()
-                --modem.sendStatus(saveStatus)
-
-                logFile.logWrite("move.traverseArea call bypass",result)
-                gridMap.setGridMapDirection(nextMove,2)
-                move.byPassBlock(nextMove,areaStart,areaEnd,axisPriority,dig)
-            end
-            nextMove = ""
-        end
-        inventory.checkAll()
-        
-        nextMove = moveHelper.calculateNextMove(axisPriority,lastMove)
-        lastMove = nextMove
-        logFile.logWrite("In move.traverseArea end of loop nextMove=",nextMove)
     end
     modem.sendStatus("Idle")
 end
@@ -189,7 +112,7 @@ function move.moveToPos(endPos,axisPriority,dig)
             elseif(result == "BYPASS") then
                 -- TODO: This is a tmp fix of bypass
                 if(moveErrors > 2) then
-                    logFile.logWrite("move.move call bypass",result)
+                    --logFile.logWrite("move.move call bypass",result)
                     move.byPassBlock(nextStep,startPos,endPos,axisPriority,dig)
                     moveErrors = 0
                 else
@@ -203,9 +126,9 @@ function move.moveToPos(endPos,axisPriority,dig)
         else
             axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
             moveErrors = moveErrors + 1
-            logFile.logWrite("moveErrors ",moveErrors)
+            --logFile.logWrite("moveErrors ",moveErrors)
             if (moveErrors > 3) then
-                logFile.logWrite("move.move call bypass when blocked",result)
+                --logFile.logWrite("move.move call bypass when blocked",result)
                 move.byPassBlock(nextStep,startPos,endPos,axisPriority,dig)
                 moveErrors = 0
 
@@ -239,16 +162,16 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
         I will start with this, there might be problems that needs to be fixed after,
         but for now this will do.
     ]]
-    logFile.logWrite("move.byPassBlock")
-    logFile.logWrite("Start At pos : ",location.getCurrentPos())
-    logFile.logWrite("nextMove",nextMove)
-    logFile.logWrite("startPos",startPos)
-    logFile.logWrite("endPos",endPos)
-    logFile.logWrite("axisPriority",axisPriority)
-    logFile.logWrite("dig",dig)
+    --logFile.logWrite("move.byPassBlock")
+    --logFile.logWrite("Start At pos : ",location.getCurrentPos())
+    --logFile.logWrite("nextMove",nextMove)
+    --logFile.logWrite("startPos",startPos)
+    --logFile.logWrite("endPos",endPos)
+    --logFile.logWrite("axisPriority",axisPriority)
+    --logFile.logWrite("dig",dig)
 
     local startPosition = location.getCurrentPosCopy()
-    logFile.logWrite("startPosition",startPosition)
+    --logFile.logWrite("startPosition",startPosition)
 
     local origMove, sideMove1, sideMove2    = moveHelper.calculateMoves(nextMove,endPos)
     local sideMove1Count    = 0
@@ -257,136 +180,35 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
     -- First sideMove1 as meany times needed until sideMove2 can be made
     while(result~="OK")do
         result = moveHelper.tryMoveDig(sideMove1)
-        logFile.logWrite("sideMove1 result=",result)
+        --logFile.logWrite("sideMove1 result=",result)
         if(result==false)then
             util.SendStatusAndWaitForUserKey("Blocked","Problem in sideMove1")
         end
         sideMove1Count = util.incNumber(sideMove1Count)
         result = blocks.inspectDig(origMove,dig)
-        logFile.logWrite("inspectDig origMove result=",result)
+        --logFile.logWrite("inspectDig origMove result=",result)
     end
 
     --Then origMove until sideMove2 can be made
     result = ""
     while(result~="OK")do
         result = moveHelper.tryMoveDig(origMove)
-        logFile.logWrite("origMove result=",result)
+        --logFile.logWrite("origMove result=",result)
         if(result==false)then
             util.SendStatusAndWaitForUserKey("Blocked","Problem in origMove")
         end
         result = blocks.inspectDig(sideMove2,dig)
-        logFile.logWrite("inspectDig sideMove2 result=",result)
+        --logFile.logWrite("inspectDig sideMove2 result=",result)
     end
 
     --And then sideMove2 as meany times as we did sideMove1
     for i=1, sideMove1Count, 1 do
         result = moveHelper.tryMoveDig(sideMove2)
-        logFile.logWrite("sideMove2 result=",result)
+        --logFile.logWrite("sideMove2 result=",result)
         if(result==false)then
             util.SendStatusAndWaitForUserKey("Blocked","Problem in sideMove2")
         end
     end
-end
-
-function move.byPassBlockOLD(nextMove,startPos,endPos,axisPriority,dig)
-    logFile.logWrite("move.byPassBlock")
-    logFile.logWrite("Start At pos : ",location.getCurrentPos())
-    logFile.logWrite("nextMove",nextMove)
-    logFile.logWrite("startPos",startPos)
-    logFile.logWrite("endPos",endPos)
-    logFile.logWrite("axisPriority",axisPriority)
-    logFile.logWrite("dig",dig)
-
-    local startPosition = location.getCurrentPosCopy()
-    logFile.logWrite("startPosition",startPosition)
-
-    local origMove, sideMove1, sideMove2 = moveHelper.calculateMoves(nextMove,endPos)
-    local doSideMove1   = true
-    local keepMoving    = true
-    local doNext        = true
-
-    if(origMove=="U" or origMove=="D")then
-        -- TODO: Try to find some way to handle this.
-        logFile.logWrite("In move.byPassBlock blocked")
-        local saveStatus = modem.getStatus()
-        modem.sendStatus("Blocked")
-        print("Can't move, please remove the obstacles!")
-        util.waitForUserKey()
-        modem.sendStatus(saveStatus)
-        return
-    end
-
-    -- Try to move sideMove1
-    while(doSideMove1==true)do
-        logFile.logWrite("Try to move sideMove1=",sideMove1)
-        result      = blocks.inspectDig(sideMove1,dig)
-        logFile.logWrite("result",result)
-        if(result == "OK") then
-            --gridMap.setGridMapDirection(sideMove1,1)
-            result      = move.move(sideMove1)
-            logFile.logWrite("Pos : ",location.getCurrentPos())
-            keepMoving  = true
-            doSideMove1 = false
-        else
-            -- TODO: Try to find some way to handle this.
-            logFile.logWrite("In move.byPassBlock blocked")
-            local saveStatus = modem.getStatus()
-            modem.sendStatus("Blocked")
-            print("Can't move, please remove the obstacles!")
-            util.waitForUserKey()
-            modem.sendStatus(saveStatus)
-            move.move(startPosition,axisPriority,dig)
-            return
-            --gridMap.setGridMapDirection(sideMove1,2)
-            --keepMoving      = false
-            --logFile.logWrite("moveHelper.reverseMoveDirection",sideMove1)
-            --sideMove1       = moveHelper.reverseMoveDirection(sideMove1)
-            --logFile.logWrite("Result",sideMove1)
-            --doSideMove1 = true
-        end
-        -- Test if origMove Is possible
-        logFile.logWrite("Test origMove=",origMove)
-        result      = blocks.inspectDig(origMove,dig)
-        logFile.logWrite("result",result)
-        if(result ~= "OK")then
-            doSideMove1=true
-        end
-        logFile.logWrite("doSideMove1",doSideMove1)
-    end
-
-    while(keepMoving==true) do
-        -- Try to move origMove
-        doNext=true
-        logFile.logWrite("Try to move origMove=",origMove)
-        result      = blocks.inspectDig(origMove,dig)
-        logFile.logWrite("result",result)
-        if(result == "OK") then
-            --gridMap.setGridMapDirection(origMove,1)
-            result      = move.move(origMove)
-            logFile.logWrite("Pos : ",location.getCurrentPos())
-        else
-            gridMap.setGridMapDirection(origMove,2)
-            --keepMoving=false
-            --doNext=false
-        end
-        if(doNext==true)then
-            -- Try to move sideMove2
-            logFile.logWrite("Try to move sideMove2=",sideMove2)
-            logFile.logWrite("result",result)
-            if(keepMoving==true) then
-                result      = blocks.inspectDig(sideMove2,dig)
-                if(result == "OK") then
-                    --gridMap.setGridMapDirection(sideMove2,1)
-                    result      = move.move(sideMove2)
-                    logFile.logWrite("Pos : ",location.getCurrentPos())
-                    keepMoving=false
-                else
-                    --gridMap.setGridMapDirection(sideMove2,2)
-                end
-            end
-        end
-    end
-    logFile.logWrite("End At pos : ",location.getCurrentPos())
 end
 
 -- Get the next step to get from startPos to endPos using axis

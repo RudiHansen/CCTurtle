@@ -36,12 +36,12 @@ function blocks.inspectDig(direction,dig)
 
     -- If the inspectData.name is a Turtle, then try one time to see if it moves.
     while(waitForTurtle<3 and result==true and inspectData.name=="computercraft:turtle_normal")do
-        logFile.logWrite("blocks.inspectDig  In loop")
-        logFile.logWrite("waitForTurtle",waitForTurtle)
+        --logFile.logWrite("blocks.inspectDig  In loop")
+        --logFile.logWrite("waitForTurtle",waitForTurtle)
         sleep(waitForTurtle)
         waitForTurtle = waitForTurtle + 1
         result, inspectData = blocks.inspectDirection(direction)
-        logFile.logWrite("result",result)
+        --logFile.logWrite("result",result)
     end
 
     if(result==false) then -- There is no block in front of the turtle

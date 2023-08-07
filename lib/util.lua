@@ -58,4 +58,24 @@ function util.getIndexOfValue(dataTable,valueToFind)
     error()
 end
 
+function util.setDefaultValueIfEmpty(value,default)
+    if(value == nil or value == "") then
+        return default
+    else
+        return value
+    end
+end
+
+-- TODO: Do I really need this method? Is it used anywhere?
+function util.addToPositionAxis(position,axis,value)
+    if(axis=="x") then
+        position.x          = position.x + value
+    elseif(axis=="y") then
+        position.y          = position.y + value
+    elseif(axis=="z") then
+        position.z          = position.z + value
+    end
+    return position
+end
+
 return util

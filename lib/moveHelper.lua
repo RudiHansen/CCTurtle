@@ -7,6 +7,104 @@
 
 local moveHelper = {}
 
+-- General helper functions
+function moveHelper.tryMoveDig(moveToDo)
+    logFile.logWrite("In moveHelper.tryMoveDig moveToDo",moveToDo)
+    result      = blocks.inspectDig(moveToDo,true)
+    logFile.logWrite("inspectDig ",result)
+
+    if(result == "OK") then
+        result      = move.move(moveToDo)
+        logFile.logWrite("move ",result)
+        return result
+    else
+        logFile.logWrite("return ",false)
+        return false
+    end
+end
+
+function moveHelper.getMove(axisPriority,axisIdx,startPos,endPos,reverseX,reverseY)
+    local currentPos    = location.getCurrentPos()
+    local targetCoordinate
+    local retVal        = ""
+    local reverseZ      = false -- TODO: Perhaps I do at some point need to look at this also doing like the reverseX and Z
+
+    -- Write debug info
+    logFile.logWrite("In moveHelper.getMove")
+    logFile.logWrite("axisPriority=",axisPriority)
+    logFile.logWrite("axisIdx=",axisIdx)
+    logFile.logWrite("startPos=",startPos)
+    logFile.logWrite("endPos=",endPos)
+    logFile.logWrite("currentPos=",currentPos)
+    logFile.logWrite("reverseX=",reverseX)
+    logFile.logWrite("reverseY=",reverseY)
+
+    while(retVal=="")do
+        if(axisPriority[axisIdx] == "x")then
+            if(reverseX==false)then
+                targetCoordinate = endPos.x 
+            else
+                targetCoordinate = startPos.x 
+            end
+            logFile.logWrite("x-targetCoordinate=",targetCoordinate)
+
+            --1 < -18
+            if(currentPos.x < targetCoordinate)then
+                retVal = "E"
+            elseif(currentPos.x > targetCoordinate)then
+                retVal = "W"
+            else
+                axisIdx     = util.incNumberMax(axisIdx,4)
+                reverseX    = not reverseX
+            end
+        end
+
+        if(axisPriority[axisIdx] == "y")then
+            if(reverseY==false)then
+                targetCoordinate = endPos.y 
+            else
+                targetCoordinate = startPos.y
+            end
+            logFile.logWrite("y-targetCoordinate=",targetCoordinate)
+
+            if(currentPos.y > targetCoordinate)then
+                retVal = "D"
+            elseif(currentPos.y < targetCoordinate)then
+                retVal = "U"
+            else
+                axisIdx     = util.incNumberMax(axisIdx,4)
+                reverseY    = not reverseY
+            end
+        end
+    
+        if(axisPriority[axisIdx] == "z")then
+            if(reverseZ==false)then
+                targetCoordinate = endPos.z
+            else
+                targetCoordinate = startPos.z
+            end
+            logFile.logWrite("z-targetCoordinate=",targetCoordinate)
+
+            if(currentPos.z > endPos.z)then
+                retVal = "N"
+            elseif(currentPos.z < endPos.z)then
+                retVal = "S"
+            else
+                axisIdx     = util.incNumberMax(axisIdx,4)
+            end
+        end
+    end
+
+    -- Check if turtle is at endPos, if it is then return retVal="" to end digging.
+    if(location.comparePos(location.getCurrentPos(),endPos))then
+        retVal = ""
+    end
+    logFile.logWrite("retVal=",retVal)
+    logFile.logWrite("reverseX=",reverseX)
+    logFile.logWrite("reverseY=",reverseY)
+    return retVal, reverseX, reverseY
+end
+
 -- Helper Functions for move.byPassBlock
 function moveHelper.calculateMoves(nextMove,endPos)
     local origMove = nextMove

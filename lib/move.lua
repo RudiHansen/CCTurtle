@@ -10,17 +10,91 @@ local move = {}
 
 local moveAxisPriority   = "zxy"
 
+-- TODO: On performing this job, 1,Miner1,NEW,traverseArea,1,9,68,N,-4,5,71,N,xyz
+--       There was a problem with the last few blocks, they where not mined.
 function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
     -- Setup variables
+    axisPriority = util.setDefaultValueIfEmpty(axisPriority,"xyz")
+    axisPriority = {string.sub(axisPriority,1,1),string.sub(axisPriority,2,2),string.sub(axisPriority,3,3)}
+    dig = util.setDefaultValueIfEmpty(dig,false)
+    local startPos = {};
+
+    -- Write debug info
+    logFile.logWrite("in move.traverseArea")
+    logFile.logWrite("areaStart=",areaStart)
+    logFile.logWrite("areaEnd=",areaEnd)
+    logFile.logWrite("axisPriority=",axisPriority)
+    logFile.logWrite("dig=",dig)
+
+    -- Initialize the Grid map
+    gridMap.initGridMap(areaStart,areaEnd)
+
+    -- Find the position to which the turtle must move to start its work.
+    startPos = location.copyPos(areaStart)
+    logFile.logWrite("startPos",startPos)
+    startPos = util.addToPositionAxis(startPos,axisPriority[3],1)
+    logFile.logWrite("startPos",startPos)
+    
+    -- Move turtle to a starting position.
+    modem.sendStatus("Work")
+    move.moveToPos(startPos,"",false)
+    --gridMap.setGridMapValue(startPos.x,startPos.z,startPos.y,1)
+
+    -- Then do the first dig into the area to work on.
+    -- TODO: Right now this move into the working area is hardcoded
+    --       but I need to add a method that will calculate this
+    --       so that no matter where the turtle is it can to to the
+    --       area start position.
+    moveHelper.tryMoveDig("N")
+
+    -- Work on actually traversing the area
+    logFile.logWrite("Start digging the area",areaStart,areaEnd)
+    local nextMove = "N"
+    local result
+    local reverseX = false
+    local reverseY = false
+    while(nextMove~="")do
+        nextMove, reverseX, reverseY = moveHelper.getMove(axisPriority,1,areaStart,areaEnd,reverseX, reverseY)
+        logFile.logWrite("--currentPos",location.getCurrentPos())
+        logFile.logWrite("--nextMove",nextMove)
+        logFile.logWrite("--reverseX",reverseX)
+        logFile.logWrite("--reverseY",reverseY)
+        if(nextMove~="")then
+            result = moveHelper.tryMoveDig(nextMove)
+            logFile.logWrite("--result",result)
+            if(result==false)then
+                logFile.logWrite("In Bypass")
+                logFile.logWrite("move.traverseArea call bypass",result)
+                
+                local saveStatus = modem.getStatus()
+                modem.sendStatus("Blocked")
+                print("Can't move blocked, press key to run bypass")
+                util.waitForUserKey()
+                modem.sendStatus(saveStatus)
+
+                move.byPassBlock(nextMove,areaStart,areaEnd,axisPriority,dig)
+
+                local saveStatus = modem.getStatus()
+                modem.sendStatus("Blocked")
+                print("Done with bypass, press key to continue.")
+                util.waitForUserKey()
+                modem.sendStatus(saveStatus)
+
+            end
+        end
+    end
+end
+
+function move.traverseAreaOLD(areaStart,areaEnd,axisPriority,dig)
+    -- Setup variables
+
     if(axisPriority == nil or axisPriority == "") then
         axisPriority = {"x","z","y"}
     else
         axisPriority = {string.sub(axisPriority,1,1),string.sub(axisPriority,2,2),string.sub(axisPriority,3,3)}
     end
 
-    if(dig == nil or dig == "") then
-        dig = false
-    end
+    dig = util.setDefaultValueIfEmpty(dig,false)
     local startPos = {};
 
     -- Write debug info
@@ -90,12 +164,12 @@ end
 
 -- Move to a Position using axisPriority, if dig=true then dig block
 function move.moveToPos(endPos,axisPriority,dig)
-    logFile.logWrite("in move.moveToPos")
+    --logFile.logWrite("in move.moveToPos")
     --logFile.logWrite("CurrentPos   :",location.getCurrentPos())
     --logFile.logWrite("endPos       :",endPos)
     --logFile.logWrite("axisPriority :",axisPriority)
     --logFile.logWrite("dig          :",dig)
-
+    
     if(axisPriority == nil or axisPriority == "") then
         axisPriority = moveAxisPriority
     end

@@ -133,8 +133,9 @@ function moveHelper.calculateMoves(nextMove,endPos)
         sideMove2 = "N"
     end
 
-    --logFile.logWrite("moveHelper.calculateMoves",nextMove)
-    --logFile.logWrite("origMove,sideMove1,sideMove2",origMove,sideMove1,sideMove2)
+    logFile.logWrite("moveHelper.calculateMoves",nextMove,endPos)
+    logFile.logWrite("currentPos",location.getCurrentPos())
+    logFile.logWrite("origMove,sideMove1,sideMove2",origMove,sideMove1,sideMove2)
 
     return origMove, sideMove1, sideMove2
 end

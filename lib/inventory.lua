@@ -61,12 +61,8 @@ function inventory.pickUpFuel()
     end
 
     if(result == false) then
-        modem.sendStatus("ERROR!")
-        local errorMessage = "Error refueling please fix!"
-        print(errorMessage)
-        --logFile.logWrite(errorMessage)
-        --logFile.logWrite("At pos : ",location.getCurrentPos())
         location.writeLocationToFile()
+        util.SendStatusAndWaitForUserKey("ERROR!","Error refueling please fix!")
         return false
     end
 
@@ -90,11 +86,7 @@ function inventory.emptyStorageSlots()
         --logFile.logWrite("Found a chest")
     else
         modem.sendStatus("ERROR!")
-        local errorMessage = "Drop off chest not found"
-        print(errorMessage)
-        --logFile.logWrite(errorMessage)
-        --logFile.logWrite("At pos : ",location.getCurrentPos())
-        --location.writeLocationToFile()
+        util.SendStatusAndWaitForUserKey("ERROR!","Drop off chest not found!")
         return false
     end
 

@@ -63,8 +63,8 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
             result = moveHelper.tryMoveDig(nextMove)
             --logFile.logWrite("--result",result)
             if(result==false)then
-                --logFile.logWrite("In Bypass")
-                --logFile.logWrite("move.traverseArea call bypass",result)
+                logFile.logWrite("In Bypass")
+                logFile.logWrite("move.traverseArea call bypass result,nextMove",result,nextMove)
                 move.byPassBlock(nextMove,areaStart,areaEnd,axisPriority,dig)
             end
         end
@@ -104,16 +104,16 @@ function move.moveToPos(endPos,axisPriority,dig)
         --logFile.logWrite("nextStep =",nextStep)
 
         if(nextStep~="") then
-            logFile.logWrite("1 -calling inspectDig ",nextStep,dig)
+            --logFile.logWrite("1 -calling inspectDig ",nextStep,dig)
             result      = blocks.inspectDig(nextStep,dig)
-            logFile.logWrite("inspectDig ",result)
+            --logFile.logWrite("inspectDig ",result)
             if(result == "OK") then
                 result      = move.move(nextStep)
                 --logFile.logWrite("Check ok move result",result)
             elseif(result == "BYPASS") then
                 -- TODO: This is a tmp fix of bypass
                 if(moveErrors > 2) then
-                    --logFile.logWrite("move.move call bypass",result)
+                    logFile.logWrite("move.move call bypass result,nextStep",result,nextStep)
                     move.byPassBlock(nextStep,startPos,endPos,axisPriority,dig)
                     moveErrors = 0
                 else
@@ -129,7 +129,7 @@ function move.moveToPos(endPos,axisPriority,dig)
             moveErrors = moveErrors + 1
             --logFile.logWrite("moveErrors ",moveErrors)
             if (moveErrors > 3) then
-                --logFile.logWrite("move.move call bypass when blocked",result)
+                logFile.logWrite("move.move call bypass when blocked result,nextStep",result,nextStep)
                 move.byPassBlock(nextStep,startPos,endPos,axisPriority,dig)
                 moveErrors = 0
 
@@ -155,7 +155,7 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
         We need to bypass an obstacle with a process like this.
         There are 3 types of moves that needs to be done.
         First sideMove1 as meany times needed until origMove can be made
-        Then origMove until sideMove2 can be made
+        Then origMove until sideMove2 can be made, if origMove can't be made, make one more sideMove1
         And then sideMove2 as meany times as we did sideMove1
 
         moveHelper.calculateMoves calculates what origMove, sideMove1 and sideMove2 are.
@@ -167,16 +167,16 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
               I do need to try to see if i can fix this, or at least the turtle has to return
               to the original position it started at, or it seems to resume digging in the wrong place.
     ]]
-    --logFile.logWrite("move.byPassBlock")
-    --logFile.logWrite("Start At pos : ",location.getCurrentPos())
-    --logFile.logWrite("nextMove",nextMove)
-    --logFile.logWrite("startPos",startPos)
-    --logFile.logWrite("endPos",endPos)
-    --logFile.logWrite("axisPriority",axisPriority)
-    --logFile.logWrite("dig",dig)
+    logFile.logWrite("In move.byPassBlock")
+    logFile.logWrite("Start At pos : ",location.getCurrentPos())
+    logFile.logWrite("nextMove",nextMove)
+    logFile.logWrite("startPos",startPos)
+    logFile.logWrite("endPos",endPos)
+    logFile.logWrite("axisPriority",axisPriority)
+    logFile.logWrite("dig",dig)
 
     local startPosition = location.getCurrentPosCopy()
-    --logFile.logWrite("startPosition",startPosition)
+    logFile.logWrite("startPosition",startPosition)
 
     local origMove, sideMove1, sideMove2    = moveHelper.calculateMoves(nextMove,endPos)
     local sideMove1Count    = 0
@@ -185,7 +185,7 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
     -- First sideMove1 as meany times needed until sideMove2 can be made
     while(result~="OK")do
         result = moveHelper.tryMoveDig(sideMove1)
-        --logFile.logWrite("sideMove1 result=",result)
+        logFile.logWrite("sideMove1 result=",result)
         if(result==false)then
             util.SendStatusAndWaitForUserKey("Blocked","Problem in sideMove1")
         end
@@ -199,9 +199,16 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
     result = ""
     while(result~="OK")do
         result = moveHelper.tryMoveDig(origMove)
-        --logFile.logWrite("origMove result=",result)
+        logFile.logWrite("origMove result=",result)
         if(result==false)then
+            result = moveHelper.tryMoveDig(sideMove1)
+            logFile.logWrite("extra sideMove1 result=",result)
+            sideMove1Count = util.incNumber(sideMove1Count)
             util.SendStatusAndWaitForUserKey("Blocked","Problem in origMove")
+            if(result==false)then
+                logFile.logWrite("Problem in origMove after extra sideMove1")
+                util.SendStatusAndWaitForUserKey("Blocked","Problem in origMove after extra sideMove1")
+            end
         end
         logFile.logWrite("3 -calling inspectDig ",nextStep,dig)
         result = blocks.inspectDig(sideMove2,dig)
@@ -211,7 +218,7 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
     --And then sideMove2 as meany times as we did sideMove1
     for i=1, sideMove1Count, 1 do
         result = moveHelper.tryMoveDig(sideMove2)
-        --logFile.logWrite("sideMove2 result=",result)
+        logFile.logWrite("sideMove2 result=",result)
         if(result==false)then
             util.SendStatusAndWaitForUserKey("Blocked","Problem in sideMove2")
         end

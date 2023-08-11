@@ -23,7 +23,11 @@ local blocksTurtleCantMine      = {}
 -- Return values ("OK"-Path free turtle can move, "BYPASS"-Something is blocking turtle cant move that direction
 -- "ERROR"-This should not happen)
 function blocks.inspectDig(direction,dig)
-    --logFile.logWrite("in blocks.inspectDig",direction,dig)
+    if(direction == "" or direction==nil)then
+        logFile.logWrite("in blocks.inspectDig",direction,dig)
+        util.SendStatusAndWaitForUserKey("ERROR","There is a problem in blocks.inspectDig")
+        error()
+    end
 
     local result
     local inspectData

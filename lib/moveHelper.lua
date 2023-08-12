@@ -23,6 +23,40 @@ function moveHelper.tryMoveDig(moveToDo)
     end
 end
 
+function moveHelper.tryMoveForceDig(moveToDo)
+    --logFile.logWrite("In moveHelper.tryMoveDig moveToDo",moveToDo)
+    result      = blocks.inspectDig(moveToDo,true)
+    --logFile.logWrite("inspectDig ",result)
+
+    if(result == "OK") then
+        result      = move.move(moveToDo)
+        --logFile.logWrite("move ",result)
+        return result
+    elseif(result == "BYPASS") then
+        if(moveToDo=="W" or moveToDo=="E" or moveToDo=="N" or moveToDo =="S")then
+            result = turtle.dig()
+            result = move.move(moveToDo)
+        elseif(moveToDo=="U")then
+            result = turtle.digUp()
+            result = move.move(moveToDo)
+        elseif(moveToDo=="D")then
+            result = turtle.digDown()
+            result = move.move(moveToDo)
+        else
+            util.SendStatusAndWaitForUserKey("ERROR","Problem in moveHelper.tryMoveForceDig moveToDo"..tostring(moveToDo))
+            location.writeLocationToFile()
+            error()
+        end
+    else
+        util.SendStatusAndWaitForUserKey("ERROR","Problem 2 in moveHelper.tryMoveForceDig moveToDo"..tostring(moveToDo))
+        location.writeLocationToFile()
+        error()
+    --logFile.logWrite("return ",false)
+        return false
+    end
+end
+
+
 function moveHelper.getMove(axisPriority,axisIdx,startPos,endPos,reverseX,reverseY)
     local currentPos    = location.getCurrentPos()
     local targetCoordinate

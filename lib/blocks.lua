@@ -106,6 +106,9 @@ function blocks.inspectDig(direction,dig)
         elseif(blockAction=="pass") then
             --logFile.logWrite("*Return BYPASS")
             return "BYPASS"
+        elseif(blockAction=="secure") then
+            --logFile.logWrite("*Return SECURE")
+            return "SECURE"
         end
         return true
     elseif (dig==false) then
@@ -119,9 +122,12 @@ function blocks.inspectDig(direction,dig)
         elseif(blockAction=="pass") then
             --logFile.logWrite("*5Return BYPASS")
             return "BYPASS"
+        elseif(blockAction=="secure") then
+            --logFile.logWrite("*6Return SECURE")
+            return "SECURE"
         end
-
     end
+
     logFile.logWrite("Problem in blocks.inspectDig")
     logFile.logWrite("Should newer be here in the code")
     modem.sendStatus("ERROR!")
@@ -212,10 +218,10 @@ function blocks.saveData()
     local fileSecure    = io.open(dataFileNameBlockTypeSecure, "w")
 
     -- Convert list to string and write to file
-    fileMine:write(table.concat(blocksTurtleCanIgnore, ","))
-    fileIgnore:write(table.concat(blocksTurtleCanMine, ","))
-    filePass:write(table.concat(blocksTurtleCantMine, ","))
-    fileSecure:write(table.concat(blocksTurtleCantMine, ","))
+    fileMine:write(table.concat(blockTypeMine, ","))
+    fileIgnore:write(table.concat(blockTypeIgnore, ","))
+    filePass:write(table.concat(blockTypePass, ","))
+    fileSecure:write(table.concat(blockTypeSecure, ","))
 
     -- Close file
     fileMine:close()

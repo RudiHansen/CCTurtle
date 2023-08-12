@@ -74,6 +74,7 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
 end
 
 -- Move to a Position using axisPriority, if dig=true then dig block
+-- TODO : This has a problem look at Excel sheet
 function move.moveToPos(endPos,axisPriority,dig)
     --logFile.logWrite("in move.moveToPos")
     --logFile.logWrite("CurrentPos   :",location.getCurrentPos())
@@ -110,7 +111,7 @@ function move.moveToPos(endPos,axisPriority,dig)
             if(result == "OK") then
                 result      = move.move(nextStep)
                 --logFile.logWrite("Check ok move result",result)
-            elseif(result == "BYPASS") then
+            elseif(result == "BYPASS" or result == "SECURE") then
                 -- TODO: This is a tmp fix of bypass
                 if(moveErrors > 2) then
                     logFile.logWrite("move.move call bypass result,nextStep",result,nextStep)
@@ -187,9 +188,13 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
         result = moveHelper.tryMoveDig(sideMove1)
         logFile.logWrite("sideMove1 result=",result)
         if(result==false)then
-            util.SendStatusAndWaitForUserKey("Blocked","Problem in sideMove1")
+            result = moveHelper.tryMoveForceDig(sideMove1)
         end
         sideMove1Count = util.incNumber(sideMove1Count)
+        if(sideMove1Count > 5)then
+            util.SendStatusAndWaitForUserKey("ERROR","Might be a problem with to meany sideMove1's")
+            error()
+        end
         logFile.logWrite("2 -calling inspectDig ",nextStep,dig)
         result = blocks.inspectDig(origMove,dig)
         logFile.logWrite("inspectDig origMove result=",result)
@@ -204,10 +209,15 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
             result = moveHelper.tryMoveDig(sideMove1)
             logFile.logWrite("extra sideMove1 result=",result)
             sideMove1Count = util.incNumber(sideMove1Count)
-            util.SendStatusAndWaitForUserKey("Blocked","Problem in origMove")
+            if(sideMove1Count > 5)then
+                util.SendStatusAndWaitForUserKey("ERROR","Might be a problem with to meany extra sideMove1's")
+                error()
+            end
+            --util.SendStatusAndWaitForUserKey("Blocked","Problem in origMove")
             if(result==false)then
-                logFile.logWrite("Problem in origMove after extra sideMove1")
-                util.SendStatusAndWaitForUserKey("Blocked","Problem in origMove after extra sideMove1")
+                result = moveHelper.tryMoveForceDig(sideMove1)
+                --logFile.logWrite("Problem in origMove after extra sideMove1")
+                --util.SendStatusAndWaitForUserKey("Blocked","Problem in origMove after extra sideMove1")
             end
         end
         logFile.logWrite("3 -calling inspectDig ",nextStep,dig)
@@ -220,7 +230,8 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
         result = moveHelper.tryMoveDig(sideMove2)
         logFile.logWrite("sideMove2 result=",result)
         if(result==false)then
-            util.SendStatusAndWaitForUserKey("Blocked","Problem in sideMove2")
+            result = moveHelper.tryMoveForceDig(sideMove2)
+            --util.SendStatusAndWaitForUserKey("Blocked","Problem in sideMove2")
         end
     end
 end

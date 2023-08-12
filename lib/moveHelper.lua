@@ -141,6 +141,9 @@ end
 
 -- Helper Functions for move.byPassBlock
 function moveHelper.calculateMoves(nextMove,endPos)
+    logFile.logWrite("In moveHelper.calculateMoves nextMove=",nextMove)
+    logFile.logWrite("endPos="endPos)
+
     local origMove = nextMove
     local sideMove1 = ""
     local sideMove2 = ""
@@ -167,9 +170,7 @@ function moveHelper.calculateMoves(nextMove,endPos)
         sideMove2 = "N"
     end
 
-    logFile.logWrite("moveHelper.calculateMoves",nextMove,endPos)
-    logFile.logWrite("currentPos",location.getCurrentPos())
-    logFile.logWrite("origMove,sideMove1,sideMove2",origMove,sideMove1,sideMove2)
+    logFile.logWrite("return origMove,sideMove1,sideMove2",origMove,sideMove1,sideMove2)
 
     return origMove, sideMove1, sideMove2
 end
@@ -310,5 +311,75 @@ function moveHelper.calculateNextMove(axisPriority,lastMove)
     logFile.logWrite("In moveHelper.calculateNextMove",axisPriority)
     logFile.logWrite("ERROR WE SHOULD NOT GET HERE")
 end
+
+-- Helper Functions for move.moveToPos
+function moveHelper.moveToPosWorker(endPos,axisPriority,dig)
+    --logFile.logWrite("in moveHelper.moveToPos")
+    --logFile.logWrite("CurrentPos   :",location.getCurrentPos())
+    --logFile.logWrite("endPos       :",endPos)
+    --logFile.logWrite("axisPriority :",axisPriority)
+    --logFile.logWrite("dig          :",dig)
+    
+    if(axisPriority == nil or axisPriority == "") then
+        axisPriority = moveAxisPriority
+    end
+    if(dig == nil or dig == "") then
+        dig = false
+    end
+
+    local startPos              = location.getCurrentPos()
+    local nextStep              = ""
+    local result                = true
+    local moveErrors            = 0
+    local currentAxisPriority   = ""
+    local axisPriorityIdx       = 1
+
+    while(location.comparePos(startPos, endPos) == false)do
+        currentAxisPriority     = string.sub(axisPriority,axisPriorityIdx,axisPriorityIdx)
+
+        nextStep    = move.getNextStep(startPos, endPos, currentAxisPriority)
+        --logFile.logWrite("startPos =",startPos)
+        --logFile.logWrite("endPos   =",endPos)
+        --logFile.logWrite("nextStep =",nextStep)
+
+        if(nextStep~="") then
+            --logFile.logWrite("1 -calling inspectDig ",nextStep,dig)
+            result      = blocks.inspectDig(nextStep,dig)
+            --logFile.logWrite("inspectDig ",result)
+            if(result == "OK") then
+                result      = move.move(nextStep)
+                --logFile.logWrite("Check ok move result",result)
+            elseif(result == "BYPASS" or result == "SECURE") then
+                -- TODO: This is a tmp fix of bypass
+                if(moveErrors > 2) then
+                    logFile.logWrite("move.move call bypass result,nextStep",result,nextStep)
+                    move.byPassBlock(nextStep,startPos,endPos,axisPriority,dig)
+                    moveErrors = 0
+                else
+                    result = false
+                    axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
+                end
+            else
+                result = false
+                axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
+            end
+        else
+            axisPriorityIdx         = util.incNumberMax(axisPriorityIdx,4)
+            moveErrors = moveErrors + 1
+            --logFile.logWrite("moveErrors ",moveErrors)
+            if (moveErrors > 3) then
+                logFile.logWrite("move.move call bypass when blocked result,nextStep",result,nextStep)
+                move.byPassBlock(nextStep,startPos,endPos,axisPriority,dig)
+                moveErrors = 0
+            end
+        end
+        startPos = location.getCurrentPos()    
+    end
+
+    if(startPos.f ~= endPos.f) then
+        move.turnToFace(endPos.f)
+    end
+end
+
 
 return moveHelper

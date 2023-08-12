@@ -74,8 +74,61 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
 end
 
 -- Move to a Position using axisPriority, if dig=true then dig block
--- TODO : This has a problem look at Excel sheet
 function move.moveToPos(endPos,axisPriority,dig)
+    --logFile.logWrite("in move.moveToPos")
+    --logFile.logWrite("CurrentPos   :",location.getCurrentPos())
+    --logFile.logWrite("endPos       :",endPos)
+    --logFile.logWrite("axisPriority :",axisPriority)
+    --logFile.logWrite("dig          :",dig)
+    if(axisPriority == nil or axisPriority == "") then
+        axisPriority = moveAxisPriority -- "zxy"
+    end
+    if(dig == nil or dig == "") then
+        dig = false
+    end
+
+    local startPos      = location.getCurrentPosCopy()
+    local midPos        = location.copyPos(endPos)
+    local diffPosAxis   = 0
+
+    if(string.sub(axisPriority,1,1) == "z")then
+        diffPosAxis = startPos.z - midPos.z
+        if(diffPosAxis > 5)then
+            midPos.z = midPos.z + 2
+        elseif(diffPosAxis < -5)then
+            midPos.z = midPos.z - 2
+        end
+    elseif(string.sub(axisPriority,1,1) == "x")then
+        diffPosAxis = startPos.x - midPos.x
+        if(diffPosAxis > 5)then
+            midPos.x = midPos.x + 2
+        elseif(diffPosAxis < -5)then
+            midPos.x = midPos.x - 2
+        end
+    elseif(string.sub(axisPriority,1,1) == "y")then
+        diffPosAxis = startPos.y - midPos.y
+        if(diffPosAxis > 5)then
+            midPos.y = midPos.y + 1
+        elseif(diffPosAxis < -5)then
+            midPos.y = midPos.y - 1
+        end
+    else
+        logFile.logWrite("ERROR","Problem in move.moveToPos with calculating midPos")
+        logFile.logWrite("axisPriority=",axisPriority)
+        logFile.logWrite("string.sub(axisPriority,1,1)=",string.sub(axisPriority,1,1))
+        util.SendStatusAndWaitForUserKey("ERROR","Problem in move.moveToPos with calculating midPos")
+        error()
+    end
+
+    logFile.logWrite("in move.moveToPos1 call moveHelper.moveToPosWorker",midPos,axisPriority,dig)
+    moveHelper.moveToPosWorker(midPos,axisPriority,dig)
+    if(location.comparePos(midPos,endPos)==false)then
+        logFile.logWrite("in move.moveToPos2 call moveHelper.moveToPosWorker",endPos,axisPriority,dig)
+        moveHelper.moveToPosWorker(endPos,axisPriority,dig)
+    end
+end
+
+function move.moveToPosOLD(endPos,axisPriority,dig)
     --logFile.logWrite("in move.moveToPos")
     --logFile.logWrite("CurrentPos   :",location.getCurrentPos())
     --logFile.logWrite("endPos       :",endPos)

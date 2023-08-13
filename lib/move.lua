@@ -171,8 +171,7 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
         end
         sideMove1Count = util.incNumber(sideMove1Count)
         if(sideMove1Count > 5)then
-            util.SendStatusAndWaitForUserKey("ERROR","Might be a problem with to meany sideMove1's")
-            error()
+            util.SendStatusAndWaitForUserKey("WARNING","Might be a problem with to meany sideMove1's, please clear blocking blocks and press a key!")
         end
         logFile.logWrite("2 -calling inspectDig ",nextStep,dig)
         result = blocks.inspectDig(origMove,dig)

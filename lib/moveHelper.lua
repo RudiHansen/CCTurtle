@@ -24,24 +24,27 @@ function moveHelper.tryMoveDig(moveToDo)
 end
 
 function moveHelper.tryMoveForceDig(moveToDo)
-    --logFile.logWrite("In moveHelper.tryMoveDig moveToDo",moveToDo)
+    logFile.logWrite("In moveHelper.tryMoveDig moveToDo",moveToDo)
     result      = blocks.inspectDig(moveToDo,true)
-    --logFile.logWrite("inspectDig ",result)
+    logFile.logWrite("inspectDig ",result)
 
     if(result == "OK") then
         result      = move.move(moveToDo)
-        --logFile.logWrite("move ",result)
+        logFile.logWrite("move ",result)
         return result
     elseif(result == "BYPASS") then
         if(moveToDo=="W" or moveToDo=="E" or moveToDo=="N" or moveToDo =="S")then
             result = turtle.dig()
             result = move.move(moveToDo)
+            logFile.logWrite("move W/E/N/S ",result)
         elseif(moveToDo=="U")then
             result = turtle.digUp()
             result = move.move(moveToDo)
+            logFile.logWrite("move U ",result)
         elseif(moveToDo=="D")then
             result = turtle.digDown()
             result = move.move(moveToDo)
+            logFile.logWrite("move D ",result)
         else
             util.SendStatusAndWaitForUserKey("ERROR","Problem in moveHelper.tryMoveForceDig moveToDo"..tostring(moveToDo))
             location.writeLocationToFile()

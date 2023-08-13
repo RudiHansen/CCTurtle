@@ -47,7 +47,7 @@ function inventory.pickUpFuel()
     --logFile.logWrite("Fuel level = " .. turtle.getFuelLevel())
 
     -- Move to the fuel storage
-    logFile.logWrite("From inventory.selectFirstEmptyStorageSlot() call move.moveToPos")
+    logFile.logWrite("From inventory.pickUpFuel call move.moveToPos")
     move.moveToPos(location.getRefuelPos())
 
     inventory.selectFirstEmptyStorageSlot()
@@ -184,11 +184,12 @@ function inventory.checkAll(force)
         inventory.pickUpFuel()
     end
 
-    logFile.logWrite("From inventory.checkAll2 call move.moveToPos")
+    logFile.logWrite("From inventory.checkAll2 call move.moveToPos step 1")
     -- Return to original position, by first moving up, then back to original position
     local currentPos = location.getCurrentPosCopy()
     currentPos.y = originalPos.y
     move.moveToPos(currentPos,"yzx")
+    logFile.logWrite("From inventory.checkAll2 call move.moveToPos step 2")
     move.moveToPos(originalPos,"zxy")
     checkAll = true
     --logFile.logWrite("Ended checkAll")

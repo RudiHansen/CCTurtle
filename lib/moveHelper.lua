@@ -352,7 +352,7 @@ function moveHelper.moveToPosWorker(endPos,axisPriority,dig)
             elseif(result == "BYPASS" or result == "SECURE") then
                 -- TODO: This is a tmp fix of bypass
                 if(moveErrors > 2) then
-                    logFile.logWrite("moveHelper.moveToPosWorker 1 call bypass result,nextStep",result,nextStep)
+                    logFile.logWrite("From moveHelper.moveToPosWorker 1 call bypass result,nextStep",result,nextStep)
                     move.byPassBlock(nextStep,startPos,endPos,axisPriority,dig)
                     moveErrors = 0
                 else
@@ -368,7 +368,7 @@ function moveHelper.moveToPosWorker(endPos,axisPriority,dig)
             moveErrors = moveErrors + 1
             logFile.logWrite("moveErrors ",moveErrors)
             if (moveErrors > 3) then
-                logFile.logWrite("moveHelper.moveToPosWorker 2 bypass when blocked result,nextStep",result,nextStep)
+                logFile.logWrite("From moveHelper.moveToPosWorker 2 bypass when blocked result,nextStep",result,nextStep)
                 move.byPassBlock(nextStep,startPos,endPos,axisPriority,dig)
                 moveErrors = 0
             end

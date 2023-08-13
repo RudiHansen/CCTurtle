@@ -49,6 +49,7 @@ while(doLoop) do
             logFile.logWrite("moveToPos",startDig)
             logFile.logWrite("turtleJobsData.axisPriority",turtleJobData.axisPriority)
             modem.sendTurtleJobStatus(turtleJobData,"RUN")
+            logFile.logWrite("From main call1 move.moveToPos")
             move.moveToPos(startDig,turtleJobData.axisPriority)
             modem.sendTurtleJobStatus(turtleJobData,"DONE")
         elseif(turtleJobData.JobType=="traverseArea")then
@@ -83,6 +84,7 @@ logFile.logWrite("moveHome")
 inventory.emptyStorageSlots()
 inventory.pickUpFuel()
 --move.moveToPos(location.getHomePos(),turtleJobData.axisPriority,false)
+logFile.logWrite("From main call2 move.moveToPos")
 move.moveToPos(location.getHomePos(),'xzy',false)
 
 -- Finalize script

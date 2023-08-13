@@ -47,6 +47,7 @@ function inventory.pickUpFuel()
     --logFile.logWrite("Fuel level = " .. turtle.getFuelLevel())
 
     -- Move to the fuel storage
+    logFile.logWrite("From inventory.selectFirstEmptyStorageSlot() call move.moveToPos")
     move.moveToPos(location.getRefuelPos())
 
     inventory.selectFirstEmptyStorageSlot()
@@ -78,6 +79,7 @@ function inventory.emptyStorageSlots()
     --logFile.logWrite("Drop off items")
 
     -- Move to the drop storage
+    logFile.logWrite("From inventory.emptyStorageSlots call move.moveToPos")
     move.moveToPos(location.getDropOffPos())
 
     -- Test if there is a chest.
@@ -164,6 +166,7 @@ function inventory.checkAll(force)
         modem.sendStatus("STOP")
         inventory.emptyStorageSlots()
         inventory.pickUpFuel()
+        logFile.logWrite("From inventory.checkAll1 call move.moveToPos")
         move.moveToPos(location.getHomePos(),"zxy",false)
         location.writeLocationToFile()
         logFile.logFileClose()
@@ -181,6 +184,7 @@ function inventory.checkAll(force)
         inventory.pickUpFuel()
     end
 
+    logFile.logWrite("From inventory.checkAll2 call move.moveToPos")
     move.moveToPos(originalPos,"yzx")
     checkAll = true
     --logFile.logWrite("Ended checkAll")

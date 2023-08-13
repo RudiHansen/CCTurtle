@@ -37,6 +37,8 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
     
     -- Move turtle to a starting position.
     modem.sendStatus("Work")
+    
+    logFile.logWrite("From move.traverseArea call move.moveToPos")
     move.moveToPos(startPos,"",false)
     --gridMap.setGridMapValue(startPos.x,startPos.z,startPos.y,1)
 
@@ -63,7 +65,7 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
             result = moveHelper.tryMoveDig(nextMove)
             --logFile.logWrite("--result",result)
             if(result==false)then
-                logFile.logWrite("In Bypass")
+                logFile.logWrite("From Bypass")
                 logFile.logWrite("move.traverseArea call bypass result,nextMove",result,nextMove)
                 move.byPassBlock(nextMove,areaStart,areaEnd,axisPriority,dig)
             end
@@ -75,11 +77,11 @@ end
 
 -- Move to a Position using axisPriority, if dig=true then dig block
 function move.moveToPos(endPos,axisPriority,dig)
-    --logFile.logWrite("in move.moveToPos")
-    --logFile.logWrite("CurrentPos   :",location.getCurrentPos())
-    --logFile.logWrite("endPos       :",endPos)
-    --logFile.logWrite("axisPriority :",axisPriority)
-    --logFile.logWrite("dig          :",dig)
+    logFile.logWrite("in move.moveToPos")
+    logFile.logWrite("CurrentPos   :",location.getCurrentPos())
+    logFile.logWrite("endPos       :",endPos)
+    logFile.logWrite("axisPriority :",axisPriority)
+    logFile.logWrite("dig          :",dig)
     if(axisPriority == nil or axisPriority == "") then
         axisPriority = moveAxisPriority -- "zxy"
     end
@@ -120,10 +122,10 @@ function move.moveToPos(endPos,axisPriority,dig)
         error()
     end
 
-    logFile.logWrite("in move.moveToPos1 call moveHelper.moveToPosWorker",midPos,axisPriority,dig)
+    logFile.logWrite("From move.moveToPos1 call moveHelper.moveToPosWorker",midPos,axisPriority,dig)
     moveHelper.moveToPosWorker(midPos,axisPriority,dig)
     if(location.comparePos(midPos,endPos)==false)then
-        logFile.logWrite("in move.moveToPos2 call moveHelper.moveToPosWorker",endPos,axisPriority,dig)
+        logFile.logWrite("From move.moveToPos2 call moveHelper.moveToPosWorker",endPos,axisPriority,dig)
         moveHelper.moveToPosWorker(endPos,axisPriority,dig)
     end
 end

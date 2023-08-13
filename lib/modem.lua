@@ -30,7 +30,7 @@ function modem.sendStatus(newStatus)
 end
 
 function modem.sendTurtleJobStatus(turtleJobData,status)
-    --logFile.logWrite("modem.sendTurtleJobStatus",turtleJobData.Id,status)
+    logFile.logWrite("modem.sendTurtleJobStatus",turtleJobData.Id,status)
     local statusMessage = turtleJobData.Id .. "," .. status
     rednet.send(0,statusMessage,"SJ")
 end
@@ -40,15 +40,15 @@ function modem.getStatus()
 end
 
 function modem.askQuestionBlockAction(blockName)
-    --logFile.logWrite("in modem.askQuestionBlockAction ",blockName)
+    logFile.logWrite("in modem.askQuestionBlockAction ",blockName)
     local saveStatus = status
     modem.sendStatus("?QB")
 
     rednet.send(0,blockName,"QB")
-    --logFile.logWrite("rednet.send QB")
+    logFile.logWrite("rednet.send QB")
 
     id,message, protocol = rednet.receive("AB") --wait until a message is received
-    --logFile.logWrite("Received",id,message,protocol)
+    logFile.logWrite("Received",id,message,protocol)
     modem.sendStatus(saveStatus)
     return message    
 end

@@ -185,7 +185,11 @@ function inventory.checkAll(force)
     end
 
     logFile.logWrite("From inventory.checkAll2 call move.moveToPos")
-    move.moveToPos(originalPos,"yzx")
+    -- Return to original position, by first moving up, then back to original position
+    local currentPos = location.getCurrentPosCopy()
+    currentPos.y = originalPos.y
+    move.moveToPos(currentPos,"yzx")
+    move.moveToPos(originalPos,"zxy")
     checkAll = true
     --logFile.logWrite("Ended checkAll")
 end

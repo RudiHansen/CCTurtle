@@ -18,14 +18,3 @@ Report status into to Computer
 Make move function, for now thinking that its one function called with direction to move, and the method then updates turtles position and reports it to main computer.
 
 # Next Step
-Expand blockActions from the current mine/ignore/pass to 
-
-mine
-ignore
-pass
-secure
-
-blocksTurtleCanMine         blockTypeMine
-blocksTurtleCanIgnore       blockTypeIgnore
-blocksTurtleCantMine        blockTypePass
-                            blockTypeSecure

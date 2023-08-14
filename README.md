@@ -1,5 +1,6 @@
 # CCTurtle
 Computercraft Turtle, used in minecraft for controlling a Turtle.
+This is a work in progress, so use on your own risk, and please report any bugs you find.
 
 # How to setup a new turtle.
 Give the turtle a label with:
@@ -18,3 +19,4 @@ Report status into to Computer
 Make move function, for now thinking that its one function called with direction to move, and the method then updates turtles position and reports it to main computer.
 
 # Next Step
+List kept in the repository for the computer https://github.com/RudiHansen/CCComputer

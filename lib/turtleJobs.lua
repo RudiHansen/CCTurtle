@@ -5,7 +5,7 @@
 
 local turtleJobs = {}
 
-local turtleJobsData        = {Id=0,TurtleName="",Status="",JobType="",x1=0,z1=0,y1=0,f1="",x2=0,z2=0,y2=0,f2=""}
+local turtleJobsData        = {Id=0,TurtleName="",Status="",JobType="",x1=0,z1=0,y1=0,f1="",x2=0,z2=0,y2=0,f2="",x3=0,z3=0,y3=0,f3=""}
 
 function turtleJobs.Msg2TurtleJob(message)
     fields = {}
@@ -25,7 +25,11 @@ function turtleJobs.Msg2TurtleJob(message)
     turtleJobsData.z2           = fields[10]
     turtleJobsData.y2           = fields[11]
     turtleJobsData.f2           = fields[12]
-    turtleJobsData.axisPriority = fields[13]
+    turtleJobsData.x3           = fields[13]
+    turtleJobsData.z3           = fields[14]
+    turtleJobsData.y3           = fields[15]
+    turtleJobsData.f3           = fields[16]
+    turtleJobsData.axisPriority = fields[17]
 
     return turtleJobsData
 end

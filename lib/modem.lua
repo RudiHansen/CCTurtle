@@ -29,7 +29,11 @@ function modem.sendStatus(newStatus)
     local statusMessage = "TurtleStatus;"..label..";"..currentPos.x..";"..currentPos.z..";"..currentPos.y..";"..currentPos.f .. ";"..storageSlots..";"..fuelLevel..";"..status
 
     rednet.send(0,statusMessage,"S")
-    modem.sendTurtleJobProgress(true)
+    if(newStatus == nil) then
+        modem.sendTurtleJobProgress(true)
+    else
+        modem.sendTurtleJobProgress(false)
+    end
 end
 
 function modem.sendTurtleJobStatus(turtleJobData,status)
@@ -47,9 +51,9 @@ function modem.sendTurtleJobProgress(force)
         local label         = os.getComputerLabel()
         local currentPos    = location.getCurrentPos()
 
-        local statusMessage = "TurtleProgress;"..label..";"..currentPos.x..";"..currentPos.z..";"..currentPos.y..";"..currentPos.f .. ";"..storageSlots..";"..fuelLevel..";"..status
+        local progressMessage = "TurtleProgress;"..label..";"..currentPos.x..";"..currentPos.z..";"..currentPos.y..";"..currentPos.f
 
-        rednet.send(0,statusMessage,"SP")
+        rednet.send(0,progressMessage,"SP")
     end
 end
 

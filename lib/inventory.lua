@@ -129,7 +129,7 @@ function inventory.checkForStopCommand()
     end
     
     logFile.logWrite("Call modem.askAboutStopCommand")
-    local result = return modem.askAboutStopCommand()
+    local result = modem.askAboutStopCommand()
     logFile.logWrite("result",result)
     return result
 end

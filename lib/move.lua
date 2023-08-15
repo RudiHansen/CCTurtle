@@ -70,7 +70,7 @@ function move.traverseArea(turtleJobData,dig)
         logFile.logWrite("--reverseY",reverseY)
         if(nextMove~="")then
             result = moveHelper.tryMoveDig(nextMove)
-            --logFile.logWrite("--result",result)
+            logFile.logWrite("--result",result)
             if(result==false)then
                 logFile.logWrite("From Bypass")
                 logFile.logWrite("move.traverseArea call bypass result,nextMove",result,nextMove)

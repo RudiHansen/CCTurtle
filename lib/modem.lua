@@ -41,7 +41,7 @@ function modem.sendTurtleJobProgress(force)
     local force = util.setDefaultValueIfEmpty(force,false)
     progressCounter = progressCounter + 1
 
-    --logFile.logWrite("In modem.sendTurtleJobProgress",force,progressCounter)
+    logFile.logWrite("In modem.sendTurtleJobProgress",force,progressCounter)
 
     if(progressCounter > progressCounterMax or force == true) then
         progressCounter = 0
@@ -51,7 +51,7 @@ function modem.sendTurtleJobProgress(force)
         local progressMessage = "TurtleProgress;"..label..";"..currentPos.x..";"..currentPos.z..";"..currentPos.y..";"..currentPos.f
 
         rednet.send(0,progressMessage,"SP")
-        --logFile.logWrite("Send TurtleProgress",progressMessage)
+        logFile.logWrite("Send TurtleProgress",progressMessage)
     end
 end
 
@@ -111,7 +111,31 @@ function modem.askQuestionAboutLocation(locationName)
 end
 
 function modem.askAboutStopCommand()
-    --logFile.logWrite("In modem.askAboutStopCommand")
+    local timeout = 5
+    logFile.logWrite("In modem.askAboutStopCommand")
+    rednet.send(0, "ShouldIStop", "QS")
+    
+    local timer = os.startTimer(timeout) -- Set up a timer for the specified timeout
+    
+    while true do
+        local event, id, message, protocol = os.pullEvent()
+        
+        if event == "timer" and id == timer then
+            -- Timeout reached, handle the timeout scenario here
+            logFile.logWrite("Timeout reached while waiting for reply.")
+            return false
+        elseif event == "rednet_message" and protocol == "AS" then
+            if message == true then
+                return true
+            else
+                return false
+            end
+        end
+    end
+end
+
+function modem.askAboutStopCommandOLD()
+    logFile.logWrite("In modem.askAboutStopCommand")
     rednet.send(0,"ShouldIStop","QS")
     id,message, protocol = rednet.receive("AS") --wait until a message is received
     --logFile.logWrite("AS=",id,message,protocol)

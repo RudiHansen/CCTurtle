@@ -53,10 +53,20 @@ while(doLoop) do
             move.moveToPos(startDig,turtleJobData.axisPriority)
             modem.sendTurtleJobStatus(turtleJobData,"DONE")
         elseif(turtleJobData.JobType=="traverseArea")then
-            startDig.x = tonumber(turtleJobData.x1)
-            startDig.z = tonumber(turtleJobData.z1)
-            startDig.y = tonumber(turtleJobData.y1)
-            startDig.f = turtleJobData.f1
+            if(location.isTurtleJobProgressInArea(turtleJobData)) then
+                startDig.x = tonumber(turtleJobData.x3)
+                startDig.z = tonumber(turtleJobData.z3)
+                startDig.y = tonumber(turtleJobData.y3)
+                startDig.f = turtleJobData.f3
+                logFile.logWrite("From main traverseArea set start to turtleJobData progress")
+            else
+                startDig.x = tonumber(turtleJobData.x1)
+                startDig.z = tonumber(turtleJobData.z1)
+                startDig.y = tonumber(turtleJobData.y1)
+                startDig.f = turtleJobData.f1
+                logFile.logWrite("From main traverseArea set start to turtleJobData startPos")
+            end
+    
             endDig.x   = tonumber(turtleJobData.x2)
             endDig.z   = tonumber(turtleJobData.z2)
             endDig.y   = tonumber(turtleJobData.y2)

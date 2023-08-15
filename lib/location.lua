@@ -145,6 +145,27 @@ function location.comparePos(pos1, pos2)
     end
 end
 
+function location.isTurtleJobProgressInArea(turtleJobData)
+    local isValueInRangeX = util.isValueInRange(turtleJobData.x3, turtleJobData.x1, turtleJobData.x2)
+    local isValueInRangeZ = util.isValueInRange(turtleJobData.z3, turtleJobData.z1, turtleJobData.z2)
+    local isValueInRangeY = util.isValueInRange(turtleJobData.y3, turtleJobData.y1, turtleJobData.y2)
+
+    --logFile.logWrite("In location.isTurtleJobProgressInArea",turtleJobData)
+    --logFile.logWrite("isValueInRangeX",isValueInRangeX)
+    --logFile.logWrite("isValueInRangeZ",isValueInRangeZ)
+    --logFile.logWrite("isValueInRangeY",isValueInRangeY)
+
+    if( isValueInRangeX == true 
+    and isValueInRangeZ == true 
+    and isValueInRangeY == true )then
+        --logFile.logWrite("return true")
+        return true
+    else
+        --logFile.logWrite("return false")
+        return false
+    end
+end
+
 function location.setCurrentPosFace(face)
     currentPos.f = face
 end

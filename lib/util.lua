@@ -94,4 +94,29 @@ function util.addToPositionAxis(position,axis,value)
     return position
 end
 
+-- Function to check if a value is within a range (even with wrap-around)
+function util.isValueInRange(value, rangeStart, rangeEnd)
+    value = tonumber(value)
+    rangeStart = tonumber(rangeStart)
+    rangeEnd = tonumber(rangeEnd)
+    
+    --logFile.logWrite("type(value)",type(value))
+    --logFile.logWrite("type(rangeStart)",type(rangeStart))
+    --logFile.logWrite("type(rangeEnd)",type(rangeEnd))
+
+    --logFile.logWrite("util.isValueInRange",value,rangeStart,rangeEnd)
+    --logFile.logWrite("rangeStart <= rangeEnd",rangeStart <= rangeEnd)
+
+    if rangeStart <= rangeEnd then
+        --logFile.logWrite("value >= rangeStart",value >= rangeStart)
+        --logFile.logWrite("value <= rangeEnd",value <= rangeEnd)
+        return value >= rangeStart and value <= rangeEnd
+    else
+        --logFile.logWrite("value <= rangeStart",value <= rangeStart)
+        --logFile.logWrite("value >= rangeEnd",value >= rangeEnd)
+        return value <= rangeStart and value >= rangeEnd
+    end
+end
+
+
 return util

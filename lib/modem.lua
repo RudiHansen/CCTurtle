@@ -29,11 +29,6 @@ function modem.sendStatus(newStatus)
     local statusMessage = "TurtleStatus;"..label..";"..currentPos.x..";"..currentPos.z..";"..currentPos.y..";"..currentPos.f .. ";"..storageSlots..";"..fuelLevel..";"..status
 
     rednet.send(0,statusMessage,"S")
-    if(status == "Work") then
-        modem.sendTurtleJobProgress(false)
-    else
-        modem.sendTurtleJobProgress(true)
-    end
 end
 
 function modem.sendTurtleJobStatus(turtleJobData,status)

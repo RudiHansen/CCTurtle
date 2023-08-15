@@ -71,6 +71,7 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
             end
         end
         inventory.checkAll()
+        modem.sendTurtleJobProgress()
     end
     modem.sendStatus("Idle")
 end

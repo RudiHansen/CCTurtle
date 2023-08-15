@@ -84,9 +84,9 @@ function blocks.inspectDig(direction,dig)
                 end
                 result = true
             else
-                logFile.logWrite("Problem in blocks.inspectDig")
-                logFile.logWrite("direction " .. tostring(direction))
-                logFile.logWrite("inspectData.Name " .. tostring(inspectData.Name))
+                --logFile.logWrite("Problem in blocks.inspectDig")
+                --logFile.logWrite("direction " .. tostring(direction))
+                --logFile.logWrite("inspectData.Name " .. tostring(inspectData.Name))
                 modem.sendStatus("ERROR!")
                 location.writeLocationToFile()
                 error()

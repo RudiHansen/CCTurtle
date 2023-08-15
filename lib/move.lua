@@ -22,12 +22,12 @@ function move.traverseArea(turtleJobData,dig)
     local areaEnd   = {x=tonumber(turtleJobData.x2),y=tonumber(turtleJobData.y2),z=tonumber(turtleJobData.z2),f=turtleJobData.f2}
 
     -- Write debug info
-    logFile.logWrite("in move.traverseArea")
-    logFile.logWrite("areaStart=",areaStart)
-    logFile.logWrite("areaEnd=",areaEnd)
-    logFile.logWrite("startPos=",startPos)
-    logFile.logWrite("axisPriority=",axisPriority)
-    logFile.logWrite("dig=",dig)
+    --logFile.logWrite("in move.traverseArea")
+    --logFile.logWrite("areaStart=",areaStart)
+    --logFile.logWrite("areaEnd=",areaEnd)
+    --logFile.logWrite("startPos=",startPos)
+    --logFile.logWrite("axisPriority=",axisPriority)
+    --logFile.logWrite("dig=",dig)
 
     -- Initialize the Grid map
     gridMap.initGridMap(areaStart,areaEnd)
@@ -35,17 +35,17 @@ function move.traverseArea(turtleJobData,dig)
     -- Find the position to which the turtle must move to start its work.
     if(location.isTurtleJobProgressInArea(turtleJobData)) then
         startPos = util.addToPositionAxis(startPos,axisPriority[3],1)
-        logFile.logWrite("Set startPos to last progress=",startPos)
+        --logFile.logWrite("Set startPos to last progress=",startPos)
     else
         startPos = location.copyPos(areaStart)
         startPos = util.addToPositionAxis(startPos,axisPriority[3],1)
-        logFile.logWrite("Set startPos to areaStart=",startPos)
+        --logFile.logWrite("Set startPos to areaStart=",startPos)
     end
     
     -- Move turtle to a starting position.
     modem.sendStatus("Work")
     
-    logFile.logWrite("From move.traverseArea call move.moveToPos")
+    --logFile.logWrite("From move.traverseArea call move.moveToPos")
     move.moveToPos(startPos,"",false)
     --gridMap.setGridMapValue(startPos.x,startPos.z,startPos.y,1)
 
@@ -57,23 +57,23 @@ function move.traverseArea(turtleJobData,dig)
     moveHelper.tryMoveDig("N")
 
     -- Work on actually traversing the area
-    logFile.logWrite("From move.traverseArea Start digging the area",areaStart,areaEnd)
+    --logFile.logWrite("From move.traverseArea Start digging the area",areaStart,areaEnd)
     local nextMove = "N"
     local result
     local reverseX = false
     local reverseY = false
     while(nextMove~="")do
         nextMove, reverseX, reverseY = moveHelper.getMove(axisPriority,1,areaStart,areaEnd,reverseX, reverseY)
-        logFile.logWrite("--currentPos",location.getCurrentPos())
-        logFile.logWrite("--nextMove",nextMove)
-        logFile.logWrite("--reverseX",reverseX)
-        logFile.logWrite("--reverseY",reverseY)
+        --logFile.logWrite("--currentPos",location.getCurrentPos())
+        --logFile.logWrite("--nextMove",nextMove)
+        --logFile.logWrite("--reverseX",reverseX)
+        --logFile.logWrite("--reverseY",reverseY)
         if(nextMove~="")then
             result = moveHelper.tryMoveDig(nextMove)
-            logFile.logWrite("--result",result)
+            --logFile.logWrite("--result",result)
             if(result==false)then
-                logFile.logWrite("From Bypass")
-                logFile.logWrite("move.traverseArea call bypass result,nextMove",result,nextMove)
+                --logFile.logWrite("From Bypass")
+                --logFile.logWrite("move.traverseArea call bypass result,nextMove",result,nextMove)
                 move.byPassBlock(nextMove,areaStart,areaEnd,axisPriority,dig)
             end
         end

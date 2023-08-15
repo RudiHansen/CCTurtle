@@ -121,16 +121,16 @@ function inventory.checkInventoryStatus()
 end
 
 function inventory.checkForStopCommand()
-    logFile.logWrite("In inventory.checkForStopCommand")
+    --logFile.logWrite("In inventory.checkForStopCommand")
     if(fs.exists("STOP.dat")) then
         fs.move("STOP.dat","STOPNOT.dat")
-        logFile.logWrite("return true")
+        --logFile.logWrite("return true")
         return true
     end
     
-    logFile.logWrite("Call modem.askAboutStopCommand")
+    --logFile.logWrite("Call modem.askAboutStopCommand")
     local result = modem.askAboutStopCommand()
-    logFile.logWrite("result",result)
+    --logFile.logWrite("result",result)
     return result
 end
 

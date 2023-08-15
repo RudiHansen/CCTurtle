@@ -110,4 +110,18 @@ function modem.askQuestionAboutLocation(locationName)
     return message    
 end
 
+function modem.askAboutStopCommand()
+    logFile.logWrite("In modem.askAboutStopCommand")
+    rednet.send(0,"ShouldIStop","QS")
+    id,message, protocol = rednet.receive("AS") --wait until a message is received
+    logFile.logWrite("AS=",id,message,protocol)
+    logFile.logWrite("type(message)=",type(message))
+
+    if(message == true)then
+        return true
+    else
+        return false
+    end
+end
+
 return modem

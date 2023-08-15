@@ -120,13 +120,13 @@ function inventory.checkInventoryStatus()
     return false
 end
 
--- TODO : Should perhaps change this to ask the server instead of checking the file
 function inventory.checkForStopCommand()
     if(fs.exists("STOP.dat")) then
         fs.move("STOP.dat","STOPNOT.dat")
         return true
     end
-    return false
+    
+    return modem.askAboutStopCommand()
 end
 
 function inventory.checkAll(force)

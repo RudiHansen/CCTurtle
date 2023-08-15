@@ -79,13 +79,13 @@ function inventory.emptyStorageSlots()
     --logFile.logWrite("Drop off items")
 
     -- Move to the drop storage
-    logFile.logWrite("From inventory.emptyStorageSlots call move.moveToPos")
+    logFile.logWrite("From inventory.emptyStorageSlots call move.moveToPos",location.getDropOffPos())
     move.moveToPos(location.getDropOffPos())
 
     -- Test if there is a chest.
     local success, data = turtle.inspect()
     if success and string.match(data.name,"chest") then
-        --logFile.logWrite("Found a chest")
+        logFile.logWrite("From inventory.emptyStorageSlots Found a chest")
     else
         modem.sendStatus("ERROR!")
         util.SendStatusAndWaitForUserKey("ERROR!","Drop off chest not found!")
@@ -98,9 +98,9 @@ function inventory.emptyStorageSlots()
         turtle.drop()
     end
 
-    --logFile.logWrite("Dropped of all items, now returning to work.")
+    logFile.logWrite("From inventory.emptyStorageSlots Dropped of all items, now returning to work.")
     modem.sendStatus(saveStatus)
-    --logFile.logWrite("OriginalPos = " .. util.any2String(originalPos))
+    logFile.logWrite("From inventory.emptyStorageSlots OriginalPos = " .. util.any2String(originalPos))
     return true
 end
 

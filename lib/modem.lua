@@ -41,7 +41,7 @@ function modem.sendTurtleJobProgress(force)
     local force = util.setDefaultValueIfEmpty(force,false)
     progressCounter = progressCounter + 1
 
-    logFile.logWrite("In modem.sendTurtleJobProgress",force,progressCounter)
+    --logFile.logWrite("In modem.sendTurtleJobProgress",force,progressCounter)
 
     if(progressCounter > progressCounterMax or force == true) then
         progressCounter = 0
@@ -51,7 +51,7 @@ function modem.sendTurtleJobProgress(force)
         local progressMessage = "TurtleProgress;"..label..";"..currentPos.x..";"..currentPos.z..";"..currentPos.y..";"..currentPos.f
 
         rednet.send(0,progressMessage,"SP")
-        logFile.logWrite("Send TurtleProgress",progressMessage)
+        --logFile.logWrite("Send TurtleProgress",progressMessage)
     end
 end
 

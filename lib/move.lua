@@ -12,17 +12,20 @@ local moveAxisPriority   = "zxy"
 
 -- TODO: On performing this job, 1,Miner1,NEW,traverseArea,1,9,68,N,-4,5,71,N,xyz
 --       There was a problem with the last few blocks, they where not mined.
-function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
+function move.traverseArea(turtleJobData,dig)
     -- Setup variables
-    axisPriority = util.setDefaultValueIfEmpty(axisPriority,"xyz")
-    axisPriority = {string.sub(axisPriority,1,1),string.sub(axisPriority,2,2),string.sub(axisPriority,3,3)}
+    axisPriority = util.setDefaultValueIfEmpty(turtleJobData.axisPriority,"xyz")
+    axisPriority = {string.sub(turtleJobData.axisPriority,1,1),string.sub(turtleJobData.axisPriority,2,2),string.sub(turtleJobData.axisPriority,3,3)}
     dig = util.setDefaultValueIfEmpty(dig,false)
-    local startPos = {};
+    local startPos  = {x=tonumber(turtleJobData.x1),y=tonumber(turtleJobData.y1),z=tonumber(turtleJobData.z3),f=turtleJobData.f1}
+    local areaStart = {x=tonumber(turtleJobData.x1),y=tonumber(turtleJobData.y1),z=tonumber(turtleJobData.z1),f=turtleJobData.f1}
+    local areaEnd   = {x=tonumber(turtleJobData.x2),y=tonumber(turtleJobData.y2),z=tonumber(turtleJobData.z2),f=turtleJobData.f2}
 
     -- Write debug info
     logFile.logWrite("in move.traverseArea")
     logFile.logWrite("areaStart=",areaStart)
     logFile.logWrite("areaEnd=",areaEnd)
+    logFile.logWrite("startPos=",startPos)
     logFile.logWrite("axisPriority=",axisPriority)
     logFile.logWrite("dig=",dig)
 
@@ -30,10 +33,14 @@ function move.traverseArea(areaStart,areaEnd,axisPriority,dig)
     gridMap.initGridMap(areaStart,areaEnd)
 
     -- Find the position to which the turtle must move to start its work.
-    startPos = location.copyPos(areaStart)
-    logFile.logWrite("startPos",startPos)
-    startPos = util.addToPositionAxis(startPos,axisPriority[3],1)
-    logFile.logWrite("startPos",startPos)
+    if(location.isTurtleJobProgressInArea(turtleJobData)) then
+        startPos = util.addToPositionAxis(startPos,axisPriority[3],1)
+        logFile.logWrite("Set startPos to last progress=",startPos)
+    else
+        startPos = location.copyPos(areaStart)
+        startPos = util.addToPositionAxis(startPos,axisPriority[3],1)
+        logFile.logWrite("Set startPos to areaStart=",startPos)
+    end
     
     -- Move turtle to a starting position.
     modem.sendStatus("Work")

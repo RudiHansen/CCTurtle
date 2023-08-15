@@ -49,31 +49,13 @@ while(doLoop) do
             logFile.logWrite("moveToPos",startDig)
             logFile.logWrite("turtleJobsData.axisPriority",turtleJobData.axisPriority)
             modem.sendTurtleJobStatus(turtleJobData,"RUN")
-            logFile.logWrite("From main call1 move.moveToPos")
+            logFile.logWrite("From main call move.moveToPos")
             move.moveToPos(startDig,turtleJobData.axisPriority)
             modem.sendTurtleJobStatus(turtleJobData,"DONE")
         elseif(turtleJobData.JobType=="traverseArea")then
-            if(location.isTurtleJobProgressInArea(turtleJobData)) then
-                startDig.x = tonumber(turtleJobData.x3)
-                startDig.z = tonumber(turtleJobData.z3)
-                startDig.y = tonumber(turtleJobData.y3)
-                startDig.f = turtleJobData.f3
-                logFile.logWrite("From main traverseArea set start to turtleJobData progress")
-            else
-                startDig.x = tonumber(turtleJobData.x1)
-                startDig.z = tonumber(turtleJobData.z1)
-                startDig.y = tonumber(turtleJobData.y1)
-                startDig.f = turtleJobData.f1
-                logFile.logWrite("From main traverseArea set start to turtleJobData startPos")
-            end
-    
-            endDig.x   = tonumber(turtleJobData.x2)
-            endDig.z   = tonumber(turtleJobData.z2)
-            endDig.y   = tonumber(turtleJobData.y2)
-            endDig.f   = turtleJobData.f2
-            logFile.logWrite("traverseArea",startDig,endDig)
             modem.sendTurtleJobStatus(turtleJobData,"RUN")
-            move.traverseArea(startDig,endDig,turtleJobData.axisPriority,true)
+            logFile.logWrite("From main call move.traverseArea",turtleJobData)
+            move.traverseArea(turtleJobData,true)
             modem.sendTurtleJobStatus(turtleJobData,"DONE")
         elseif(turtleJobData.JobType=="moveHome")then
             modem.sendTurtleJobStatus(turtleJobData,"DONE")

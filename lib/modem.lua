@@ -10,7 +10,7 @@ local modem = {}
 
 local status = "Idle"
 local progressCounter = 0
-local progressCounterMax = 10
+local progressCounterMax = 20
 
 function modem.init()
     rednet.open("right") --enable the modem attached to the right side of the PC
@@ -29,10 +29,10 @@ function modem.sendStatus(newStatus)
     local statusMessage = "TurtleStatus;"..label..";"..currentPos.x..";"..currentPos.z..";"..currentPos.y..";"..currentPos.f .. ";"..storageSlots..";"..fuelLevel..";"..status
 
     rednet.send(0,statusMessage,"S")
-    if(newStatus == nil) then
-        modem.sendTurtleJobProgress(true)
-    else
+    if(status == "Work") then
         modem.sendTurtleJobProgress(false)
+    else
+        modem.sendTurtleJobProgress(true)
     end
 end
 
@@ -44,8 +44,10 @@ end
 
 function modem.sendTurtleJobProgress(force)
     local force = util.setDefaultValueIfEmpty(force,false)
-
     progressCounter = progressCounter + 1
+
+    logFile.logWrite("In modem.sendTurtleJobProgress",force,progressCounter)
+
     if(progressCounter > progressCounterMax or force == true) then
         progressCounter = 0
         local label         = os.getComputerLabel()
@@ -54,6 +56,7 @@ function modem.sendTurtleJobProgress(force)
         local progressMessage = "TurtleProgress;"..label..";"..currentPos.x..";"..currentPos.z..";"..currentPos.y..";"..currentPos.f
 
         rednet.send(0,progressMessage,"SP")
+        logFile.logWrite("Send TurtleProgress",progressMessage)
     end
 end
 

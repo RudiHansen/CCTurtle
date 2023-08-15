@@ -57,17 +57,17 @@ function move.traverseArea(turtleJobData,dig)
     moveHelper.tryMoveDig("N")
 
     -- Work on actually traversing the area
-    logFile.logWrite("Start digging the area",areaStart,areaEnd)
+    logFile.logWrite("From move.traverseArea Start digging the area",areaStart,areaEnd)
     local nextMove = "N"
     local result
     local reverseX = false
     local reverseY = false
     while(nextMove~="")do
         nextMove, reverseX, reverseY = moveHelper.getMove(axisPriority,1,areaStart,areaEnd,reverseX, reverseY)
-        --logFile.logWrite("--currentPos",location.getCurrentPos())
-        --logFile.logWrite("--nextMove",nextMove)
-        --logFile.logWrite("--reverseX",reverseX)
-        --logFile.logWrite("--reverseY",reverseY)
+        logFile.logWrite("--currentPos",location.getCurrentPos())
+        logFile.logWrite("--nextMove",nextMove)
+        logFile.logWrite("--reverseX",reverseX)
+        logFile.logWrite("--reverseY",reverseY)
         if(nextMove~="")then
             result = moveHelper.tryMoveDig(nextMove)
             --logFile.logWrite("--result",result)
@@ -85,11 +85,11 @@ end
 
 -- Move to a Position using axisPriority, if dig=true then dig block
 function move.moveToPos(endPos,axisPriority,dig)
-    logFile.logWrite("in move.moveToPos")
-    logFile.logWrite("CurrentPos   :",location.getCurrentPos())
-    logFile.logWrite("endPos       :",endPos)
-    logFile.logWrite("axisPriority :",axisPriority)
-    logFile.logWrite("dig          :",dig)
+    --logFile.logWrite("in move.moveToPos")
+    --logFile.logWrite("CurrentPos   :",location.getCurrentPos())
+    --logFile.logWrite("endPos       :",endPos)
+    --logFile.logWrite("axisPriority :",axisPriority)
+    --logFile.logWrite("dig          :",dig)
     if(axisPriority == nil or axisPriority == "") then
         axisPriority = moveAxisPriority -- "zxy"
     end
@@ -130,10 +130,10 @@ function move.moveToPos(endPos,axisPriority,dig)
         error()
     end
 
-    logFile.logWrite("From move.moveToPos1 call moveHelper.moveToPosWorker",midPos,axisPriority,dig)
+    --logFile.logWrite("From move.moveToPos1 call moveHelper.moveToPosWorker",midPos,axisPriority,dig)
     moveHelper.moveToPosWorker(midPos,axisPriority,dig)
     if(location.comparePos(midPos,endPos)==false)then
-        logFile.logWrite("From move.moveToPos2 call moveHelper.moveToPosWorker",endPos,axisPriority,dig)
+        --logFile.logWrite("From move.moveToPos2 call moveHelper.moveToPosWorker",endPos,axisPriority,dig)
         moveHelper.moveToPosWorker(endPos,axisPriority,dig)
     end
 end
@@ -155,16 +155,16 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
               I do need to try to see if i can fix this, or at least the turtle has to return
               to the original position it started at, or it seems to resume digging in the wrong place.
     ]]
-    logFile.logWrite("In move.byPassBlock")
-    logFile.logWrite("Start At pos : ",location.getCurrentPos())
-    logFile.logWrite("nextMove",nextMove)
-    logFile.logWrite("startPos",startPos)
-    logFile.logWrite("endPos",endPos)
-    logFile.logWrite("axisPriority",axisPriority)
-    logFile.logWrite("dig",dig)
+    --logFile.logWrite("In move.byPassBlock")
+    --logFile.logWrite("Start At pos : ",location.getCurrentPos())
+    --logFile.logWrite("nextMove",nextMove)
+    --logFile.logWrite("startPos",startPos)
+    --logFile.logWrite("endPos",endPos)
+    --logFile.logWrite("axisPriority",axisPriority)
+    --logFile.logWrite("dig",dig)
 
     local startPosition = location.getCurrentPosCopy()
-    logFile.logWrite("startPosition",startPosition)
+    --logFile.logWrite("startPosition",startPosition)
 
     local origMove, sideMove1, sideMove2    = moveHelper.calculateMoves(nextMove,endPos)
     local sideMove1Count    = 0
@@ -173,7 +173,7 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
     -- First sideMove1 as meany times needed until sideMove2 can be made
     while(result~="OK")do
         result = moveHelper.tryMoveDig(sideMove1)
-        logFile.logWrite("sideMove1 result=",result)
+        --logFile.logWrite("sideMove1 result=",result)
         if(result==false)then
             result = moveHelper.tryMoveForceDig(sideMove1)
         end
@@ -181,19 +181,19 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
         if(sideMove1Count > 5)then
             util.SendStatusAndWaitForUserKey("WARNING","Might be a problem with to meany sideMove1's, please clear blocking blocks and press a key!")
         end
-        logFile.logWrite("2 -calling inspectDig ",nextStep,dig)
+        --logFile.logWrite("2 -calling inspectDig ",nextStep,dig)
         result = blocks.inspectDig(origMove,dig)
-        logFile.logWrite("inspectDig origMove result=",result)
+        --logFile.logWrite("inspectDig origMove result=",result)
     end
 
     --Then origMove until sideMove2 can be made
     result = ""
     while(result~="OK")do
         result = moveHelper.tryMoveDig(origMove)
-        logFile.logWrite("origMove result=",result)
+        --logFile.logWrite("origMove result=",result)
         if(result==false)then
             result = moveHelper.tryMoveDig(sideMove1)
-            logFile.logWrite("extra sideMove1 result=",result)
+            --logFile.logWrite("extra sideMove1 result=",result)
             sideMove1Count = util.incNumber(sideMove1Count)
             if(sideMove1Count > 5)then
                 util.SendStatusAndWaitForUserKey("ERROR","Might be a problem with to meany extra sideMove1's")
@@ -206,15 +206,15 @@ function move.byPassBlock(nextMove,startPos,endPos,axisPriority,dig)
                 --util.SendStatusAndWaitForUserKey("Blocked","Problem in origMove after extra sideMove1")
             end
         end
-        logFile.logWrite("3 -calling inspectDig ",nextStep,dig)
+        --logFile.logWrite("3 -calling inspectDig ",nextStep,dig)
         result = blocks.inspectDig(sideMove2,dig)
-        logFile.logWrite("inspectDig sideMove2 result=",result)
+        --logFile.logWrite("inspectDig sideMove2 result=",result)
     end
 
     --And then sideMove2 as meany times as we did sideMove1
     for i=1, sideMove1Count, 1 do
         result = moveHelper.tryMoveDig(sideMove2)
-        logFile.logWrite("sideMove2 result=",result)
+        --logFile.logWrite("sideMove2 result=",result)
         if(result==false)then
             result = moveHelper.tryMoveForceDig(sideMove2)
             --util.SendStatusAndWaitForUserKey("Blocked","Problem in sideMove2")

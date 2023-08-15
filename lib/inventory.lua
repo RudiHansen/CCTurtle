@@ -47,7 +47,7 @@ function inventory.pickUpFuel()
     --logFile.logWrite("Fuel level = " .. turtle.getFuelLevel())
 
     -- Move to the fuel storage
-    logFile.logWrite("From inventory.pickUpFuel call move.moveToPos")
+    --logFile.logWrite("From inventory.pickUpFuel call move.moveToPos")
     move.moveToPos(location.getRefuelPos())
 
     inventory.selectFirstEmptyStorageSlot()
@@ -79,13 +79,13 @@ function inventory.emptyStorageSlots()
     --logFile.logWrite("Drop off items")
 
     -- Move to the drop storage
-    logFile.logWrite("From inventory.emptyStorageSlots call move.moveToPos",location.getDropOffPos())
+    --logFile.logWrite("From inventory.emptyStorageSlots call move.moveToPos",location.getDropOffPos())
     move.moveToPos(location.getDropOffPos())
 
     -- Test if there is a chest.
     local success, data = turtle.inspect()
     if success and string.match(data.name,"chest") then
-        logFile.logWrite("From inventory.emptyStorageSlots Found a chest")
+        --logFile.logWrite("From inventory.emptyStorageSlots Found a chest")
     else
         modem.sendStatus("ERROR!")
         util.SendStatusAndWaitForUserKey("ERROR!","Drop off chest not found!")
@@ -98,9 +98,9 @@ function inventory.emptyStorageSlots()
         turtle.drop()
     end
 
-    logFile.logWrite("From inventory.emptyStorageSlots Dropped of all items, now returning to work.")
+    --logFile.logWrite("From inventory.emptyStorageSlots Dropped of all items, now returning to work.")
     modem.sendStatus(saveStatus)
-    logFile.logWrite("From inventory.emptyStorageSlots OriginalPos = " .. util.any2String(originalPos))
+    --logFile.logWrite("From inventory.emptyStorageSlots OriginalPos = " .. util.any2String(originalPos))
     return true
 end
 
@@ -166,11 +166,11 @@ function inventory.checkAll(force)
         modem.sendStatus("STOP")
         inventory.emptyStorageSlots()
         inventory.pickUpFuel()
-        logFile.logWrite("From inventory.checkAll1 call move.moveToPos")
+        --logFile.logWrite("From inventory.checkAll1 call move.moveToPos")
         move.moveToPos(location.getHomePos(),"zxy",false)
         location.writeLocationToFile()
-        logFile.logFileClose()
         modem.sendStatus("Idle")
+        logFile.logFileClose()
         error()
     end
 
@@ -184,12 +184,12 @@ function inventory.checkAll(force)
         inventory.pickUpFuel()
     end
 
-    logFile.logWrite("From inventory.checkAll2 call move.moveToPos step 1")
+    --logFile.logWrite("From inventory.checkAll2 call move.moveToPos step 1")
     -- Return to original position, by first moving up, then back to original position
     local currentPos = location.getCurrentPosCopy()
     currentPos.y = originalPos.y
     move.moveToPos(currentPos,"yzx")
-    logFile.logWrite("From inventory.checkAll2 call move.moveToPos step 2")
+    --logFile.logWrite("From inventory.checkAll2 call move.moveToPos step 2")
     move.moveToPos(originalPos,"zxy")
     checkAll = true
     --logFile.logWrite("Ended checkAll")

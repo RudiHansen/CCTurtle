@@ -26,7 +26,7 @@ local blockTypeSecure   = {}
 -- "ERROR"-This should not happen)
 function blocks.inspectDig(direction,dig)
     if(direction == "" or direction==nil)then
-        logFile.logWrite("in blocks.inspectDig",direction,dig)
+        --logFile.logWrite("in blocks.inspectDig",direction,dig)
         util.SendStatusAndWaitForUserKey("ERROR","There is a problem in blocks.inspectDig")
         error()
     end

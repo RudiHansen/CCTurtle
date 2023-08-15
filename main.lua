@@ -39,22 +39,22 @@ local doLoop = true
 while(doLoop) do
     turtleJobData = {}
     turtleJobData = modem.askQuestionTurtleJob()
-    logFile.logWrite("TurtleJob",turtleJobData)
+    --logFile.logWrite("TurtleJob",turtleJobData)
     if(turtleJobData~=nil and turtleJobData.TurtleName==os.getComputerLabel())then
         if(turtleJobData.JobType=="moveToPos")then
             startDig.x = tonumber(turtleJobData.x1)
             startDig.z = tonumber(turtleJobData.z1)
             startDig.y = tonumber(turtleJobData.y1)
             startDig.f = turtleJobData.f1
-            logFile.logWrite("moveToPos",startDig)
-            logFile.logWrite("turtleJobsData.axisPriority",turtleJobData.axisPriority)
+            --logFile.logWrite("moveToPos",startDig)
+            --logFile.logWrite("turtleJobsData.axisPriority",turtleJobData.axisPriority)
             modem.sendTurtleJobStatus(turtleJobData,"RUN")
-            logFile.logWrite("From main call move.moveToPos")
+            --logFile.logWrite("From main call move.moveToPos")
             move.moveToPos(startDig,turtleJobData.axisPriority)
             modem.sendTurtleJobStatus(turtleJobData,"DONE")
         elseif(turtleJobData.JobType=="traverseArea")then
             modem.sendTurtleJobStatus(turtleJobData,"RUN")
-            logFile.logWrite("From main call move.traverseArea",turtleJobData)
+            --logFile.logWrite("From main call move.traverseArea",turtleJobData)
             move.traverseArea(turtleJobData,true)
             modem.sendTurtleJobStatus(turtleJobData,"DONE")
         elseif(turtleJobData.JobType=="moveHome")then
@@ -63,10 +63,10 @@ while(doLoop) do
         end
     else
         if(noJobsCount>5)then
-            logFile.logWrite("Exit main.")    
+            --logFile.logWrite("Exit main.")    
             doLoop = false
         end
-        logFile.logWrite("No jobs.")
+        --logFile.logWrite("No jobs.")
         noJobsCount = noJobsCount + 1
     end
 end

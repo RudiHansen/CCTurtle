@@ -51,6 +51,7 @@ function moveHelper.tryMoveForceDig(moveToDo)
             error()
         end
     else
+        -- TODO: Got this error on a miner in pos x=57, z=-27, y=68, f=N trying to move S, there was a chest in the way.
         util.SendStatusAndWaitForUserKey("ERROR","Problem 2 in moveHelper.tryMoveForceDig moveToDo"..tostring(moveToDo))
         location.writeLocationToFile()
         error()

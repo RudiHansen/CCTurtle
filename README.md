@@ -1,6 +1,9 @@
 # CCTurtle
 Computercraft Turtle, used in minecraft for controlling a Turtle.
 This is a work in progress, so use on your own risk, and please report any bugs you find.
+IMPORTANT: I have moved the code to a new repository, so this repository is no longer maintained.
+    The new repository is right now Private, but I will make it public when I have working code.
+
 
 # How to setup a new turtle.
 Give the turtle a label with:
